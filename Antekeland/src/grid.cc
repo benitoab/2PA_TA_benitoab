@@ -26,12 +26,12 @@
 static const int kWindowWidth = 800;
 static const int kWindowHeight = 800;
 
-const unsigned char size = 4;
+const unsigned char size = 8;
 const unsigned char kNumRows = size;
 const unsigned char kNumCols = size;
 const unsigned char search_range = 2; // rango de busqueda
-const float concentration = 0.75f;
-const int chance_to_move = 9999;
+const float concentration = 0.55f;
+const int chance_to_move = 721;
 
 unsigned int repeats = 0;
 
@@ -44,12 +44,14 @@ struct SCharacter{
 
 struct STile{
   unsigned char state; // Cell State
+  unsigned char checked;
   SDL_Rect info;
   //float x,y, w,h; // x,y ,  ancho y alto
 };
 
 STile board[kNumRows][kNumCols];
 SCharacter Character;
+unsigned char total_cells = 0;
 
 void CreateBoard(){
   
@@ -64,10 +66,12 @@ void CreateBoard(){
       board[r][c].info.y = r * y;
       board[r][c].info.w = x;
       board[r][c].info.h = y;
+      board[r][c].checked = 0;
       
       if(rand()%100 <= concentration *100){
         
-        board[r][c].state = (rand()%7 )+1;
+        board[r][c].state = (rand()%4)+1;
+        total_cells += 1;
          
       }else{
         
@@ -77,6 +81,8 @@ void CreateBoard(){
       
     }
   }
+
+  printf("Total Cells: %d\n", total_cells);
 }
 
 void InitCharacter(){
@@ -157,9 +163,7 @@ unsigned char CheckSingleNeighbour(unsigned char pos, const signed char desp){
 
 // Returns the number of neighbours in the same state as a given cell
 unsigned char CheckNeighbours(STile board[size][size], unsigned char row, unsigned char col, unsigned char state){
-  
-  // printf("Casilla: %d %d\n", row, col);
-  
+    
   unsigned char num_neighbours = 0;
   
   if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state == state){ ++num_neighbours; }   // Upper-Left
@@ -170,8 +174,7 @@ unsigned char CheckNeighbours(STile board[size][size], unsigned char row, unsign
   if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state == state){ ++num_neighbours; }   // Lower-Left
   if(board[CheckSingleNeighbour(row, +1)][col].state == state){ ++num_neighbours; }                             // Lower
   if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state == state){ ++num_neighbours; }   // Lower-Right
-  
-  
+
   // printf("Vecinos: %d\n", num_neighbours);
   
   return num_neighbours;
@@ -179,9 +182,15 @@ unsigned char CheckNeighbours(STile board[size][size], unsigned char row, unsign
 }
 
 void SwapCells(unsigned char row1, unsigned char col1, unsigned char state1, unsigned char row2, unsigned char col2, unsigned char state2){
-    
+
+  // printf("X1: %d, Y1: %d, X2: %d, Y2: %d\n", row1, col1, row2, col2);
+  // printf("Before Swap: %d %d\n", board[row1][col1].state, board[row2][col2].state);
+
   board[row1][col1].state = state2;
   board[row2][col2].state = state1;
+
+  // printf("X1: %d, Y1: %d, X2: %d, Y2: %d\n", row1, col1, row2, col2);
+  // printf("After Swap: %d %d\n", board[row1][col1].state, board[row2][col2].state);
     
 }
 
@@ -205,15 +214,15 @@ signed char CalculateGain(unsigned char row1, unsigned char col1, unsigned char 
   signed char new_gain;
   
   orig_gain = CheckNeighbours(board, row2, col2, board[row2][col2].state);
-  printf("--- CELL 2 ---\n");
-  printf("Gain: %d\n", orig_gain);
+  // printf("--- CELL 2 ---\n");
+  // printf("Gain: %d\n", orig_gain);
   
   new_gain = TemporalSwap(row2, col2, board[row2][col2].state,
                           row1, col1, board[row1][col1].state);
                           
-  printf("New Gain: %d\n", new_gain);
+  // printf("New Gain: %d\n", new_gain);
   
-  printf("Final Gain: %d\n", new_gain - orig_gain);
+  // printf("Final Gain: %d\n", new_gain - orig_gain);
   
   return new_gain - orig_gain;
   
@@ -232,6 +241,8 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
   
   do{
   
+    // printf("Cuarto paso\n");
+
     horizontal_movement = rand()%(search_range + 1);
     
     if(search_range - horizontal_movement == 0){
@@ -259,32 +270,39 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
     next_row = CheckSingleNeighbour(original_row, vertical_movement);
     next_col = CheckSingleNeighbour(original_col, horizontal_movement);
     
-  }while(horizontal_movement == 0 && vertical_movement == 0);
+  }while(horizontal_movement == 0 && vertical_movement == 0);  
   
-  printf("--- CELL 1 ---\n");
-  printf("Original: %d %d\n", original_row, original_col);
-  printf("Desp: %d %d\n", vertical_movement, horizontal_movement);
-  printf("Tile: %d %d\n", next_row, next_col);
+  // printf("Quinto paso\n");
+  // printf("Desp: %d %d\n", vertical_movement, horizontal_movement);
+  // printf("Next Tile: %d %d, State: %d\n", next_row, next_col, board[next_row][next_col].state);
   
-  if(8 != CheckNeighbours(board, next_row, next_col,
-                          board[next_row][next_col].state) &&
-    board[next_row][next_col].state != board[original_row][original_col].state){
-      
+  if(8 != CheckNeighbours(board, next_row, next_col, board[next_row][next_col].state) &&
+                          board[next_row][next_col].state != board[original_row][original_col].state){
+    
+    // Gain in the new cell position
     new_gain = TemporalSwap(original_row, original_col, board[original_row][original_col].state,
-                 next_row, next_col, board[next_row][next_col].state);
+                            next_row, next_col, board[next_row][next_col].state);
        
     /*new_gain = CheckNeighbours(board, next_row,
                  next_col, board[original_row][original_col].state);*/
                  
-    printf("Gain: %d\nNew Gain: %d\n", orig_gain, new_gain);
+    // printf("Gain: %d\nNew Gain: %d\n", orig_gain, new_gain);
       
     new_gain -= orig_gain;
     
-    printf("Final Gain: %d\n\n\n", new_gain);
-        
-    if(0 == board[next_row][next_col].state){      
+    // printf("Final Gain: %d\n\n\n", new_gain);
+    
+    // printf("Sexto paso\n");
+
+    if(0 == board[next_row][next_col].state){
+
+      // printf("Septimo paso\n");
       
+      // printf("No Cell, New Gain: %d %d\n", new_gain, orig_gain);
+
       if(new_gain >= 0 || (new_gain == -1 && rand()%chance_to_move == 21)){
+
+        // printf("Octavo paso\n");
         
         SwapCells(original_row, original_col, board[original_row][original_col].state,
                   next_row, next_col,
@@ -294,11 +312,15 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
       
     }else{
       
+      // printf("Noveno paso\n");
+
       new_gain2 = CalculateGain(original_row, original_col, next_row, next_col);
       
-      new_gain2 -= new_gain;
+      new_gain += new_gain2;
       
-      if(new_gain2 >= 0 || ((new_gain2 == -1 || new_gain2 == -2) && rand()%chance_to_move)){
+      if(new_gain >= 0 || ((new_gain == -1 || new_gain == -2) && rand()%chance_to_move == 21)){
+
+        // printf("Decimo paso\n");
         
         SwapCells(original_row, original_col, board[original_row][original_col].state,
                   next_row, next_col,
@@ -309,6 +331,8 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
     }
     
   }
+
+  // printf("FIN PASOS\n\n");
   
 }
 
@@ -335,20 +359,37 @@ void SelectCasilla(){
     
   }*/
   
-  while(repeats < max_repeats * 100){
+  while(repeats < max_repeats * 2048){
     
     rand_row = rand()%kNumRows;
     rand_col = rand()%kNumCols;
+
+    // printf("Primer paso\n");
+    // printf("Casilla: %d %d, State: %d\n", rand_row, rand_col, board[rand_row][rand_col].state);
+    // printf("--- CELL 1 ---\n");
+    // printf("Original: %d %d\n", rand_row, rand_col);
     
     gain = CheckNeighbours(board, rand_row, rand_col, board[rand_row][rand_col].state);
+
+    // printf("Vecinos: %d\n", gain);
+
+    //if(board[rand_row][rand_col].checked == 0){
+
+      // printf("Segundo paso\n");
+     board[rand_row][rand_col].checked = 1;
     
-    if(gain != 8){
-    
-      PickCell(rand_row, rand_col, gain);
-    
-    }
-    
-    ++repeats;
+      if(gain != 8 && board[rand_row][rand_col].state != 0){
+
+        // printf("Tercer paso\n");        
+        PickCell(rand_row, rand_col, gain);
+      
+      }
+
+      printf("%d\n", repeats);
+
+      ++repeats;
+
+    //}  
     
   }
   
@@ -408,6 +449,7 @@ int main(int argc, char **argv) {
 
   const unsigned char fps=60;
   double current_time,last_time;
+  bool ordenar = false;
 
   CreateBoard();
   InitCharacter();
@@ -422,13 +464,16 @@ int main(int argc, char **argv) {
     // Inputs events
     while(SDL_PollEvent(&event)) {
       running = !((event.type == SDL_QUIT) || ExitWindow(event));
-     
+      if(event.key.keysym.sym == SDLK_SPACE){ ordenar = true; }
       //ChangeOutfit(&menu_level,&char_outfit, renderer);
     }
 
-
-    //Update 
+    DrawBorad(renderer);
+    //Update
+    if(ordenar){
     SelectCasilla();
+    ordenar = false;
+    }
     
 
     // Clear screen
