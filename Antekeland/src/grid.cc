@@ -23,15 +23,16 @@
   } while(0)
 
 // Window dimensions
-static const int kWindowWidth = 800;
-static const int kWindowHeight = 800;
+static const int kWindowWidth = 640;
+static const int kWindowHeight = 640;
 
-const unsigned char size = 8;
+const unsigned char size = 16;
 const unsigned char kNumRows = size;
 const unsigned char kNumCols = size;
-const unsigned char search_range = 2; // rango de busqueda
+const unsigned char search_range = (size/4)*3; // rango de busqueda
 const float concentration = 0.55f;
 const int chance_to_move = 721;
+const unsigned char view_size = 16;
 
 unsigned int repeats = 0;
 
@@ -55,8 +56,8 @@ unsigned char total_cells = 0;
 
 void CreateBoard(){
   
-  int x = kWindowWidth/kNumCols; 
-  int y = kWindowHeight/kNumRows;
+  int x = kWindowWidth/kNumCols*(size/view_size); 
+  int y = kWindowHeight/kNumRows*(size/view_size);
   
   for(int r = 0; r < kNumRows; ++r){
   
@@ -70,7 +71,7 @@ void CreateBoard(){
       
       if(rand()%100 <= concentration *100){
         
-        board[r][c].state = (rand()%4)+1;
+        board[r][c].state = (rand()%7)+1;
         total_cells += 1;
          
       }else{
@@ -359,7 +360,7 @@ void SelectCasilla(){
     
   }*/
   
-  while(repeats < max_repeats * 2048){
+  while(repeats < max_repeats * 1024){
     
     rand_row = rand()%kNumRows;
     rand_col = rand()%kNumCols;
