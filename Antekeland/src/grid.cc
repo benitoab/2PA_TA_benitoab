@@ -27,13 +27,13 @@
 static const int kWindowWidth = 640;
 static const int kWindowHeight = 640;
 
-const unsigned char size = 16;
+const unsigned char size = 32;
 const unsigned char kNumRows = size;
 const unsigned char kNumCols = size;
 const unsigned char search_range = (size/4)*3; // rango de busqueda
 const float concentration = 0.55f;
 const int chance_to_move = 721;
-const unsigned char view_size = 16;
+const unsigned char view_size = 32;
 
 unsigned int repeats = 0;
 
