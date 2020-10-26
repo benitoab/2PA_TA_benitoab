@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "sprite.h"
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "SDL_image.h"
@@ -35,6 +36,9 @@ const int chance_to_move = 721;
 const unsigned char view_size = 16;
 
 unsigned int repeats = 0;
+
+SDL_Texture* ricardo;
+// Sprite tilemap;
 
 struct SCharacter{
   SDL_Rect info_body;
@@ -102,6 +106,8 @@ void InitCharacter(){
 }
 
 void DrawBorad(SDL_Renderer *renderer){
+
+  SDL_Rect rect_subsprite;
   
   for(int i = 0; i< kNumRows; ++i){
   
@@ -109,41 +115,74 @@ void DrawBorad(SDL_Renderer *renderer){
       
       switch(board[i][j].state){
         
-        case 0: 
-          SDL_SetRenderDrawColor(renderer,0,0,0,255); // Black
+        case 0:
+          rect_subsprite.x = 896;
+          rect_subsprite.y = 1408;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,0,0,0,255); // Black
         break;
         
         case 1:
-          SDL_SetRenderDrawColor(renderer,255,255,255,255); // White
+          rect_subsprite.x = 1280;
+          rect_subsprite.y = 1024;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,255,255,255,255); // White
         break;
         
         case 2:
-          SDL_SetRenderDrawColor(renderer,255,0,0,255); //Red
+          rect_subsprite.x = 4032;
+          rect_subsprite.y = 1644;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,255,0,0,255); //Red
         break;
         
         case 3:
-          SDL_SetRenderDrawColor(renderer,0,255,0,255); // Green
+          rect_subsprite.x = 1472;
+          rect_subsprite.y = 1280;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,0,255,0,255); // Green
         break;
         
         case 4:
-          SDL_SetRenderDrawColor(renderer,0,0,255,255); // Blue
+          rect_subsprite.x = 2944;
+          rect_subsprite.y = 1644;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64;
+          // SDL_SetRenderDrawColor(renderer,0,0,255,255); // Blue
         break;
         
         case 5:
-          SDL_SetRenderDrawColor(renderer,255,0,255,255); // Purple
+          rect_subsprite.x = 4032;
+          rect_subsprite.y = 1024;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,255,0,255,255); // Purple
         break;
         
         case 6:
-          SDL_SetRenderDrawColor(renderer,255,255,0,255); // Yellow
+          rect_subsprite.x = 896;
+          rect_subsprite.y = 1644;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,255,255,0,255); // Yellow
         break;
         
         case 7:
-          SDL_SetRenderDrawColor(renderer,0,255,255,255); // Cyan
+          rect_subsprite.x = 1280;
+          rect_subsprite.y = 1644;
+          rect_subsprite.w = 64;
+          rect_subsprite.h = 64; 
+          // SDL_SetRenderDrawColor(renderer,0,255,255,255); // Cyan
         break;        
         
       }
-      
-      SDL_RenderFillRect(renderer, &board[i][j].info);
+            
+      // SDL_RenderFillRect(renderer, &board[i][j].info);
+      SDL_RenderCopy(renderer, ricardo, &rect_subsprite, &board[i][j].info);
       
     }
     
@@ -440,13 +479,14 @@ int main(int argc, char **argv) {
   TTF_Init();
   int flags= IMG_INIT_PNG;
   IMG_Init(flags);
+
+  SDL_Surface* image = IMG_Load("../data/resources/tilemap1.png");
+  ricardo = SDL_CreateTextureFromSurface(renderer, image);
   
-    
+  // tilemap.loadTexture("../data/resources/tilemap1.png", renderer);
+
  // SDL_Surface* image = IMG_Load("../data/skins/body/male/dark.png");
   // ¡;
-  
-  
-
 
   const unsigned char fps=60;
   double current_time,last_time;
