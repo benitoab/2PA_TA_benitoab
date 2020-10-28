@@ -27,13 +27,13 @@
 static const int kWindowWidth = 640;
 static const int kWindowHeight = 640;
 
-const unsigned char size = 32;
+const unsigned char size = 64;
 const unsigned char kNumRows = size;
 const unsigned char kNumCols = size;
 const unsigned char search_range = (size/4)*3; // rango de busqueda
 const float concentration = 0.55f;
 const int chance_to_move = 721;
-const unsigned char view_size = 32;
+const unsigned char view_size = 64;
 
 unsigned int repeats = 0;
 
@@ -371,16 +371,19 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   if(state == 3){
 
     // Stairs
-    if(board[row][col].type == 6 && rand()%50 == 7){
+    if(board[row][col].type == 6 && board[row][CheckSingleNeighbour(col, -1)].type != 13 &&
+       board[row][CheckSingleNeighbour(col, +1)].type != 13){
       
       board[row][col].type = 13;
       
     }
 
-    /*if(CheckNeighbours(board, row, col, state) == 8 && rand()%10 == 7 &&
-       board[CheckSingleNeighbour(row, +1)][col].type != 6){ board[row][col].type = 14; }  */  
+    // Cave Stairs
+    if(board[row][col].type == 0 && rand()%50 == 7 &&
+       board[CheckSingleNeighbour(row, +1)][col].type != 13){ board[row][col].type = 14; }  
 
-    if(board[row][col].type == 0 && board[CheckSingleNeighbour(row, +1)][col].type != 6 &&
+    // Snowy Rock
+    if(board[row][col].type == 0 && board[CheckSingleNeighbour(row, +1)][col].type != 13 &&
        rand()%10 == 7){ board[row][col].type = 15; }
 
     if(CheckNeighbours(board, row, col, state) == 8 && 
@@ -416,6 +419,28 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   if(state == 4){
 
     if(rand()%50 == 7){ board[row][col].type = 2+(rand()%4); }
+
+  }
+
+  // Lava
+  if(state == 5){
+
+    if(CheckNeighbours(board, row, col, state) == 8 && 
+       CheckNeighboursType(board, row, col, state, 0) == 0 &&
+       rand()%10 == 7){
+     
+      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 14;
+      board[CheckSingleNeighbour(row, -1)][col].type = 15;
+      board[row][CheckSingleNeighbour(col, -1)].type = 16;
+      board[row][col].type = 17;
+         
+    }
+
+    if(rand()%10 == 7 && board[row][col].type == 0){
+
+      board[row][col].type = 13;
+
+    }
 
   }
 
