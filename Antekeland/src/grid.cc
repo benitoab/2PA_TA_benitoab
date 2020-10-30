@@ -24,16 +24,16 @@
   } while(0)
 
 // Window dimensions
-static const int kWindowWidth = 640;
-static const int kWindowHeight = 640;
+static const int kWindowWidth = 1280;
+static const int kWindowHeight = 1280;
 
-const unsigned char size = 32;
+const unsigned char size = 128;
 const unsigned char kNumRows = size;
 const unsigned char kNumCols = size;
 const unsigned char search_range = (size/4)*3; // rango de busqueda
 const float concentration = 0.55f;
 const int chance_to_move = 721;
-const unsigned char view_size = 32;
+const unsigned char view_size = 128;
 
 unsigned int repeats = 0;
 
@@ -53,7 +53,7 @@ struct STile{
   SDL_Rect info;       // Float x,y, w,h; // x,y ,  ancho y alto
 };
 
-STile board[kNumRows][kNumCols];
+STile board[kNumRows][kNumCols], board2[kNumRows][kNumCols];
 SCharacter Character;
 unsigned char total_cells = 0;
 char n_pieces = 7;
@@ -72,10 +72,16 @@ void CreateBoard(){
       board[r][c].info.w = x;
       board[r][c].info.h = y;
       board[r][c].type = 0;
+      board2[r][c].info.x = c * x;
+      board2[r][c].info.y = r * y;
+      board2[r][c].info.w = x;
+      board2[r][c].info.h = y;
+      board2[r][c].state = 9;
+      board2[r][c].type = 10;
       
       if(rand()%100 <= concentration *100){
         
-        board[r][c].state = (rand()%7)+1;
+        board[r][c].state = (rand()%8)+1;
          
       }else{
         
@@ -106,7 +112,7 @@ void InitCharacter(){
 void DrawBorad(SDL_Renderer *renderer){
 
   SDL_Rect rect_subsprite;
-  
+
   for(int i = 0; i< kNumRows; ++i){
   
     for(int j = 0; j < kNumCols; ++j){
@@ -117,6 +123,21 @@ void DrawBorad(SDL_Renderer *renderer){
       rect_subsprite.h = 64;
 
       SDL_RenderCopy(renderer, ricardo, &rect_subsprite, &board[i][j].info);
+      
+    }
+    
+  }
+
+  for(int i = 0; i< kNumRows; ++i){
+  
+    for(int j = 0; j < kNumCols; ++j){
+
+      rect_subsprite.x = board2[i][j].type * 64;
+      rect_subsprite.y = board2[i][j].state * 64;
+      rect_subsprite.w = 64;
+      rect_subsprite.h = 64;
+
+      SDL_RenderCopy(renderer, ricardo, &rect_subsprite, &board2[i][j].info);
       
     }
     
@@ -135,77 +156,70 @@ unsigned char CheckSingleNeighbour(unsigned char pos, const signed char desp){
   
 }
 
+// Check Matrix n*m
+unsigned char MatrixNxM(const STile board[size][size], const unsigned char row, const unsigned char col, const unsigned char n, const unsigned char m, const unsigned char state){
+
+  unsigned char neighbours = 0;
+
+  int start_row = -1*(n/2);
+  int end_row = n/2 - 1 + n%2;
+
+  int start_col = -1*(m/2);
+  int end_col = m/2 - 1 + m%2;
+
+  for(int i = start_row; i <= end_row; ++i){
+
+    for(int j = start_col; j <= end_col; ++j){
+
+      if(i != 0 || j != 0){
+
+        if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state == state){ ++ neighbours; }
+
+      }
+
+    }
+
+  }
+
+  return neighbours;
+
+}
+
 // Returns the number of neighbours in the same state as a given cell
-unsigned char CheckNeighbours(STile board[size][size], unsigned char row, unsigned char col, unsigned char state){
+unsigned char CheckNeighbours(const STile board[size][size], const unsigned char row, const unsigned char col, const unsigned char n, const unsigned char m, const unsigned char state){
     
-  unsigned char num_neighbours = 0;
-  
-  if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state == state){ ++num_neighbours; }   // Upper-Left
-  if(board[CheckSingleNeighbour(row, -1)][col].state == state){ ++num_neighbours; }                             // Upper
-  if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state == state){ ++num_neighbours; }   // Upper-Right
-  if(board[row][CheckSingleNeighbour(col, -1)].state == state){ ++num_neighbours; }                             // Left
-  if(board[row][CheckSingleNeighbour(col, +1)].state == state){ ++num_neighbours; }                             // Right
-  if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state == state){ ++num_neighbours; }   // Lower-Left
-  if(board[CheckSingleNeighbour(row, +1)][col].state == state){ ++num_neighbours; }                             // Lower
-  if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state == state){ ++num_neighbours; }   // Lower-Right
-  
-  return num_neighbours;
+  return MatrixNxM(board, row, col, n, m, state);
   
 }
 
 // Returns the number of neighbours in different state or type
-unsigned char CheckNeighboursType(STile board[size][size], unsigned char row, unsigned char col, unsigned char state, unsigned char check_type){
+unsigned char CheckNeighboursType(STile board[size][size], unsigned char row, unsigned char col, const unsigned char n, const unsigned char m, unsigned char state, unsigned char check_type){
     
   unsigned char num_neighbours = 0;
-  
-  if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state == state){
 
-    if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type != check_type){ ++num_neighbours; }
+  int start_row = -1*(n/2);
+  int end_row = n/2 - 1 + n%2;
 
-  }else{ ++num_neighbours; }   // Upper-Left
-     
+  int start_col = -1*(m/2);
+  int end_col = m/2 - 1 + m%2;
 
-  if(board[CheckSingleNeighbour(row, -1)][col].state == state){
-    
-    if(board[CheckSingleNeighbour(row, -1)][col].type != check_type){ ++num_neighbours; } 
-    
-  }else{ ++num_neighbours; }   // Upper
+  for(int i = start_row; i <= end_row; ++i){
 
-  if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state == state){
+    for(int j = start_col; j <= end_col; ++j){
 
-    if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type != check_type){ ++num_neighbours; }   // Upper-Right
+      if(i != 0 || j != 0){
 
-  }else{ ++num_neighbours; }
+        if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state == state){
 
-  if(board[row][CheckSingleNeighbour(col, -1)].state == state){
+          if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].type != check_type){ ++num_neighbours; }
 
-    if(board[row][CheckSingleNeighbour(col, -1)].type != check_type){ ++num_neighbours; }                             // Left
+        }else{ ++num_neighbours; }
 
-  }else{ ++num_neighbours; }
+      }
 
-  if(board[row][CheckSingleNeighbour(col, +1)].state == state){
+    }
 
-    if(board[row][CheckSingleNeighbour(col, +1)].type != check_type){ ++num_neighbours; }                             // Right
-
-  }else{ ++num_neighbours; }
-
-  if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state == state){
-    
-    if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type != check_type){ ++num_neighbours; }   // Lower-Left
-
-  }else{ ++num_neighbours; }
-
-  if(board[CheckSingleNeighbour(row, +1)][col].state == state){
-
-    if(board[CheckSingleNeighbour(row, +1)][col].type != check_type){ ++num_neighbours; }                             // Lower
-
-  }else{ ++num_neighbours; }
-
-  if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state == state){
-
-    if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type != check_type){ ++num_neighbours; }   // Lower-Right
-
-  }else{ ++num_neighbours; }
+  }
   
   return num_neighbours;
   
@@ -237,7 +251,7 @@ signed char TemporalSwap(unsigned char row1, unsigned char col1, unsigned char s
   
   SwapCells(row1, col1, state1, row2, col2, state2);
   
-  tmp_gain = CheckNeighbours(board, row2, col2, board[row2][col2].state);  
+  tmp_gain = CheckNeighbours(board, row2, col2, 3, 3, board[row2][col2].state);  
   
   SwapCells(row1, col1, state2, row2, col2, state1);
   
@@ -250,7 +264,7 @@ signed char CalculateGain(unsigned char row1, unsigned char col1, unsigned char 
   signed char orig_gain;
   signed char new_gain;
   
-  orig_gain = CheckNeighbours(board, row2, col2, board[row2][col2].state);
+  orig_gain = CheckNeighbours(board, row2, col2, 3, 3, board[row2][col2].state);
   
   new_gain = TemporalSwap(row2, col2, board[row2][col2].state,
                           row1, col1, board[row1][col1].state);
@@ -261,7 +275,7 @@ signed char CalculateGain(unsigned char row1, unsigned char col1, unsigned char 
 
 void EraseTile(STile board[size][size], unsigned char row, unsigned char col, unsigned char state){
 
-  if(CheckNeighbours(board, row, col, state) <= 3 || CheckNeighbours(board, row, col, state) == 0){
+  if(CheckNeighbours(board, row, col, 3, 3, state) <= 3 || CheckNeighbours(board, row, col, 3, 3, state) == 0){
 
     board[row][col].state = 0;
     board[row][col].type = 0;
@@ -312,7 +326,7 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
     
   }while(horizontal_movement == 0 && vertical_movement == 0); 
   
-  if(8 != CheckNeighbours(board, next_row, next_col, board[next_row][next_col].state) &&
+  if(8 != CheckNeighbours(board, next_row, next_col, 3, 3, board[next_row][next_col].state) &&
                           board[next_row][next_col].state != board[original_row][original_col].state){
     
     // Gain in the new cell position
@@ -393,8 +407,119 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
 
   }
 
+  // Normal Path
+  if(state == 0){
+  
+    // Single plant
+    if(rand()%20 == 7 && board[row][col].type == 0){
+
+      board[row][col].type = 2;
+
+    }
+
+    if(rand()%70 == 21 && board[row][col].type == 0){
+
+      board[row][col].type = 3 + rand()%4;
+
+    }
+
+    // Lights
+    if(CheckNeighboursType(board, row, col, 2, 2, 0, 0) == 0 && rand()%100 == 7){
+
+      board[row][col].type = 8;
+      board[CheckSingleNeighbour(row, -1)][col].type = 7;
+
+    }
+
+    if(CheckNeighboursType(board, row, col, 4, 4, 0, 0) == 0){
+
+      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 9;
+      board[CheckSingleNeighbour(row, -1)][col].type = 10;
+      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 11;
+      board[row][CheckSingleNeighbour(col, -1)].type = 12;
+      board[row][col].type = 13;
+      board[row][CheckSingleNeighbour(col, +1)].type = 14;
+      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 15;
+      board[CheckSingleNeighbour(row, +1)][col].type = 16;
+      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 17;
+
+    }
+
+  }
+
+  // City
+  if(rand()%10 == 7){
+
+    switch(rand()%3){
+
+      case 0: // Big house
+
+        if(CheckNeighboursType(board, row, col, 3, 3, 8, 0) == 0){
+
+          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
+          board2[CheckSingleNeighbour(row, -1)][col].type = 2;
+          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 3;
+          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state = 8;
+          board2[CheckSingleNeighbour(row, -1)][col].state = 8;
+          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state = 8;
+          board[row][CheckSingleNeighbour(col, -1)].type = 4;
+          board[row][col].type = 5;
+          board[row][CheckSingleNeighbour(col, +1)].type = 6;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
+          board[CheckSingleNeighbour(row, +1)][col].type = 8;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 9;
+
+        }
+
+      break;
+
+      case 1: // 3x2 blue house
+
+        if(CheckNeighboursType(board, row, col, 3, 2, 8, 0) == 0){
+          
+          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state = 8;
+          board2[CheckSingleNeighbour(row, -1)][col].state = 8;
+          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 10;
+          board2[CheckSingleNeighbour(row, -1)][col].type = 11;
+          board[row][CheckSingleNeighbour(col, -1)].type = 12;
+          board[row][col].type = 13;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 14;
+          board[CheckSingleNeighbour(row, +1)][col].type = 15;
+
+        }
+
+      break;
+
+      case 2: // 3x2 red house
+
+      if(CheckNeighboursType(board, row, col, 3, 2, 8, 0) == 0){
+
+        board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state = 8;
+        board2[CheckSingleNeighbour(row, -1)][col].state = 8;
+        board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 16;
+        board2[CheckSingleNeighbour(row, -1)][col].type = 17;
+        board[row][CheckSingleNeighbour(col, -1)].type = 18;
+        board[row][col].type = 19;
+        board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 20;
+        board[CheckSingleNeighbour(row, +1)][col].type = 21;
+
+      }
+
+      break;
+
+    }
+
+  }
+
+  // Streetlights
+  if(rand()%50 == 7 && state == 8 && board[row][col].type == 0){
+
+    board[row][col].type = 22;
+
+  }
+
   // Yellow Desert
-  if(CheckNeighboursType(board, row, col, 7, 0) == 0){
+  if(CheckNeighboursType(board, row, col, 3, 3, 7, 0) == 0 && rand()%10 == 7){
 
     board[row][col].type = rand()%6;
 
@@ -403,7 +528,7 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   // Red Desert
   if(state == 6){
 
-    if(board[row][col].type == 0 && CheckNeighboursType(board, row, col, 6, 0) == 0 && rand()%20 == 7){
+    if(board[row][col].type == 0 && CheckNeighboursType(board, row, col, 3, 3, 6, 0) == 0 && rand()%20 == 7){
 
       unsigned char rand_building = rand()%4;
 
@@ -486,9 +611,10 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
     if(board[row][col].type == 0 && board[CheckSingleNeighbour(row, +1)][col].type != 13 &&
        rand()%20 == 7){ board[row][col].type = 15; }
 
-    if(CheckNeighbours(board, row, col, state) == 8 && 
-       CheckNeighboursType(board, row, col, state, board[row][col].type) == 0 &&
-       rand()%10 == 7){
+    // Cave
+    if(CheckNeighbours(board, row, col, 3, 3, state) == 8 && 
+       CheckNeighboursType(board, row, col, 3, 3, state, board[row][col].type) == 0 &&
+       rand()%20 == 7){
      
       board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 16;
       board[CheckSingleNeighbour(row, -1)][col].type = 17;
@@ -511,9 +637,9 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   if(state == 1){
 
     // Marine Cave
-    if(CheckNeighbours(board, row, col, state) == 8 && 
-       CheckNeighboursType(board, row, col, 1, 0) == 0 &&
-       rand()%10 == 7){
+    if(CheckNeighbours(board, row, col, 3, 3, state) == 8 && 
+       CheckNeighboursType(board, row, col, 3, 3, 1, 0) == 0 &&
+       rand()%20 == 7){
      
       board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 13;
       board[CheckSingleNeighbour(row, -1)][col].type = 14;
@@ -523,24 +649,35 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
     }
 
     // Marine Rock
-    if(rand()%20 == 7 && board[row][col].type == 0 &&
-       CheckNeighboursType(board, row, col, 1, 0) < 1){ board[row][col].type = 17; }
+    if(CheckNeighboursType(board, row, col, 3, 3, 1, 0) == 0 && rand()%20 == 7){ board[row][col].type = 17; }
 
   }
 
   // Grass
-  if(CheckNeighboursType(board, row, col, 4, 0) == 0){
+  if(state == 4 && rand()%15 == 7){
 
     board[row][col].type = 2 + rand()%4;
 
   }
 
   // Lava
-  if(CheckNeighboursType(board, row, col, 5, 0) == 0){
+  if(CheckNeighboursType(board, row, col, 3, 3, 5, 0) == 0){
 
     board[row][col].type = 13+rand()%2;
 
   }
+
+  // Lava Cave
+    if(CheckNeighbours(board, row, col, 3, 3, 5) == 8 && 
+       CheckNeighboursType(board, row, col, 3, 3, 5, 0) == 0 &&
+       rand()%20 == 7){
+     
+      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 15;
+      board[CheckSingleNeighbour(row, -1)][col].type = 16;
+      board[row][CheckSingleNeighbour(col, -1)].type = 17;
+      board[row][col].type = 18;
+         
+    }
 
 }
 
@@ -558,9 +695,10 @@ void SelectCasilla(){
     rand_row = rand()%kNumRows;
     rand_col = rand()%kNumCols;
     
-    gain = CheckNeighbours(board, rand_row, rand_col, board[rand_row][rand_col].state);
+    gain = CheckNeighbours(board, rand_row, rand_col, 3, 3, board[rand_row][rand_col].state);
     
-      if(gain != 8 && board[rand_row][rand_col].state != 0){       
+      if(gain != 8 && board[rand_row][rand_col].state != 0){ 
+
         PickCell(rand_row, rand_col, gain);
       
       }
@@ -646,6 +784,7 @@ int main(int argc, char **argv) {
 
   // SDL_Surface* image = IMG_Load("../data/resources/tilemap1.png");
   SDL_Surface* image = IMG_Load("../data/resources/tileset.png");
+  // SDL_SetSurfaceBlendMode(image, SDL_BLENDMODE_ADD);
   ricardo = SDL_CreateTextureFromSurface(renderer, image);
   
   // tilemap.loadTexture("../data/resources/tilemap1.png", renderer);
