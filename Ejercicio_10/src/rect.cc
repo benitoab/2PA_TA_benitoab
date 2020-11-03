@@ -30,6 +30,19 @@ void Rect::init(const float w, const float h){
 
 }
 
+void Rect::setPosition(const float x, const float y){
+
+  transform_.position.x = x;
+  transform_.position.y = y;
+  
+}
+
+void Rect::setSpeed(const uint8_t s){
+
+  speed_ = s;
+
+}
+
 void Rect::setSolid() {
 
   solid_ = 1;
@@ -56,16 +69,30 @@ void Rect::setBorderColor(const uint8_t r, const uint8_t g, const uint8_t b, con
 
 void Rect::draw(SDL_Renderer* renderer) {
 
-  SDL_Point points[4] = {
-          {transform_.position.x, transform_.position.y},
-          {transform_.position.x + width_, transform_.position.y},
-          {transform_.position.x + width_, transform_.position.y + height_},
-          {transform_.position.x, transform_.position.y + height_}};
-  
-  SDL_SetRenderDrawColor(renderer, border_color_[0],
-                        border_color_[1], border_color_[2],
-                        border_color_[3]);
-  
-  SDL_RenderDrawLines(renderer, points, 4);
+  if(!solid_){
+
+    SDL_Point points[5] = {
+            {transform_.position.x, transform_.position.y},
+            {transform_.position.x + width_, transform_.position.y},
+            {transform_.position.x + width_, transform_.position.y + height_},
+            {transform_.position.x, transform_.position.y + height_},
+            {transform_.position.x, transform_.position.y}};
+    
+    SDL_SetRenderDrawColor(renderer, border_color_[0],
+                          border_color_[1], border_color_[2],
+                          border_color_[3]);                       
+    
+    SDL_RenderDrawLines(renderer, points, 5);
+
+  }else{
+
+    SDL_Rect r = {transform_.position.x, transform_.position.y, width_, height_};
+
+    SDL_SetRenderDrawColor(renderer, fill_color_[0],
+                          fill_color_[1], fill_color_[2],
+                          fill_color_[3]);
+    SDL_RenderFillRect(renderer, &r);
+
+  }
 
 }

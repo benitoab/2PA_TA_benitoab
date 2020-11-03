@@ -21,6 +21,8 @@ class Rect : public Entity {
     Rect();
 
     void init(const float w, const float h);
+    void setPosition(const float x, const float y);
+    void setSpeed(const uint8_t s);
     void setSolid();
     void setFillColor(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a);
     void setBorderColor(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a);
@@ -29,6 +31,7 @@ class Rect : public Entity {
     Transform transform_;
     float width_;
     float height_;
+    uint8_t speed_;
     uint8_t border_color_[4];  // RGBA
     uint8_t fill_color_[4];    // RGBA
     uint8_t solid_;
