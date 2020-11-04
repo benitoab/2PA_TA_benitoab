@@ -10,6 +10,8 @@
 
 class Texture {
   public:
+  Texture();
+  ~Texture();
 
   void init(const char* name);
   void load(SDL_Renderer* renderer);

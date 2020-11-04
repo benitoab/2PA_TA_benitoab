@@ -10,6 +10,8 @@ Entity::Entity() {
 
 }
 
+Entity::~Entity();
+
 void Entity::init() {
 
   tag_ = 0;

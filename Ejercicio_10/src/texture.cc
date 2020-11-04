@@ -2,6 +2,14 @@
 /// Texture Class implementation
 
 #include "texture.h"
+Texture::Texture(){
+  name_ = nullptr;
+}
+
+Texture::~Texture(){
+  SDL_DestroyTexture(texture_);
+  SDL_DestroySurface(surface_);
+}
 
 void Texture::init(const char* name) {
 

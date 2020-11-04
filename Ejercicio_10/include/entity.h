@@ -12,6 +12,7 @@ class Entity {
 
   public:
     Entity();
+    ~Entity();
 
     void init();
     void setEnable();

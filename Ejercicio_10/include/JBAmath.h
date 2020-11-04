@@ -1,10 +1,12 @@
 /// @author Javier Benito Abolafio <benitoab@esat-alumni.com>
 /// Math Library definition
-#ifndef __MATH_H__
-#define __MATH_H__ 1
+#ifndef __JBAMATH_H__
+#define __JBAMATH_H__ 1
 
 #include <stdio.h>
 #include <math.h>
+
+#include "SDL.h"
 
 namespace JBA{
 
@@ -38,6 +40,11 @@ namespace JBA{
 
   };
 
+  // Matrix 3
+  Matrix3 M3Multiply(JBA::Matrix3 m1, JBA::Matrix3 m2);
+  Vector3 M3MultiplyVector3(JBA::Matrix3 m, SDL_Point v);
+  SDL_Point M3MultiplyPoint(JBA::Matrix3 m, SDL_Point v);
+
   // Transform Matrix 3x3
   Matrix3 M3Identity();
   Matrix3 M3Translate(const float x, const float y);
@@ -46,4 +53,4 @@ namespace JBA{
 
 }
 
-#endif // __MATH_H__
+#endif // __JBAMATH_H__

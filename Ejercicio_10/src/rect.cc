@@ -9,8 +9,8 @@ Rect::Rect() {
   transform_.rotation = 0.0f;
   transform_.scale = {1.0f, 1.0f};
 
-  width_ = 0.0f;
-  height_ = 0.0f;
+  info_.w = 0.0f;
+  info_.h = 0.0f;
 
   for(int i = 0; i < 4; ++i) {
 
@@ -23,18 +23,24 @@ Rect::Rect() {
 
 }
 
+Rect::~Rect();{  
+}
+
 void Rect::init(const float w, const float h){
 
-  width_ = w;
-  height_ = h;
+  info_.x = 0;
+  info_.y = 0;
+  info_.w = w;
+  info_.h = h;
 
 }
 
-void Rect::setPosition(const float x, const float y){
+void Rect::setTransform(const JBA::Vector2 pos, const float rot, const JBA::Vector2 sca){
 
-  transform_.position.x = x;
-  transform_.position.y = y;
-  
+  transform_.position = pos;
+  transform_.rotation = rot;
+  transform_.scale = sca;
+
 }
 
 void Rect::setSpeed(const uint8_t s){
@@ -43,9 +49,9 @@ void Rect::setSpeed(const uint8_t s){
 
 }
 
-void Rect::setSolid() {
+void Rect::setSolid(const uint8_t s) {
 
-  solid_ = 1;
+  solid_ = s;
 
 }
 
@@ -71,22 +77,41 @@ void Rect::draw(SDL_Renderer* renderer) {
 
   if(!solid_){
 
-    SDL_Point points[5] = {
-            {transform_.position.x, transform_.position.y},
-            {transform_.position.x + width_, transform_.position.y},
-            {transform_.position.x + width_, transform_.position.y + height_},
-            {transform_.position.x, transform_.position.y + height_},
-            {transform_.position.x, transform_.position.y}};
+    SDL_Point points_to_draw[5];
+
+    SDL_Point points[5] = {{info_.x, info_.y},
+                           {info_.x + info_.w, info_.y},
+                           {info_.x + info_.w, info_.y + info_.h},
+                           {info_.x, info_.y + info_.h},
+                           {info_.x, info_.y}};
+
+    JBA::Matrix3 tr = JBA::M3Identity();
+    tr = JBA::M3Multiply(JBA::M3Scale(transform_.scale.x, transform_.scale.y), tr);
+
+    tr = JBA::M3Multiply(JBA::M3Rotate(transform_.rotation), tr);
+
+    tr = JBA::M3Multiply(JBA::M3Translate(transform_.position.x, transform_.position.y), tr);
+
+    for(int i = 0; i < 5; ++i){
+
+      JBA::Vector3 aux_vec;
+
+      aux_vec = JBA::M3MultiplyVector3(tr, points[i]);
+
+      points_to_draw[i].x = aux_vec.x;
+      points_to_draw[i].y = aux_vec.y;
+
+    }
     
     SDL_SetRenderDrawColor(renderer, border_color_[0],
                           border_color_[1], border_color_[2],
                           border_color_[3]);                       
     
-    SDL_RenderDrawLines(renderer, points, 5);
+    SDL_RenderDrawLines(renderer, points_to_draw, 5);
 
   }else{
 
-    SDL_Rect r = {transform_.position.x, transform_.position.y, width_, height_};
+    SDL_Rect r = {transform_.position.x, transform_.position.y, info_.w, info_.h};
 
     SDL_SetRenderDrawColor(renderer, fill_color_[0],
                           fill_color_[1], fill_color_[2],
