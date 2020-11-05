@@ -4,6 +4,7 @@
 uint8_t Texture::total_textures = 0;
 
 #include "texture.h"
+
 Texture::Texture(){
   name_ = nullptr;
 }
@@ -27,11 +28,11 @@ void Texture::load(SDL_Renderer* renderer) {
 
 }
 
-Texture* Texture::CreateTexture(){
+Texture* Texture::CreateTexture(const char* name){
 
   if(Texture::total_textures < kMaxTextures){
     Texture* p_texture = new Texture();
-    p_texture->init();
+    p_texture->init(name);
     return p_texture;
   }else{
     return nullptr;

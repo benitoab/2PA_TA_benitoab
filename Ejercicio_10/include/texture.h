@@ -16,7 +16,7 @@ class Texture {
     void init(const char* name);
     void load(SDL_Renderer* renderer);
 
-    static Texture* CreateTexture();
+    static Texture* CreateTexture(const char* name);
 
     SDL_Surface* surface_;
     SDL_Texture* texture_;
