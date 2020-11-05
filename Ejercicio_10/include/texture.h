@@ -10,16 +10,21 @@
 
 class Texture {
   public:
-  Texture();
-  ~Texture();
+    Texture();
+    ~Texture();
 
-  void init(const char* name);
-  void load(SDL_Renderer* renderer);
+    void init(const char* name);
+    void load(SDL_Renderer* renderer);
 
-  SDL_Surface* surface_;
-  SDL_Texture* texture_;
+    static Texture* CreateTexture();
+
+    SDL_Surface* surface_;
+    SDL_Texture* texture_;
+    static uint8_t total_textures;
+
+  private:
+    const uint8_t kMaxTextures;
 
 };
 
 #endif // __TEXTURE_H__
-

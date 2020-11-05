@@ -16,9 +16,14 @@ class Entity {
 
     void init();
     void setEnable();
+    uint8_t get_id();
 
     int32_t tag_;
     uint8_t enabled_;
+    static uint8_t id_index_;
+
+  private:
+    uint8_t id_;
 
 };
 

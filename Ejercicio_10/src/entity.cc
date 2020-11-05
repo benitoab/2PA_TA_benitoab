@@ -3,10 +3,14 @@
 
 #include "entity.h"
 
+uint8_t Entity::id_index_ = 0;
+
 Entity::Entity() {
 
   tag_ = 0;
   enabled_ = 0;
+  id_ = Entity::id_index_;
+  ++Entity::id_index_;
 
 }
 
@@ -23,4 +27,8 @@ void Entity::setEnable(){
 
   enabled_ = 1;
 
+}
+
+uint8_t get_id(){
+  return id_;
 }

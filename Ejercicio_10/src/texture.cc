@@ -1,6 +1,8 @@
 /// @author Javier Benito Abolafio <benitoab@esat-alumni.com>
 /// Texture Class implementation
 
+uint8_t Texture::total_textures = 0;
+
 #include "texture.h"
 Texture::Texture(){
   name_ = nullptr;
@@ -23,4 +25,16 @@ void Texture::load(SDL_Renderer* renderer) {
 
   texture_ = SDL_CreateTextureFromSurface(renderer, surface_);
 
+}
+
+Texture* Texture::CreateTexture(){
+
+  if(Texture::total_textures < kMaxTextures){
+    Texture* p_texture = new Texture();
+    p_texture->init();
+    return p_texture;
+  }else{
+    return nullptr;
+  }
+  
 }
