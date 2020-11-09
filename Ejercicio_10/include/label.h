@@ -7,6 +7,7 @@
 
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "string.h"
 
 class Label : public Entity {
 
@@ -19,8 +20,10 @@ class Label : public Entity {
               const char* msg, SDL_Color color,
               SDL_Rect dst_rect);
     void initFont(const char* src_font, uint8_t size);
-    void drawText(SDL_Renderer* ren, SDL_Texture* texture,
-                  SDL_Rect dst_rect);
+    uint8_t initText(const char* t);
+    void setColor(SDL_Color c);
+    void setPosition(SDL_Rect r);
+    void drawText(SDL_Renderer* ren);
 
     // Attributes
     char* message_;
