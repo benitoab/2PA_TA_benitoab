@@ -1,27 +1,46 @@
+/**
+ * Antekeland 2020
+ * Author: Ricardo Beltrán Muriel
+ * Mail: beltranmu@esat-alumni.com
+ * University Development @ESAT
+ */
+
 #include "sprite.h"
-#include "SDL_image.h"
 
-int Sprite::loadTexture(const char* img_path, SDL_Renderer* r){
 
-  // SDL_Surface *img = SDL_LoadBMP(img_path);
-  SDL_Surface *img = IMG_Load(img_path);
-  if (img == nullptr){
-    // SDL_DestroyRenderer(r);
-    // SDL_DestroyWindow(w);
-    // std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-    // SDL_Quit();
-    return 1;
-  }
-
-  texture_ = SDL_CreateTextureFromSurface(r, img);
-  SDL_FreeSurface(img);
-  if (texture_ == nullptr){
-    // SDL_DestroyRenderer(r);
-    // SDL_DestroyWindow(w);
-    // std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-    // SDL_Quit();
-    return 1;
-  }
-  return 0;
-}
+Sprite::Sprite(){
+  texture_ = nullptr;
+  dst_rect_.x = 0;
+  dst_rect_.y = 0;
+  dst_rect_.w = 1;
+  dst_rect_.h = 1;
   
+  snip_rect_.x = 0;
+  snip_rect_.y = 0;
+  snip_rect_.w = 1;
+  snip_rect_.h = 1;
+}
+
+void Sprite::initSprite(Texture& t, 
+                        const SDL_Rect* position,
+                        const SDL_Rect* snip){
+  
+  *texture_ = t;
+  dst_rect_ = *position;
+  snip_rect_ = *snip;
+  
+}
+
+int Sprite::width(){
+  return dst_rect_.w;
+}
+int Sprite::height(){
+  return dst_rect_.h;
+}
+
+void Sprite::draw(SDL_Renderer* render){
+  
+  SDL_RenderCopy(render,texture_->texture_,
+                 &snip_rect_,&  dst_rect_);
+  
+}

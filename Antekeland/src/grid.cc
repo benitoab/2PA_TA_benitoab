@@ -24,16 +24,16 @@
   } while(0)
 
 // Window dimensions
-static const int kWindowWidth = 1280;
-static const int kWindowHeight = 1280;
+static const int kWindowWidth = 640;
+static const int kWindowHeight = 640;
 
-const unsigned char size = 128;
+const unsigned char size = 64;
 const unsigned char kNumRows = size;
 const unsigned char kNumCols = size;
 const unsigned char search_range = (size/4)*3; // rango de busqueda
 const float concentration = 0.55f;
 const int chance_to_move = 721;
-const unsigned char view_size = 128;
+const unsigned char view_size = 32;
 
 unsigned int repeats = 0;
 
@@ -50,6 +50,7 @@ struct SCharacter{
 struct STile{
   unsigned char state; // Cell State
   unsigned char type;  // Cell Type
+  unsigned char enabled;  // 0->Disabled, 1->Enabled
   SDL_Rect info;       // Float x,y, w,h; // x,y ,  ancho y alto
 };
 
@@ -72,12 +73,14 @@ void CreateBoard(){
       board[r][c].info.w = x;
       board[r][c].info.h = y;
       board[r][c].type = 0;
+      board[r][c].enabled = 1;
       board2[r][c].info.x = c * x;
       board2[r][c].info.y = r * y;
       board2[r][c].info.w = x;
       board2[r][c].info.h = y;
       board2[r][c].state = 9;
-      board2[r][c].type = 10;
+      board2[r][c].type = 23;
+      board2[r][c].enabled = 1;
       
       if(rand()%100 <= concentration *100){
         
@@ -156,7 +159,7 @@ unsigned char CheckSingleNeighbour(unsigned char pos, const signed char desp){
   
 }
 
-// Check Matrix n*m
+// Check Matrix n*m >= 2x2
 unsigned char MatrixNxM(const STile board[size][size], const unsigned char row, const unsigned char col, const unsigned char n, const unsigned char m, const unsigned char state){
 
   unsigned char neighbours = 0;
@@ -209,11 +212,8 @@ unsigned char CheckNeighboursType(STile board[size][size], unsigned char row, un
 
       if(i != 0 || j != 0){
 
-        if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state == state){
-
-          if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].type != check_type){ ++num_neighbours; }
-
-        }else{ ++num_neighbours; }
+        if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state != state ||
+           board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].enabled != check_type){ ++num_neighbours; }
 
       }
 
@@ -273,13 +273,15 @@ signed char CalculateGain(unsigned char row1, unsigned char col1, unsigned char 
   
 }
 
-void EraseTile(STile board[size][size], unsigned char row, unsigned char col, unsigned char state){
+void EraseTile(STile board[size][size], STile aux_board[size][size], unsigned char row, unsigned char col, unsigned char state){
 
   if(CheckNeighbours(board, row, col, 3, 3, state) <= 3 || CheckNeighbours(board, row, col, 3, 3, state) == 0){
 
     board[row][col].state = 0;
     board[row][col].type = 0;
 
+    aux_board[row][col].enabled = 1;
+    
   }
 
 }
@@ -365,41 +367,120 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
   
 }
 
-void ChangeTileType(STile board[size][size], unsigned char row, unsigned char col, unsigned char state){
+// Changes every tile to their new type
+void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsigned char row, unsigned char col, unsigned char state){
 
   if(state == 1 || state == 2 || state == 3 || state == 5){
 
+    // Water/Snow/Lava Edges
     switch(CheckCrossNeighbours(board, row, col, state)){
 
       case 4:
 
-        if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state != state){ board[row][col].type = 11; }   // Upper-Left
-        if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state != state){ board[row][col].type = 12; }   // Upper-Right
-        if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state != state){ board[row][col].type = 10; }   // Lower-Left
-        if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state != state){ board[row][col].type = 9; }   // Lower-Right
+        if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state != state){               // Upper-Left
+          
+          board[row][col].type = 11;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+
+        }
+
+        if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state != state){               // Upper-Right                        
+          
+          board[row][col].type = 12;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+        
+        }   
+
+        if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state != state){               // Lower-Left
+          
+          board[row][col].type = 10;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+       
+        }
+
+        if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state != state){               // Lower-Right
+          
+          board[row][col].type = 9;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+        
+        }   
 
       break;
 
       case 3:
 
-      if(board[CheckSingleNeighbour(row, -1)][col].state != state){ board[row][col].type = 2; }                             // Upper
-      if(board[row][CheckSingleNeighbour(col, -1)].state != state){ board[row][col].type = 8; }                             // Left
-      if(board[row][CheckSingleNeighbour(col, +1)].state != state){ board[row][col].type = 4; }                             // Right
-      if(board[CheckSingleNeighbour(row, +1)][col].state != state){ board[row][col].type = 6; }                             // Lower
+        if(board[CheckSingleNeighbour(row, -1)][col].state != state){                                           // Upper
+          
+          board[row][col].type = 2;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+       
+        }                             
+        if(board[row][CheckSingleNeighbour(col, -1)].state != state){                                           // Left
+          
+          board[row][col].type = 8;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+        
+        }                             
+        if(board[row][CheckSingleNeighbour(col, +1)].state != state){                                           // Right
+          
+          board[row][col].type = 4;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+       
+        }                             
+        if(board[CheckSingleNeighbour(row, +1)][col].state != state){                                           // Lower
+          
+          board[row][col].type = 6;
+          board[row][col].enabled = 0;
+          aux_board[row][col].enabled = 0;
+       
+        }                             
 
       break;
 
       case 2:
 
-      if(board[CheckSingleNeighbour(row, -1)][col].state != state &&
-         board[row][CheckSingleNeighbour(col, -1)].state != state){ board[row][col].type = 1; }                             // Upper & Left
-      if(board[CheckSingleNeighbour(row, -1)][col].state != state &&
-         board[row][CheckSingleNeighbour(col, +1)].state != state){ board[row][col].type = 3; }                             // Upper & Right
+        if(board[CheckSingleNeighbour(row, -1)][col].state != state &&                                          // Upper & Left
+           board[row][CheckSingleNeighbour(col, -1)].state != state){
+            
+            board[row][col].type = 1;
+            board[row][col].enabled = 0;
+            aux_board[row][col].enabled = 0;
+        
+        }
 
-      if(board[CheckSingleNeighbour(row, +1)][col].state != state &&
-         board[row][CheckSingleNeighbour(col, -1)].state != state){ board[row][col].type = 7; }                             // Lower & Left
-      if(board[CheckSingleNeighbour(row, +1)][col].state != state &&
-         board[row][CheckSingleNeighbour(col, +1)].state != state){ board[row][col].type = 5; }                             // Lower & Right
+        if(board[CheckSingleNeighbour(row, -1)][col].state != state &&                                          // Upper & Right
+           board[row][CheckSingleNeighbour(col, +1)].state != state){
+
+            board[row][col].type = 3;
+            board[row][col].enabled = 0;
+            aux_board[row][col].enabled = 0;
+        
+        }                             
+
+        if(board[CheckSingleNeighbour(row, +1)][col].state != state &&                                          // Lower & Left
+           board[row][CheckSingleNeighbour(col, -1)].state != state){
+            
+            board[row][col].type = 7;
+            board[row][col].enabled = 0;
+            aux_board[row][col].enabled = 0;
+        
+        } 
+
+        if(board[CheckSingleNeighbour(row, +1)][col].state != state &&                                          // Lower & Right
+           board[row][CheckSingleNeighbour(col, +1)].state != state){
+            
+            board[row][col].type = 5;
+            board[row][col].enabled = 0;
+            aux_board[row][col].enabled = 0;
+        
+        }                             
 
       break;
 
@@ -408,40 +489,70 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   }
 
   // Normal Path
-  if(state == 0){
+  if(state == 0){    
   
     // Single plant
-    if(rand()%20 == 7 && board[row][col].type == 0){
+    if(rand()%20 == 7 && aux_board[row][col].enabled == 1){   
 
-      board[row][col].type = 2;
+      board[row][col].enabled = 1;
+      aux_board[row][col].enabled = 0;
+      aux_board[row][col].type = 2;
 
     }
 
-    if(rand()%70 == 21 && board[row][col].type == 0){
-
-      board[row][col].type = 3 + rand()%4;
+    // Wood & info panel
+    if(rand()%70 == 21 && aux_board[row][col].enabled == 1){
+      
+      board[row][col].enabled = 0;
+      aux_board[row][col].enabled = 0;
+      aux_board[row][col].type = 3 + rand()%4;
 
     }
 
     // Lights
-    if(CheckNeighboursType(board, row, col, 2, 2, 0, 0) == 0 && rand()%100 == 7){
-
-      board[row][col].type = 8;
-      board[CheckSingleNeighbour(row, -1)][col].type = 7;
+    if(CheckNeighboursType(aux_board, row, col, 2, 2, 0, 1) == 0 && rand()%100 == 7){
+      
+      board[row][col].enabled = 0;
+      board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
+      aux_board[row][col].enabled = 0;
+      aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+      aux_board[row][col].type = 8;
+      aux_board[CheckSingleNeighbour(row, -1)][col].type = 7;
 
     }
 
-    if(CheckNeighboursType(board, row, col, 4, 4, 0, 0) == 0){
+    // Tree
+    if(CheckNeighboursType(aux_board, row, col, 4, 4, 0, 1) == 0){
+      
+      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
+      board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
+      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 1;
+      board[row][CheckSingleNeighbour(col, -1)].enabled = 1;
+      board[row][col].enabled = 1;
+      board[row][CheckSingleNeighbour(col, +1)].enabled = 1;
+      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+      board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 1;
 
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 9;
-      board[CheckSingleNeighbour(row, -1)][col].type = 10;
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 11;
-      board[row][CheckSingleNeighbour(col, -1)].type = 12;
-      board[row][col].type = 13;
-      board[row][CheckSingleNeighbour(col, +1)].type = 14;
-      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 15;
-      board[CheckSingleNeighbour(row, +1)][col].type = 16;
-      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 17;
+      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+      aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+      aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+      aux_board[row][col].enabled = 0;
+      aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+      aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+
+      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 9;
+      aux_board[CheckSingleNeighbour(row, -1)][col].type = 10;
+      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 11;
+      aux_board[row][CheckSingleNeighbour(col, -1)].type = 12;
+      aux_board[row][col].type = 13;
+      aux_board[row][CheckSingleNeighbour(col, +1)].type = 14;
+      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 15;
+      aux_board[CheckSingleNeighbour(row, +1)][col].type = 16;
+      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 17;
 
     }
 
@@ -454,20 +565,38 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
 
       case 0: // Big house
 
-        if(CheckNeighboursType(board, row, col, 3, 3, 8, 0) == 0){
+        if(CheckNeighboursType(aux_board, row, col, 3, 3, 8, 1) == 0){
 
-          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
-          board2[CheckSingleNeighbour(row, -1)][col].type = 2;
-          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 3;
-          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state = 8;
-          board2[CheckSingleNeighbour(row, -1)][col].state = 8;
-          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state = 8;
-          board[row][CheckSingleNeighbour(col, -1)].type = 4;
-          board[row][col].type = 5;
-          board[row][CheckSingleNeighbour(col, +1)].type = 6;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
-          board[CheckSingleNeighbour(row, +1)][col].type = 8;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 9;
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
+          board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 1;
+          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[row][col].enabled = 0;
+          board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
+          aux_board[CheckSingleNeighbour(row, -1)][col].type = 2;
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 3;
+          aux_board[row][CheckSingleNeighbour(col, -1)].type = 4;
+          aux_board[row][col].type = 5;
+          aux_board[row][CheckSingleNeighbour(col, +1)].type = 6;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
+          aux_board[CheckSingleNeighbour(row, +1)][col].type = 8;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 9;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[row][col].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          
 
         }
 
@@ -475,16 +604,28 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
 
       case 1: // 3x2 blue house
 
-        if(CheckNeighboursType(board, row, col, 3, 2, 8, 0) == 0){
+        if(CheckNeighboursType(aux_board, row, col, 3, 2, 8, 1) == 0){
           
-          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state = 8;
-          board2[CheckSingleNeighbour(row, -1)][col].state = 8;
-          board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 10;
-          board2[CheckSingleNeighbour(row, -1)][col].type = 11;
-          board[row][CheckSingleNeighbour(col, -1)].type = 12;
-          board[row][col].type = 13;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 14;
-          board[CheckSingleNeighbour(row, +1)][col].type = 15;
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
+          board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
+          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[row][col].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 10;
+          aux_board[CheckSingleNeighbour(row, -1)][col].type = 11;
+          aux_board[row][CheckSingleNeighbour(col, -1)].type = 12;
+          aux_board[row][col].type = 13;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 14;
+          aux_board[CheckSingleNeighbour(row, +1)][col].type = 15;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[row][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
 
         }
 
@@ -492,16 +633,28 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
 
       case 2: // 3x2 red house
 
-      if(CheckNeighboursType(board, row, col, 3, 2, 8, 0) == 0){
+      if(CheckNeighboursType(aux_board, row, col, 3, 2, 8, 1) == 0){
 
-        board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state = 8;
-        board2[CheckSingleNeighbour(row, -1)][col].state = 8;
-        board2[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 16;
-        board2[CheckSingleNeighbour(row, -1)][col].type = 17;
-        board[row][CheckSingleNeighbour(col, -1)].type = 18;
-        board[row][col].type = 19;
-        board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 20;
-        board[CheckSingleNeighbour(row, +1)][col].type = 21;
+        board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
+        board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
+        board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+        board[row][col].enabled = 0;
+        board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+        board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+
+        aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 16;
+        aux_board[CheckSingleNeighbour(row, -1)][col].type = 17;
+        aux_board[row][CheckSingleNeighbour(col, -1)].type = 18;
+        aux_board[row][col].type = 19;
+        aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 20;
+        aux_board[CheckSingleNeighbour(row, +1)][col].type = 21;
+
+        aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+        aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+        aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+        aux_board[row][col].enabled = 0;
+        aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+        aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
 
       }
 
@@ -512,23 +665,27 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   }
 
   // Streetlights
-  if(rand()%50 == 7 && state == 8 && board[row][col].type == 0){
+  if(rand()%50 == 7 && state == 8 && aux_board[row][col].enabled == 1){
 
-    board[row][col].type = 22;
+    board[row][col].enabled = 0;
+    aux_board[row][col].enabled = 0;
+    aux_board[row][col].type = 22;
 
   }
 
   // Yellow Desert
-  if(CheckNeighboursType(board, row, col, 3, 3, 7, 0) == 0 && rand()%10 == 7){
+  if(CheckNeighboursType(aux_board, row, col, 3, 3, 7, 1) == 0 && rand()%10 == 7){
 
-    board[row][col].type = rand()%6;
+    board[row][col].enabled = 0;
+    aux_board[row][col].enabled = 0;
+    aux_board[row][col].type = rand()%6;
 
   }
 
   // Red Desert
   if(state == 6){
 
-    if(board[row][col].type == 0 && CheckNeighboursType(board, row, col, 3, 3, 6, 0) == 0 && rand()%20 == 7){
+    if(board[row][col].type == 0 && CheckNeighboursType(board, row, col, 3, 3, 6, 1) == 0 && rand()%20 == 7){
 
       unsigned char rand_building = rand()%4;
 
@@ -541,6 +698,16 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
           board[row][CheckSingleNeighbour(col, -1)].type = 7;
           board[row][col].type = 5;
 
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[row][col].enabled = 0;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[row][col].enabled = 0;
+
         break;
 
         case 1:   // 2x3
@@ -552,6 +719,20 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
           board[row][col].type = 6;
           board[row][CheckSingleNeighbour(col, +1)].type = 5;
 
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[row][col].enabled = 0;
+          board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[row][col].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+
         break;
 
         case 2:   // 3x2
@@ -562,6 +743,20 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
           board[row][col].type = 4;
           board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
           board[CheckSingleNeighbour(row, +1)][col].type = 5;
+
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[row][col].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[row][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
 
         break;
 
@@ -577,6 +772,26 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
           board[CheckSingleNeighbour(row, +1)][col].type = 6;
           board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 5;
 
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[row][col].enabled = 0;
+          board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[row][col].enabled = 0;
+          aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+
         break;
 
       }
@@ -587,6 +802,7 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
     if(board[row][col].type == 6 && board[CheckSingleNeighbour(row, +1)][col].type == 0){
 
       board[row][col].type = 9;
+      board[row][col].enabled = 1;
 
     }
 
@@ -600,36 +816,46 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
        board[row][CheckSingleNeighbour(col, +1)].type != 13){
       
       board[row][col].type = 13;
+      board[row][col].enabled = 1;
       
     }
 
     // Cave Stairs
     if(board[row][col].type == 0 && rand()%50 == 7 &&
-       board[CheckSingleNeighbour(row, +1)][col].type != 13){ board[row][col].type = 14; }  
+       board[CheckSingleNeighbour(row, +1)][col].type != 13){
+
+      board[row][col].enabled = 1;
+      aux_board[row][col].type = 14;
+      aux_board[row][col].enabled = 0;
+        
+    }  
 
     // Snowy Rock
     if(board[row][col].type == 0 && board[CheckSingleNeighbour(row, +1)][col].type != 13 &&
-       rand()%20 == 7){ board[row][col].type = 15; }
+       rand()%20 == 7){
+      
+      board[row][col].enabled = 0;
+      aux_board[row][col].type = 15;
+      aux_board[row][col].enabled = 0;
+      
+    }
 
     // Cave
-    if(CheckNeighbours(board, row, col, 3, 3, state) == 8 && 
-       CheckNeighboursType(board, row, col, 3, 3, state, board[row][col].type) == 0 &&
-       rand()%20 == 7){
-     
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 16;
-      board[CheckSingleNeighbour(row, -1)][col].type = 17;
-      board[row][CheckSingleNeighbour(col, -1)].type = 18;
-      board[row][col].type = 19;
+    if(board[row][col].type == 0 && rand()%25 == 7 && aux_board[row][col].enabled == 1 && board[CheckSingleNeighbour(row, +1)][col].type != 13){
+           
+      board[row][col].enabled = 1;
+      aux_board[row][col].type = 16;
+      aux_board[row][col].enabled = 0;
          
     }
 
     // Snowy floor
-    if(board[row][col].type == 15 &&
+    /*if(board[row][col].type == 15 &&
        board[CheckSingleNeighbour(row, +1)][col].type == 13){
 
         board[row][col].type = 0;
 
-    }
+    }*/
        
   }
 
@@ -637,47 +863,59 @@ void ChangeTileType(STile board[size][size], unsigned char row, unsigned char co
   if(state == 1){
 
     // Marine Cave
-    if(CheckNeighbours(board, row, col, 3, 3, state) == 8 && 
-       CheckNeighboursType(board, row, col, 3, 3, 1, 0) == 0 &&
-       rand()%20 == 7){
+    if(board[row][col].type == 0 && rand()%50 == 7 && aux_board[row][col].enabled == 1){
      
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 13;
-      board[CheckSingleNeighbour(row, -1)][col].type = 14;
-      board[row][CheckSingleNeighbour(col, -1)].type = 15;
-      board[row][col].type = 16;
+      board[row][col].enabled = 1;
+      aux_board[row][col].type = 13;
+      aux_board[row][col].enabled = 0;
          
     }
 
     // Marine Rock
-    if(CheckNeighboursType(board, row, col, 3, 3, 1, 0) == 0 && rand()%20 == 7){ board[row][col].type = 17; }
+    if(aux_board[row][col].enabled == 1 && rand()%20 == 7){
+      
+      aux_board[row][col].type = 17;
+      aux_board[row][col].enabled = 0;
+      board[row][col].enabled = 0;
+      
+    }
 
   }
 
   // Grass
-  if(state == 4 && rand()%15 == 7){
+  if(state == 4){
 
-    board[row][col].type = 2 + rand()%4;
+    if(aux_board[row][col].enabled == 1 && rand()%20 == 7){
+
+      aux_board[row][col].type = 2 + rand()%4;
+      aux_board[row][col].enabled = 0;
+      board[row][col].enabled = 0;
+
+    }
 
   }
 
   // Lava
-  if(CheckNeighboursType(board, row, col, 3, 3, 5, 0) == 0){
+  if(state == 5){
 
-    board[row][col].type = 13+rand()%2;
+    if(CheckNeighboursType(aux_board, row, col, 3, 3, 5, 1) == 0){
 
-  }
+      aux_board[row][col].type = 13+rand()%2;
+      aux_board[row][col].enabled = 0;
+      board[row][col].enabled = 0;
 
-  // Lava Cave
-    if(CheckNeighbours(board, row, col, 3, 3, 5) == 8 && 
-       CheckNeighboursType(board, row, col, 3, 3, 5, 0) == 0 &&
-       rand()%20 == 7){
+    }
+
+    // Lava Cave
+    if(board[row][col].type == 0 && rand()%25 == 7 && aux_board[row][col].enabled == 1){
      
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 15;
-      board[CheckSingleNeighbour(row, -1)][col].type = 16;
-      board[row][CheckSingleNeighbour(col, -1)].type = 17;
-      board[row][col].type = 18;
+      board[row][col].enabled = 1;
+      aux_board[row][col].type = 15;
+      aux_board[row][col].enabled = 0;
          
     }
+
+  }
 
 }
 
@@ -713,7 +951,7 @@ void SelectCasilla(){
 
       for(int j = 0; j < size; ++j){
 
-        EraseTile(board, i, j, board[i][j].state);
+        EraseTile(board, board2, i, j, board[i][j].state);        
 
       }
 
@@ -727,7 +965,8 @@ void SelectCasilla(){
 
       for(int j = 0; j < size; ++j){
 
-        ChangeTileType(board, i, j, board[i][j].state);
+        board2[i][j].state = board[i][j].state;
+        ChangeTileType(board, board2, i, j, board[i][j].state);
 
       }
 
