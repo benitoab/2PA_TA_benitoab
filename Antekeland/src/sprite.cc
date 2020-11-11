@@ -38,9 +38,15 @@ int Sprite::height(){
   return dst_rect_.h;
 }
 
-void Sprite::draw(SDL_Renderer* render){
+void Sprite::set_texture(const Texture& tex){
+
+  *texture_ = tex;
+
+}
+
+void Sprite::draw(const SDL_Renderer* render){
   
   SDL_RenderCopy(render,texture_->texture_,
-                 &snip_rect_,&  dst_rect_);
+                 &snip_rect_, &dst_rect_);
   
 }

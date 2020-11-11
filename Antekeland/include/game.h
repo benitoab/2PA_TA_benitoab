@@ -25,20 +25,13 @@ class Game {
     void quit();    
 
     void ImGuiSDLProcessEvent1(SDL_Event* e);
-    //Factory
-    //static GameManager* Instantiate();
     
     // Attributes
     SDL_Window *win_;
     SDL_Renderer *ren_;
     int quit_;
     double current_time_, last_time_;
- 
-  private: //Methods
-    //static GameManager* instance_gm;
-    //GameManager();
-    //Atributes
-  
+    const unsigned char fps = 60;
 
 };
 

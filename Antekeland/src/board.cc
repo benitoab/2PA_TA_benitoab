@@ -59,10 +59,9 @@ void Board::drawMap(SDL_Renderer* renderer){
     
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
-      
-      SDL_RenderCopy(renderer, map_texture_.texture_, 
-                     &map_[r][c].sprite_.snip_rect_,
-                     &map_[r][c].dst_rect_);
+
+      map_[r][c].sprite_.draw(renderer);
+
     }
   }
 

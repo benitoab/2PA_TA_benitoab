@@ -14,15 +14,15 @@
 #include "rect.h"
 #include "board.h"
 #include "label.h"
+#include "logic.h"
 
 class GameManager{
   public:  
     //Constant
     static const int kWindowWidth = 640;
-    static const int kWindowHeight = 640;
-    const unsigned char fps = 60;
-    const unsigned char kBoardSize = 64;
-    const unsigned char kViewSize = 64;
+    static const int kWindowHeight = 640;    
+    static const unsigned char kBoardSize = 64;
+    static const unsigned char kViewSize = 64;
    
     //Methods  
     ~GameManager();
@@ -31,8 +31,9 @@ class GameManager{
     static GameManager* Instantiate();
     
     // Atributes
-    Board layer1_, layer2_;
-    Logic logic_[kBoardSize][kBoardSize];
+    Board layer1_, layer2_;     // Graphic map
+    Logic board_[kBoardSize][kBoardSize], units_[kBoardSize][kBoardSize]; // Logical map
+    Texture map_texture_;
  
   private:
     //Methods

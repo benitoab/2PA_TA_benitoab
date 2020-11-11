@@ -36,7 +36,7 @@ class Entity{
   
   static int32_t next_id_;
   int32_t tag_;
-  int8_t enabled_;
+  uint8_t enabled_;
   SDL_Rect dst_rect_;
   
   private:

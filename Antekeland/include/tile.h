@@ -13,7 +13,7 @@
 #include "sprite.h"
 
 class Tile : public Entity {
-  
+
   public:
     // Methods
     Tile();    

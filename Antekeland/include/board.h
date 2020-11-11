@@ -12,8 +12,6 @@
 #include "texture.h"
 #include "gamemanager.h"
 
-using namespace GameManager;
-
 //Constant of procedural generation
 const float kCellconcentration = 0.55f;
 const int kChanceToMove = 721;
@@ -28,8 +26,7 @@ class Board{
     void drawMap(SDL_Renderer* renderer);
       
     //Atributes
-    Tile map_[kBoardSize][kBoardSize];
-    Texture map_texture_;
+    Tile map_[GameManager::kBoardSize][GameManager::kBoardSize];    
 
 };
 

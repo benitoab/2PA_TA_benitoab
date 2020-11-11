@@ -18,20 +18,11 @@ class Logic{
     ~Logic();
 
     void init();
-    
-    // Setter & Getter
-    void set_enabled(const uint8_t e);
-    uint8_t enabled();
 
-    void set_enter(const uint8_t e);
-    uint8_t enter();
-
-  private:
     // Attributes
-    uint8_t enabled_;
+    uint8_t* enabled_;
     uint8_t enter_;
 
 };
 
 #endif  // __LOGIC_H__
-

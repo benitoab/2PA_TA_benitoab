@@ -9,34 +9,17 @@
 
 Logic::Logic(){
 
-  enabled_ = 1;
-  enter_ = 0;
+  enabled_ = nullptr; // Not walkable, 1 = walkable
+  enter_ = 0; // Not entereable, 1 = allows to enter
 
 }
 
 Logic::~Logic(){
 }
 
-void Logic::set_enabled(const uint8_t e){
+Logic::init(){
 
-  enabled_ = e;
-
-}
-
-uint8_t Logic::enabled(){
-
-  return enabled_;
-
-}
-
-void Logic::set_enter(const uint8_t e){
-
-  enter_ = e;
-
-}
-
-uint8_t Logic::enter(){
-
-  return enter_;
+  enabled_ = nullptr; // Not walkable, 1 = walkable
+  enter_ = 0; // Not entereable, 1 = allows to enter
 
 }

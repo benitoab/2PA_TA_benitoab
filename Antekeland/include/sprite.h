@@ -14,24 +14,27 @@
 
 class Sprite : public Entity{
   
-  public:
-  
-  //Methods
-  Sprite();
-  ~Sprite();
-  
-  void initSprite(Texture *t,
-                  const SDL_Rect* position,
-                  const SDL_Rect* snip);
-  
-  int width();
-  int height();
-  
-  void draw(SDL_Renderer* render);
-  
-  //Atributes
-  SDL_Rect snip_rect_;
-  Texture* texture_;
+  public:  
+    //Methods
+    Sprite();
+    ~Sprite();
+    
+    void initSprite(const Texture& t,
+                    const SDL_Rect* position,
+                    const SDL_Rect* snip);
+    
+    int width();
+    int height();
+
+    void set_texture(const Texture& tex);
+    
+    void draw(const SDL_Renderer* render);
+    
+    //Atributes
+    SDL_Rect snip_rect_;
+
+  private:
+    Texture* texture_;
  
 };
 
