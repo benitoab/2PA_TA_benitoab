@@ -28,16 +28,27 @@ class Entity{
             const RBM::Transform2* tr,
             const SDL_Rect r);
   
-  void set_enabled(const int8_t e);
-  uint8_t enabled();
-  int32_t id();
-  //Atributes
-  RBM::Transform2 transform_;
   
+  void set_position(RBM::Vec2 v);
+  RBM::Vec2 position();
+  
+  void set_rotation(float r);
+  float rotation();
+  
+  void set_scale(RBM::Vec2 v);
+  RBM::Vec2 scale();
+   
+  int32_t id();
+  
+  //Atributes
+
   static int32_t next_id_;
   int32_t tag_;
   uint8_t enabled_;
   SDL_Rect dst_rect_;
+ 
+  protected:
+  RBM::Transform2 transform_;
   
   private:
   int32_t id_;
