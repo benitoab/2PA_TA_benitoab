@@ -891,7 +891,7 @@ void CreateMap(){
     
   }
 
-  for(int n = 0; n < 2; ++n){
+  for(int n = 0; n < 5; ++n){
 
     for(unsigned char i = 0; i < Board::kBoardSize; ++i){
 
@@ -906,20 +906,19 @@ void CreateMap(){
 
   }
 
-  for(int i = 0; i < 16; ++i){
-    for(int j = 0; j < 16; ++j){
-      printf("%d ", gM.layer2_.map_[i][j].enabled_);
+  for(int i = 0; i < Board::kBoardSize; ++i){
+    for(int j = 0; j < Board::kBoardSize; ++j){
+      // printf("%d ", gM.layer2_.map_[i][j].enabled_);
+      gM.layer2_.map_[i][j].state_ = gM.layer1_.map_[i][j].state_;
     }
-    printf("\n");
+    // printf("\n");
   }
 
   for(int n = 0; n < 1; ++n){
 
     for(unsigned char i = 0; i < Board::kBoardSize; ++i){
 
-      for(unsigned char j = 0; j < Board::kBoardSize; ++j){
-
-        gM.layer2_.map_[i][j].state_ = gM.layer1_.map_[i][j].state_;
+      for(unsigned char j = 0; j < Board::kBoardSize; ++j){        
         
         ChangeTileType(gM.layer1_.map_, gM.layer2_.map_, i, j,
                        gM.layer1_.map_[i][j].state_);

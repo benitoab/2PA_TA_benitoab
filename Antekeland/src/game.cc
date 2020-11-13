@@ -62,7 +62,7 @@ int Game::init(){
     printf("Error al cargar SDL_ttf\n"); 
   }
 
-  srand(time(NULL));
+  srand((unsigned int)time(NULL));
 
   GameManager& gM = GameManager::Instantiate();
 

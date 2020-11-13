@@ -14,7 +14,7 @@
 class Board{  
   public:
     //Constant of procedural generation
-    static const unsigned char kBoardSize = 16;
+    static const unsigned char kBoardSize = 32;
     const unsigned char kNState = 8;
     const float kCellconcentration = 0.55f;
 
