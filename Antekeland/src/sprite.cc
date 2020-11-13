@@ -7,7 +7,6 @@
 
 #include "sprite.h"
 
-
 Sprite::Sprite(){
   texture_ = nullptr;
   dst_rect_.x = 0;
@@ -21,7 +20,10 @@ Sprite::Sprite(){
   snip_rect_.h = 1;
 }
 
-void Sprite::initSprite(Texture& t, 
+Sprite::~Sprite(){
+}
+
+void Sprite::initSprite(const Texture& t, 
                         const SDL_Rect* position,
                         const SDL_Rect* snip){
   
@@ -44,7 +46,7 @@ void Sprite::set_texture(const Texture& tex){
 
 }
 
-void Sprite::draw(const SDL_Renderer* render){
+void Sprite::draw(SDL_Renderer* render){
   
   SDL_RenderCopy(render,texture_->texture_,
                  &snip_rect_, &dst_rect_);

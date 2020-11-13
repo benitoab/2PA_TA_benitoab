@@ -1,103 +1,43 @@
-/*
-* Antekeland 2077
-* Author: Javier Benito Abolafio & Ricardo Beltrán Muriel
-* Mail: benitoab@esat-alumni.com & beltranmu@esat-alumni.com
-* University Development @ESAT
-*/
+/**
+ * Antekeland 2077
+ * Author: Javier Benito Abolafio & Ricardo Beltrán Muriel
+ * Mail: benitoab@esat-alumni.com & beltranmu@esat-alumni.com
+ * University Development @ESAT
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include "sprite.h"
-#include "SDL.h"
-#include "SDL_ttf.h"
-#include "SDL_image.h"
+#include "grid.h"
 
-// Utility macros
-#define CHECK_ERROR(test, message) \
-  do { \
-    if((test)) { \
-      fprintf(stderr, "%s\n", (message)); \
-      exit(1); \
-    } \
-  } while(0)
-
-// Window dimensions
-static const int kWindowWidth = 640;
-static const int kWindowHeight = 640;
-
-const unsigned char size = 64;
-const unsigned char kNumRows = size;
-const unsigned char kNumCols = size;
-const unsigned char search_range = (size/4)*3; // rango de busqueda
-const float concentration = 0.55f;
-const int chance_to_move = 721;
-const unsigned char view_size = 32;
-
-unsigned int repeats = 0;
-
-SDL_Texture* ricardo;
-// Sprite tilemap;
-
-struct SCharacter{
-  SDL_Rect info_body;
-  int is_moving;
-  //int casilla;
-  //int next_casilla;
-};
-
-struct STile{
-  unsigned char state; // Cell State
-  unsigned char type;  // Cell Type
-  unsigned char enabled;  // 0->Disabled, 1->Enabled
-  SDL_Rect info;       // Float x,y, w,h; // x,y ,  ancho y alto
-};
-
-STile board[kNumRows][kNumCols], board2[kNumRows][kNumCols];
-SCharacter Character;
-unsigned char total_cells = 0;
-char n_pieces = 7;
-
+// Inits Layers 1 & Layer 2
 void CreateBoard(){
-  
-  int x = kWindowWidth/kNumCols*(size/view_size); 
-  int y = kWindowHeight/kNumRows*(size/view_size);
-  
-  for(int r = 0; r < kNumRows; ++r){
-  
-    for(int c = 0; c < kNumCols; ++c){
-          
-      board[r][c].info.x = c * x;
-      board[r][c].info.y = r * y;
-      board[r][c].info.w = x;
-      board[r][c].info.h = y;
-      board[r][c].type = 0;
-      board[r][c].enabled = 1;
-      board2[r][c].info.x = c * x;
-      board2[r][c].info.y = r * y;
-      board2[r][c].info.w = x;
-      board2[r][c].info.h = y;
-      board2[r][c].state = 9;
-      board2[r][c].type = 23;
-      board2[r][c].enabled = 1;
-      
-      if(rand()%100 <= concentration *100){
-        
-        board[r][c].state = (rand()%8)+1;
-         
-      }else{
-        
-        board[r][c].state = 0;
-        
-      }
-      
-    }
-  }
 
+  GameManager& gM = GameManager::Instantiate();
+  
+  gM.layer1_.initLayer1();
+  gM.layer2_.initLayer2();
+  
 }
 
-void InitCharacter(){
+// Inits Logic boards
+void InitLogic(){
+
+  GameManager& gM = GameManager::Instantiate();
+
+  for(int i = 0; i < Board::kBoardSize; ++i){
+
+    for(int j = 0; j < Board::kBoardSize; ++j){
+
+      gM.board_[i][j].init();
+      gM.units_[i][j].init();
+
+    }
+  }
+}
+
+/*void InitCharacter(){
   
   int x = rand()%kNumCols;
   int y = rand()%kNumRows;
@@ -110,57 +50,40 @@ void InitCharacter(){
   
   Character.is_moving = 1;
   
-}
+}*/
 
-void DrawBorad(SDL_Renderer *renderer){
-
-  SDL_Rect rect_subsprite;
-
-  for(int i = 0; i< kNumRows; ++i){
+// Checks one cell depending on the pos and desp
+unsigned char CheckSingleNeighbour(unsigned char pos, const int desp){
   
-    for(int j = 0; j < kNumCols; ++j){
-
-      rect_subsprite.x = board[i][j].type * 64;
-      rect_subsprite.y = board[i][j].state * 64;
-      rect_subsprite.w = 64;
-      rect_subsprite.h = 64;
-
-      SDL_RenderCopy(renderer, ricardo, &rect_subsprite, &board[i][j].info);
-      
-    }
+  unsigned char resul = pos + (unsigned char)desp;
     
-  }
-
-  for(int i = 0; i< kNumRows; ++i){
-  
-    for(int j = 0; j < kNumCols; ++j){
-
-      rect_subsprite.x = board2[i][j].type * 64;
-      rect_subsprite.y = board2[i][j].state * 64;
-      rect_subsprite.w = 64;
-      rect_subsprite.h = 64;
-
-      SDL_RenderCopy(renderer, ricardo, &rect_subsprite, &board2[i][j].info);
-      
-    }
-    
-  }
- 
-}
-
-// Checks the left cell to a given one
-unsigned char CheckSingleNeighbour(unsigned char pos, const signed char desp){
-  
-  unsigned char resul = pos + desp;
-    
-  resul %= kNumCols;
+  resul %= Board::kBoardSize;
   
   return resul;
   
 }
 
-// Check Matrix n*m >= 2x2
-unsigned char MatrixNxM(const STile board[size][size], const unsigned char row, const unsigned char col, const unsigned char n, const unsigned char m, const unsigned char state){
+// Checks a cell state
+/*unsigned char CheckState(const Tile layer[Board::kBoardSize][Board::kBoardSize], const unsigned char row,
+                         const unsigned char col, const unsigned char state){
+
+  return (layer[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state_ == state);
+
+}
+
+// Checks a cell state and type
+unsigned char CheckStateAndEnable(const Tile layer[Board::kBoardSize][Board::kBoardSize], const unsigned char row,
+                                  const unsigned char col, const unsigned char state, const unsigned char check_enable){
+
+  return (layer[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state_ != state ||
+          layer[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].enabled_ != check_enable);
+
+}*/
+
+/// @brief Check Matrix n*m >= 2x2
+unsigned char MatrixNxM(const Tile layer[Board::kBoardSize][Board::kBoardSize],
+                        const unsigned char row, const unsigned char col, const unsigned char n,
+                        const unsigned char m, const unsigned char state){
 
   unsigned char neighbours = 0;
 
@@ -176,7 +99,7 @@ unsigned char MatrixNxM(const STile board[size][size], const unsigned char row, 
 
       if(i != 0 || j != 0){
 
-        if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state == state){ ++ neighbours; }
+        if(layer[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state_ == state){ ++ neighbours; }
 
       }
 
@@ -188,15 +111,20 @@ unsigned char MatrixNxM(const STile board[size][size], const unsigned char row, 
 
 }
 
-// Returns the number of neighbours in the same state as a given cell
-unsigned char CheckNeighbours(const STile board[size][size], const unsigned char row, const unsigned char col, const unsigned char n, const unsigned char m, const unsigned char state){
+/// @brief Returns the number of neighbours in the same state as a given cell
+unsigned char CheckNeighbours(const Tile layer[Board::kBoardSize][Board::kBoardSize],
+                              const unsigned char row, const unsigned char col, const unsigned char n,
+                              const unsigned char m, const unsigned char state){
     
-  return MatrixNxM(board, row, col, n, m, state);
+  return MatrixNxM(layer, row, col, n, m, state);
   
 }
 
-// Returns the number of neighbours in different state or type
-unsigned char CheckNeighboursType(STile board[size][size], unsigned char row, unsigned char col, const unsigned char n, const unsigned char m, unsigned char state, unsigned char check_type){
+/// @brief Returns the number of neighbours in different state or type
+unsigned char CheckNeighboursType(const Tile layer[Board::kBoardSize][Board::kBoardSize],
+                                  unsigned char row, unsigned char col, const unsigned char n,
+                                  const unsigned char m, unsigned char state,
+                                  unsigned char check_type){
     
   unsigned char num_neighbours = 0;
 
@@ -212,8 +140,8 @@ unsigned char CheckNeighboursType(STile board[size][size], unsigned char row, un
 
       if(i != 0 || j != 0){
 
-        if(board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state != state ||
-           board[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].enabled != check_type){ ++num_neighbours; }
+        if(layer[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].state_ != state ||
+           layer[CheckSingleNeighbour(row, i)][CheckSingleNeighbour(col, j)].enabled_ != check_type){ ++num_neighbours; }
 
       }
 
@@ -225,68 +153,83 @@ unsigned char CheckNeighboursType(STile board[size][size], unsigned char row, un
   
 }
 
-unsigned char CheckCrossNeighbours(STile board[size][size], unsigned char row, unsigned char col, unsigned char state){
+/// @brief Checks those cells that form an X from a given one
+unsigned char CheckCrossNeighbours(const Tile layer[Board::kBoardSize][Board::kBoardSize],
+                                   unsigned char row, unsigned char col, unsigned char state){
 
   unsigned char num_neighbours = 0;
 
-  if(board[CheckSingleNeighbour(row, -1)][col].state == state){ ++num_neighbours; }                             // Upper
-  if(board[row][CheckSingleNeighbour(col, -1)].state == state){ ++num_neighbours; }                             // Left
-  if(board[row][CheckSingleNeighbour(col, +1)].state == state){ ++num_neighbours; }                             // Right
-  if(board[CheckSingleNeighbour(row, +1)][col].state == state){ ++num_neighbours; }                             // Lower
+  if(layer[CheckSingleNeighbour(row, -1)][col].state_ == state){ ++num_neighbours; }                             // Upper
+  if(layer[row][CheckSingleNeighbour(col, -1)].state_ == state){ ++num_neighbours; }                             // Left
+  if(layer[row][CheckSingleNeighbour(col, +1)].state_ == state){ ++num_neighbours; }                             // Right
+  if(layer[CheckSingleNeighbour(row, +1)][col].state_ == state){ ++num_neighbours; }                             // Lower
 
   return num_neighbours;
 
 }
 
-void SwapCells(unsigned char row1, unsigned char col1, unsigned char state1, unsigned char row2, unsigned char col2, unsigned char state2){
+/// @brief Changes the position between two cells
+void SwapCells(Tile layer[Board::kBoardSize][Board::kBoardSize],
+               unsigned char row1, unsigned char col1, unsigned char state1,
+               unsigned char row2, unsigned char col2, unsigned char state2){
 
-  board[row1][col1].state = state2;
-  board[row2][col2].state = state1;
+  layer[row1][col1].state_ = state2;
+  layer[row2][col2].state_ = state1;
     
 }
 
-signed char TemporalSwap(unsigned char row1, unsigned char col1, unsigned char state1, unsigned char row2, unsigned char col2, unsigned char state2){
+signed char TemporalSwap(Tile layer[Board::kBoardSize][Board::kBoardSize],
+                         unsigned char row1, unsigned char col1, unsigned char state1,
+                         unsigned char row2, unsigned char col2, unsigned char state2){
   
   signed char tmp_gain;
   
-  SwapCells(row1, col1, state1, row2, col2, state2);
+  SwapCells(layer, row1, col1, state1, row2, col2, state2);
   
-  tmp_gain = CheckNeighbours(board, row2, col2, 3, 3, board[row2][col2].state);  
+  tmp_gain = CheckNeighbours(layer, row2, col2, 3, 3, layer[row2][col2].state_);  
   
-  SwapCells(row1, col1, state2, row2, col2, state1);
+  SwapCells(layer, row1, col1, state2, row2, col2, state1);
   
   return tmp_gain;
   
 }
 
-signed char CalculateGain(unsigned char row1, unsigned char col1, unsigned char row2, unsigned char col2){
+signed char CalculateGain(Tile layer[Board::kBoardSize][Board::kBoardSize],
+                          unsigned char row1, unsigned char col1,
+                          unsigned char row2, unsigned char col2){
   
   signed char orig_gain;
   signed char new_gain;
   
-  orig_gain = CheckNeighbours(board, row2, col2, 3, 3, board[row2][col2].state);
+  orig_gain = CheckNeighbours(layer, row2, col2, 3, 3, layer[row2][col2].state_);
   
-  new_gain = TemporalSwap(row2, col2, board[row2][col2].state,
-                          row1, col1, board[row1][col1].state);
+  new_gain = TemporalSwap(layer, row2, col2, layer[row2][col2].state_,
+                          row1, col1, layer[row1][col1].state_);
   
   return new_gain - orig_gain;
   
 }
 
-void EraseTile(STile board[size][size], STile aux_board[size][size], unsigned char row, unsigned char col, unsigned char state){
+/* Modified*/ // aux_layer may not be used in this function
+void EraseTile(Tile layer[Board::kBoardSize][Board::kBoardSize],
+               Tile aux_layer[Board::kBoardSize][Board::kBoardSize],
+               unsigned char row, unsigned char col, unsigned char state){
 
-  if(CheckNeighbours(board, row, col, 3, 3, state) <= 3 || CheckNeighbours(board, row, col, 3, 3, state) == 0){
+  if(CheckNeighbours(layer, row, col, 3, 3, state) <= 3 ||
+     CheckNeighbours(layer, row, col, 3, 3, state) == 0){
 
-    board[row][col].state = 0;
-    board[row][col].type = 0;
+    layer[row][col].state_ = 0;
+    layer[row][col].type_ = 0;
 
-    aux_board[row][col].enabled = 1;
+    aux_layer[row][col].enabled_ = 1;
     
   }
 
 }
 
-void PickCell(unsigned char original_row, unsigned char original_col, unsigned char orig_gain){
+void PickCell(Tile layer[Board::kBoardSize][Board::kBoardSize],
+              const unsigned char original_row, const unsigned char original_col,
+              const unsigned char orig_gain){
   
   signed char horizontal_movement;
   signed char vertical_movement;
@@ -299,15 +242,15 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
   
   do{
 
-    horizontal_movement = rand()%(search_range + 1);
+    horizontal_movement = rand()%(kSearchRange + 1);
     
-    if(search_range - horizontal_movement == 0){
+    if(kSearchRange - horizontal_movement == 0){
     
       vertical_movement = 0;
     
     }else{
       
-      vertical_movement = rand()%(search_range - horizontal_movement);
+      vertical_movement = rand()%(kSearchRange - horizontal_movement);
       
     }
     
@@ -328,36 +271,36 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
     
   }while(horizontal_movement == 0 && vertical_movement == 0); 
   
-  if(8 != CheckNeighbours(board, next_row, next_col, 3, 3, board[next_row][next_col].state) &&
-                          board[next_row][next_col].state != board[original_row][original_col].state){
+  if(8 != CheckNeighbours(layer, next_row, next_col, 3, 3, layer[next_row][next_col].state_) &&
+                          layer[next_row][next_col].state_ != layer[original_row][original_col].state_){
     
     // Gain in the new cell position
-    new_gain = TemporalSwap(original_row, original_col, board[original_row][original_col].state,
-                            next_row, next_col, board[next_row][next_col].state);
+    new_gain = TemporalSwap(layer, original_row, original_col,
+                            layer[original_row][original_col].state_,
+                            next_row, next_col, layer[next_row][next_col].state_);
       
     new_gain -= orig_gain;
 
-    if(0 == board[next_row][next_col].state){
+    if(0 == layer[next_row][next_col].state_){
 
-      if(new_gain >= 0 || (new_gain == -1 && rand()%chance_to_move == 21)){
+      if(new_gain >= 0 || (new_gain == -1 && rand()%kChanceToMove == 21)){
         
-        SwapCells(original_row, original_col, board[original_row][original_col].state,
-                  next_row, next_col,
-                  board[next_row][next_col].state);
+        SwapCells(layer, original_row, original_col, layer[original_row][original_col].state_,
+                  next_row, next_col, layer[next_row][next_col].state_);
                   
       }
       
     }else{
 
-      new_gain2 = CalculateGain(original_row, original_col, next_row, next_col);
+      new_gain2 = CalculateGain(layer, original_row, original_col, next_row, next_col);
       
       new_gain += new_gain2;
       
-      if(new_gain >= 0 || ((new_gain == -1 || new_gain == -2) && rand()%chance_to_move == 21)){
+      if(new_gain >= 0 || ((new_gain == -1 || new_gain == -2) && rand()%kChanceToMove == 21)){
         
-        SwapCells(original_row, original_col, board[original_row][original_col].state,
-                  next_row, next_col,
-                  board[next_row][next_col].state);
+        SwapCells(layer, original_row, original_col,
+                  layer[original_row][original_col].state_,
+                  next_row, next_col, layer[next_row][next_col].state_);
                   
       }
       
@@ -368,44 +311,46 @@ void PickCell(unsigned char original_row, unsigned char original_col, unsigned c
 }
 
 // Changes every tile to their new type
-void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsigned char row, unsigned char col, unsigned char state){
+void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
+                    Tile aux_layer[Board::kBoardSize][Board::kBoardSize],
+                    unsigned char row, unsigned char col, unsigned char state){
 
   if(state == 1 || state == 2 || state == 3 || state == 5){
 
     // Water/Snow/Lava Edges
-    switch(CheckCrossNeighbours(board, row, col, state)){
-
+    switch(CheckCrossNeighbours(layer, row, col, state)){
+        
       case 4:
-
-        if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state != state){               // Upper-Left
+        
+        if(layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].state_ != state){               // Upper-Left
           
-          board[row][col].type = 11;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 11;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
 
         }
 
-        if(board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state != state){               // Upper-Right                        
+        if(layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state_ != state){               // Upper-Right                        
           
-          board[row][col].type = 12;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 12;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
         
         }   
 
-        if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state != state){               // Lower-Left
+        if(layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].state_ != state){               // Lower-Left
           
-          board[row][col].type = 10;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 10;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
        
         }
 
-        if(board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state != state){               // Lower-Right
+        if(layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].state_ != state){               // Lower-Right
           
-          board[row][col].type = 9;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 9;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
         
         }   
 
@@ -413,32 +358,32 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
 
       case 3:
 
-        if(board[CheckSingleNeighbour(row, -1)][col].state != state){                                           // Upper
+        if(layer[CheckSingleNeighbour(row, -1)][col].state_ != state){                                           // Upper
           
-          board[row][col].type = 2;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 2;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
        
         }                             
-        if(board[row][CheckSingleNeighbour(col, -1)].state != state){                                           // Left
+        if(layer[row][CheckSingleNeighbour(col, -1)].state_ != state){                                           // Left
           
-          board[row][col].type = 8;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 8;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
         
         }                             
-        if(board[row][CheckSingleNeighbour(col, +1)].state != state){                                           // Right
+        if(layer[row][CheckSingleNeighbour(col, +1)].state_ != state){                                           // Right
           
-          board[row][col].type = 4;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 4;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
        
         }                             
-        if(board[CheckSingleNeighbour(row, +1)][col].state != state){                                           // Lower
+        if(layer[CheckSingleNeighbour(row, +1)][col].state_ != state){                                           // Lower
           
-          board[row][col].type = 6;
-          board[row][col].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          layer[row][col].type_ = 6;
+          layer[row][col].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
        
         }                             
 
@@ -446,39 +391,39 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
 
       case 2:
 
-        if(board[CheckSingleNeighbour(row, -1)][col].state != state &&                                          // Upper & Left
-           board[row][CheckSingleNeighbour(col, -1)].state != state){
+        if(layer[CheckSingleNeighbour(row, -1)][col].state_ != state &&                                          // Upper & Left
+           layer[row][CheckSingleNeighbour(col, -1)].state_ != state){
             
-            board[row][col].type = 1;
-            board[row][col].enabled = 0;
-            aux_board[row][col].enabled = 0;
+            layer[row][col].type_ = 1;
+            layer[row][col].enabled_ = 0;
+            aux_layer[row][col].enabled_ = 0;
         
         }
 
-        if(board[CheckSingleNeighbour(row, -1)][col].state != state &&                                          // Upper & Right
-           board[row][CheckSingleNeighbour(col, +1)].state != state){
+        if(layer[CheckSingleNeighbour(row, -1)][col].state_ != state &&                                          // Upper & Right
+           layer[row][CheckSingleNeighbour(col, +1)].state_ != state){
 
-            board[row][col].type = 3;
-            board[row][col].enabled = 0;
-            aux_board[row][col].enabled = 0;
+            layer[row][col].type_ = 3;
+            layer[row][col].enabled_ = 0;
+            aux_layer[row][col].enabled_ = 0;
         
         }                             
 
-        if(board[CheckSingleNeighbour(row, +1)][col].state != state &&                                          // Lower & Left
-           board[row][CheckSingleNeighbour(col, -1)].state != state){
+        if(layer[CheckSingleNeighbour(row, +1)][col].state_ != state &&                                          // Lower & Left
+           layer[row][CheckSingleNeighbour(col, -1)].state_ != state){
             
-            board[row][col].type = 7;
-            board[row][col].enabled = 0;
-            aux_board[row][col].enabled = 0;
+            layer[row][col].type_ = 7;
+            layer[row][col].enabled_ = 0;
+            aux_layer[row][col].enabled_ = 0;
         
         } 
 
-        if(board[CheckSingleNeighbour(row, +1)][col].state != state &&                                          // Lower & Right
-           board[row][CheckSingleNeighbour(col, +1)].state != state){
+        if(layer[CheckSingleNeighbour(row, +1)][col].state_ != state &&                                          // Lower & Right
+           layer[row][CheckSingleNeighbour(col, +1)].state_ != state){
             
-            board[row][col].type = 5;
-            board[row][col].enabled = 0;
-            aux_board[row][col].enabled = 0;
+            layer[row][col].type_ = 5;
+            layer[row][col].enabled_ = 0;
+            aux_layer[row][col].enabled_ = 0;
         
         }                             
 
@@ -492,67 +437,67 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
   if(state == 0){    
   
     // Single plant
-    if(rand()%20 == 7 && aux_board[row][col].enabled == 1){   
+    if(rand()%20 == 7 && aux_layer[row][col].enabled_ == 1){   
 
-      board[row][col].enabled = 1;
-      aux_board[row][col].enabled = 0;
-      aux_board[row][col].type = 2;
+      layer[row][col].enabled_ = 1;
+      aux_layer[row][col].enabled_ = 0;
+      aux_layer[row][col].type_ = 2;
 
     }
 
     // Wood & info panel
-    if(rand()%70 == 21 && aux_board[row][col].enabled == 1){
+    if(rand()%70 == 21 && aux_layer[row][col].enabled_ == 1){
       
-      board[row][col].enabled = 0;
-      aux_board[row][col].enabled = 0;
-      aux_board[row][col].type = 3 + rand()%4;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+      aux_layer[row][col].type_ = 3 + rand()%4;
 
     }
 
     // Lights
-    if(CheckNeighboursType(aux_board, row, col, 2, 2, 0, 1) == 0 && rand()%100 == 7){
+    if(CheckNeighboursType(aux_layer, row, col, 2, 2, 0, 1) == 0 && rand()%100 == 7){
       
-      board[row][col].enabled = 0;
-      board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
-      aux_board[row][col].enabled = 0;
-      aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-      aux_board[row][col].type = 8;
-      aux_board[CheckSingleNeighbour(row, -1)][col].type = 7;
+      layer[row][col].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
+      aux_layer[row][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+      aux_layer[row][col].type_ = 8;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 7;
 
     }
 
     // Tree
-    if(CheckNeighboursType(aux_board, row, col, 4, 4, 0, 1) == 0){
+    if(CheckNeighboursType(aux_layer, row, col, 4, 4, 0, 1) == 0){
       
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
-      board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
-      board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 1;
-      board[row][CheckSingleNeighbour(col, -1)].enabled = 1;
-      board[row][col].enabled = 1;
-      board[row][CheckSingleNeighbour(col, +1)].enabled = 1;
-      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-      board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
-      board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 1;
+      layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 1;
+      layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
+      layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 1;
+      layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 1;
+      layer[row][col].enabled_ = 1;
+      layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 1;
+      layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 1;
 
-      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-      aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
-      aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-      aux_board[row][col].enabled = 0;
-      aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
-      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-      aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
-      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
-      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 9;
-      aux_board[CheckSingleNeighbour(row, -1)][col].type = 10;
-      aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 11;
-      aux_board[row][CheckSingleNeighbour(col, -1)].type = 12;
-      aux_board[row][col].type = 13;
-      aux_board[row][CheckSingleNeighbour(col, +1)].type = 14;
-      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 15;
-      aux_board[CheckSingleNeighbour(row, +1)][col].type = 16;
-      aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 17;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 9;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 10;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 11;
+      aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 12;
+      aux_layer[row][col].type_ = 13;
+      aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 14;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 15;
+      aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 16;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 17;
 
     }
 
@@ -565,67 +510,66 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
 
       case 0: // Big house
 
-        if(CheckNeighboursType(aux_board, row, col, 3, 3, 8, 1) == 0){
+        if(CheckNeighboursType(aux_layer, row, col, 3, 3, 8, 1) == 0){
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
-          board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 1;
-          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[row][col].enabled = 0;
-          board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 1;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
-          aux_board[CheckSingleNeighbour(row, -1)][col].type = 2;
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 3;
-          aux_board[row][CheckSingleNeighbour(col, -1)].type = 4;
-          aux_board[row][col].type = 5;
-          aux_board[row][CheckSingleNeighbour(col, +1)].type = 6;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
-          aux_board[CheckSingleNeighbour(row, +1)][col].type = 8;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 9;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 2;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 3;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 4;
+          aux_layer[row][col].type_ = 5;
+          aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 6;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 7;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 8;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 9;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[row][col].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
           
-
         }
 
       break;
 
       case 1: // 3x2 blue house
 
-        if(CheckNeighboursType(aux_board, row, col, 3, 2, 8, 1) == 0){
+        if(CheckNeighboursType(aux_layer, row, col, 3, 2, 8, 1) == 0){
           
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
-          board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
-          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[row][col].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 10;
-          aux_board[CheckSingleNeighbour(row, -1)][col].type = 11;
-          aux_board[row][CheckSingleNeighbour(col, -1)].type = 12;
-          aux_board[row][col].type = 13;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 14;
-          aux_board[CheckSingleNeighbour(row, +1)][col].type = 15;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 10;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 11;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 12;
+          aux_layer[row][col].type_ = 13;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 14;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 15;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[row][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
         }
 
@@ -633,28 +577,28 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
 
       case 2: // 3x2 red house
 
-      if(CheckNeighboursType(aux_board, row, col, 3, 2, 8, 1) == 0){
+      if(CheckNeighboursType(aux_layer, row, col, 3, 2, 8, 1) == 0){
 
-        board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 1;
-        board[CheckSingleNeighbour(row, -1)][col].enabled = 1;
-        board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-        board[row][col].enabled = 0;
-        board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-        board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+        layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 1;
+        layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
+        layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+        layer[row][col].enabled_ = 0;
+        layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+        layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
-        aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 16;
-        aux_board[CheckSingleNeighbour(row, -1)][col].type = 17;
-        aux_board[row][CheckSingleNeighbour(col, -1)].type = 18;
-        aux_board[row][col].type = 19;
-        aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 20;
-        aux_board[CheckSingleNeighbour(row, +1)][col].type = 21;
+        aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 16;
+        aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 17;
+        aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 18;
+        aux_layer[row][col].type_ = 19;
+        aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 20;
+        aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 21;
 
-        aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-        aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-        aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-        aux_board[row][col].enabled = 0;
-        aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-        aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+        aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+        aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+        aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+        aux_layer[row][col].enabled_ = 0;
+        aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+        aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
       }
 
@@ -665,27 +609,28 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
   }
 
   // Streetlights
-  if(rand()%50 == 7 && state == 8 && aux_board[row][col].enabled == 1){
+  if(rand()%50 == 7 && state == 8 && aux_layer[row][col].enabled_ == 1){
 
-    board[row][col].enabled = 0;
-    aux_board[row][col].enabled = 0;
-    aux_board[row][col].type = 22;
+    layer[row][col].enabled_ = 0;
+    aux_layer[row][col].enabled_ = 0;
+    aux_layer[row][col].type_ = 22;
 
   }
 
   // Yellow Desert
-  if(CheckNeighboursType(aux_board, row, col, 3, 3, 7, 1) == 0 && rand()%10 == 7){
+  if(CheckNeighboursType(aux_layer, row, col, 3, 3, 7, 1) == 0 && rand()%10 == 7){
 
-    board[row][col].enabled = 0;
-    aux_board[row][col].enabled = 0;
-    aux_board[row][col].type = rand()%6;
+    layer[row][col].enabled_ = 0;
+    aux_layer[row][col].enabled_ = 0;
+    aux_layer[row][col].type_ = rand()%6;
 
   }
 
   // Red Desert
   if(state == 6){
 
-    if(board[row][col].type == 0 && CheckNeighboursType(board, row, col, 3, 3, 6, 1) == 0 && rand()%20 == 7){
+    if(layer[row][col].type_ == 0 &&
+       CheckNeighboursType(layer, row, col, 3, 3, 6, 1) == 0 && rand()%20 == 7){
 
       unsigned char rand_building = rand()%4;
 
@@ -693,104 +638,104 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
 
         case 0: // 2x2
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
-          board[CheckSingleNeighbour(row, -1)][col].type = 3;
-          board[row][CheckSingleNeighbour(col, -1)].type = 7;
-          board[row][col].type = 5;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].type_ = 3;
+          layer[row][CheckSingleNeighbour(col, -1)].type_ = 7;
+          layer[row][col].type_ = 5;
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[row][col].enabled = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[row][col].enabled = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
 
         break;
 
         case 1:   // 2x3
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
-          board[CheckSingleNeighbour(row, -1)][col].type = 2;
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 3;
-          board[row][CheckSingleNeighbour(col, -1)].type = 7;
-          board[row][col].type = 6;
-          board[row][CheckSingleNeighbour(col, +1)].type = 5;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].type_ = 2;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 3;
+          layer[row][CheckSingleNeighbour(col, -1)].type_ = 7;
+          layer[row][col].type_ = 6;
+          layer[row][CheckSingleNeighbour(col, +1)].type_ = 5;
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
-          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[row][col].enabled = 0;
-          board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[row][col].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
         break;
 
         case 2:   // 3x2
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
-          board[CheckSingleNeighbour(row, -1)][col].type = 3;
-          board[row][CheckSingleNeighbour(col, -1)].type = 8;
-          board[row][col].type = 4;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
-          board[CheckSingleNeighbour(row, +1)][col].type = 5;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].type_ = 3;
+          layer[row][CheckSingleNeighbour(col, -1)].type_ = 8;
+          layer[row][col].type_ = 4;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 7;
+          layer[CheckSingleNeighbour(row, +1)][col].type_ = 5;
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[row][col].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[row][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
         break;
 
         case 3:   // 3x3
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type = 1;
-          board[CheckSingleNeighbour(row, -1)][col].type = 2;
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type = 3;
-          board[row][CheckSingleNeighbour(col, -1)].type = 8;
-          board[row][col].type = 10;
-          board[row][CheckSingleNeighbour(col, +1)].type = 4;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type = 7;
-          board[CheckSingleNeighbour(row, +1)][col].type = 6;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type = 5;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].type_ = 2;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 3;
+          layer[row][CheckSingleNeighbour(col, -1)].type_ = 8;
+          layer[row][col].type_ = 10;
+          layer[row][CheckSingleNeighbour(col, +1)].type_ = 4;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 7;
+          layer[CheckSingleNeighbour(row, +1)][col].type_ = 6;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 5;
 
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
-          board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[row][col].enabled = 0;
-          board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
-          board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[row][col].enabled = 0;
-          aux_board[row][CheckSingleNeighbour(col, +1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][col].enabled = 0;
-          aux_board[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
         break;
 
@@ -799,10 +744,10 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
     }
 
     // Stairs
-    if(board[row][col].type == 6 && board[CheckSingleNeighbour(row, +1)][col].type == 0){
+    if(layer[row][col].type_ == 6 && layer[CheckSingleNeighbour(row, +1)][col].type_ == 0){
 
-      board[row][col].type = 9;
-      board[row][col].enabled = 1;
+      layer[row][col].type_ = 9;
+      layer[row][col].enabled_ = 1;
 
     }
 
@@ -812,48 +757,48 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
   if(state == 3){
 
     // Stairs
-    if(board[row][col].type == 6 && board[row][CheckSingleNeighbour(col, -1)].type != 13 &&
-       board[row][CheckSingleNeighbour(col, +1)].type != 13){
+    if(layer[row][col].type_ == 6 && layer[row][CheckSingleNeighbour(col, -1)].type_ != 13 &&
+       layer[row][CheckSingleNeighbour(col, +1)].type_ != 13){
       
-      board[row][col].type = 13;
-      board[row][col].enabled = 1;
+      layer[row][col].type_ = 13;
+      layer[row][col].enabled_ = 1;
       
     }
 
     // Cave Stairs
-    if(board[row][col].type == 0 && rand()%50 == 7 &&
-       board[CheckSingleNeighbour(row, +1)][col].type != 13){
+    if(layer[row][col].type_ == 0 && rand()%50 == 7 &&
+       layer[CheckSingleNeighbour(row, +1)][col].type_ != 13){
 
-      board[row][col].enabled = 1;
-      aux_board[row][col].type = 14;
-      aux_board[row][col].enabled = 0;
+      layer[row][col].enabled_ = 1;
+      aux_layer[row][col].type_ = 14;
+      aux_layer[row][col].enabled_ = 0;
         
     }  
 
     // Snowy Rock
-    if(board[row][col].type == 0 && board[CheckSingleNeighbour(row, +1)][col].type != 13 &&
+    if(layer[row][col].type_ == 0 && layer[CheckSingleNeighbour(row, +1)][col].type_ != 13 &&
        rand()%20 == 7){
       
-      board[row][col].enabled = 0;
-      aux_board[row][col].type = 15;
-      aux_board[row][col].enabled = 0;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].type_ = 15;
+      aux_layer[row][col].enabled_ = 0;
       
     }
 
     // Cave
-    if(board[row][col].type == 0 && rand()%25 == 7 && aux_board[row][col].enabled == 1 && board[CheckSingleNeighbour(row, +1)][col].type != 13){
+    if(layer[row][col].type_ == 0 && rand()%25 == 7 && aux_layer[row][col].enabled_ == 1 && layer[CheckSingleNeighbour(row, +1)][col].type_ != 13){
            
-      board[row][col].enabled = 1;
-      aux_board[row][col].type = 16;
-      aux_board[row][col].enabled = 0;
+      layer[row][col].enabled_ = 1;
+      aux_layer[row][col].type_ = 16;
+      aux_layer[row][col].enabled_ = 0;
          
     }
 
     // Snowy floor
-    /*if(board[row][col].type == 15 &&
-       board[CheckSingleNeighbour(row, +1)][col].type == 13){
+    /*if(layer[row][col].type_ == 15 &&
+       layer[CheckSingleNeighbour(row, +1)][col].type_ == 13){
 
-        board[row][col].type = 0;
+        layer[row][col].type_ = 0;
 
     }*/
        
@@ -863,20 +808,20 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
   if(state == 1){
 
     // Marine Cave
-    if(board[row][col].type == 0 && rand()%50 == 7 && aux_board[row][col].enabled == 1){
+    if(layer[row][col].type_ == 0 && rand()%50 == 7 && aux_layer[row][col].enabled_ == 1){
      
-      board[row][col].enabled = 1;
-      aux_board[row][col].type = 13;
-      aux_board[row][col].enabled = 0;
+      layer[row][col].enabled_ = 1;
+      aux_layer[row][col].type_ = 13;
+      aux_layer[row][col].enabled_ = 0;
          
     }
 
     // Marine Rock
-    if(aux_board[row][col].enabled == 1 && rand()%20 == 7){
+    if(aux_layer[row][col].enabled_ == 1 && rand()%20 == 7){
       
-      aux_board[row][col].type = 17;
-      aux_board[row][col].enabled = 0;
-      board[row][col].enabled = 0;
+      aux_layer[row][col].type_ = 17;
+      aux_layer[row][col].enabled_ = 0;
+      layer[row][col].enabled_ = 0;
       
     }
 
@@ -885,11 +830,11 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
   // Grass
   if(state == 4){
 
-    if(aux_board[row][col].enabled == 1 && rand()%20 == 7){
+    if(aux_layer[row][col].enabled_ == 1 && rand()%20 == 7){
 
-      aux_board[row][col].type = 2 + rand()%4;
-      aux_board[row][col].enabled = 0;
-      board[row][col].enabled = 0;
+      aux_layer[row][col].type_ = 2 + rand()%4;
+      aux_layer[row][col].enabled_ = 0;
+      layer[row][col].enabled_ = 0;
 
     }
 
@@ -898,20 +843,20 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
   // Lava
   if(state == 5){
 
-    if(CheckNeighboursType(aux_board, row, col, 3, 3, 5, 1) == 0){
+    if(CheckNeighboursType(aux_layer, row, col, 3, 3, 5, 1) == 0){
 
-      aux_board[row][col].type = 13+rand()%2;
-      aux_board[row][col].enabled = 0;
-      board[row][col].enabled = 0;
+      aux_layer[row][col].type_ = 13+rand()%2;
+      aux_layer[row][col].enabled_ = 0;
+      layer[row][col].enabled_ = 0;
 
     }
 
     // Lava Cave
-    if(board[row][col].type == 0 && rand()%25 == 7 && aux_board[row][col].enabled == 1){
+    if(layer[row][col].type_ == 0 && rand()%25 == 7 && aux_layer[row][col].enabled_ == 1){
      
-      board[row][col].enabled = 1;
-      aux_board[row][col].type = 15;
-      aux_board[row][col].enabled = 0;
+      layer[row][col].enabled_ = 1;
+      aux_layer[row][col].type_ = 15;
+      aux_layer[row][col].enabled_ = 0;
          
     }
 
@@ -919,25 +864,26 @@ void ChangeTileType(STile board[size][size], STile aux_board[size][size], unsign
 
 }
 
-void SelectCasilla(){
+void CreateMap(){
+
+  GameManager& gM = GameManager::Instantiate();
   
-  unsigned int max_repeats = size*size;
+  signed int max_repeats = Board::kBoardSize*Board::kBoardSize;
   unsigned char rand_row;
   unsigned char rand_col;
   unsigned char gain;
-  unsigned char max_pieces = 7;
-  char pieces = 7;
   
-  while(repeats < max_repeats * 1024){
+  while(repeats < (max_repeats * 1024)){
     
-    rand_row = rand()%kNumRows;
-    rand_col = rand()%kNumCols;
+    rand_row = rand()%Board::kBoardSize;
+    rand_col = rand()%Board::kBoardSize;
     
-    gain = CheckNeighbours(board, rand_row, rand_col, 3, 3, board[rand_row][rand_col].state);
+    gain = CheckNeighbours(gM.layer1_.map_, rand_row, rand_col,
+                           3, 3, gM.layer1_.map_[rand_row][rand_col].state_);
     
-      if(gain != 8 && board[rand_row][rand_col].state != 0){ 
+      if(gain != 8 && gM.layer1_.map_[rand_row][rand_col].state_ != 0){ 
 
-        PickCell(rand_row, rand_col, gain);
+        PickCell(gM.layer1_.map_, rand_row, rand_col, gain);
       
       }
 
@@ -947,11 +893,12 @@ void SelectCasilla(){
 
   for(int n = 0; n < 2; ++n){
 
-    for(int i = 0; i < size; ++i){
+    for(unsigned char i = 0; i < Board::kBoardSize; ++i){
 
-      for(int j = 0; j < size; ++j){
+      for(unsigned char j = 0; j < Board::kBoardSize; ++j){
 
-        EraseTile(board, board2, i, j, board[i][j].state);        
+        EraseTile(gM.layer1_.map_, gM.layer2_.map_, i, j,
+                  gM.layer1_.map_[i][j].state_);        
 
       }
 
@@ -959,14 +906,23 @@ void SelectCasilla(){
 
   }
 
+  for(int i = 0; i < 16; ++i){
+    for(int j = 0; j < 16; ++j){
+      printf("%d ", gM.layer2_.map_[i][j].enabled_);
+    }
+    printf("\n");
+  }
+
   for(int n = 0; n < 1; ++n){
 
-    for(int i = 0; i < size; ++i){
+    for(unsigned char i = 0; i < Board::kBoardSize; ++i){
 
-      for(int j = 0; j < size; ++j){
+      for(unsigned char j = 0; j < Board::kBoardSize; ++j){
 
-        board2[i][j].state = board[i][j].state;
-        ChangeTileType(board, board2, i, j, board[i][j].state);
+        gM.layer2_.map_[i][j].state_ = gM.layer1_.map_[i][j].state_;
+        
+        ChangeTileType(gM.layer1_.map_, gM.layer2_.map_, i, j,
+                       gM.layer1_.map_[i][j].state_);
 
       }
 
@@ -976,7 +932,7 @@ void SelectCasilla(){
   
 }
 
-void DrawCharacter(SDL_Renderer *renderer){
+/*void DrawCharacter(SDL_Renderer *renderer){
  
   SDL_SetRenderDrawColor(renderer,0,255,0,255);
   
@@ -988,102 +944,4 @@ void DrawCharacter(SDL_Renderer *renderer){
   SDL_RenderFillRect(renderer, &aux_rect);
   SDL_RenderDrawRect(renderer, &aux_rect);
   
-}
-
-bool ExitWindow(SDL_Event event_key){
-
-  if (event_key.key.keysym.sym == SDLK_ESCAPE)
-  {
-    return true;
-  }
-  return false;
-}
-
-int main(int argc, char **argv) {
-
-  
-  CHECK_ERROR(SDL_Init(SDL_INIT_VIDEO) != 0, SDL_GetError());
-  srand(time(NULL));
-
-  // Create an SDL window
-  SDL_Window *window = SDL_CreateWindow("Antekeland 2077", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, kWindowWidth, kWindowHeight, SDL_WINDOW_OPENGL);
-  CHECK_ERROR(window == NULL, SDL_GetError());
-
-  // Create a renderer (accelerated and in sync with the display refresh rate)
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);    
-  CHECK_ERROR(renderer == NULL, SDL_GetError());
-
-  // Initial renderer color
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-  //Init Funcs 
-  TTF_Init();
-  int flags= IMG_INIT_PNG;
-  IMG_Init(flags);
-
-  // SDL_Surface* image = IMG_Load("../data/resources/tilemap1.png");
-  SDL_Surface* image = IMG_Load("../data/resources/tileset.png");
-  // SDL_SetSurfaceBlendMode(image, SDL_BLENDMODE_ADD);
-  ricardo = SDL_CreateTextureFromSurface(renderer, image);
-  
-  // tilemap.loadTexture("../data/resources/tilemap1.png", renderer);
-
- // SDL_Surface* image = IMG_Load("../data/skins/body/male/dark.png");
-  // ¡;
-
-  const unsigned char fps=60;
-  double current_time,last_time;
-  bool ordenar = false;
-
-  CreateBoard();
-  InitCharacter();
-  
-  bool running = true;
-  SDL_Event event;
-  while(running) {
-
-    last_time = SDL_GetTicks();
-
-
-    // Inputs events
-    while(SDL_PollEvent(&event)) {
-      running = !((event.type == SDL_QUIT) || ExitWindow(event));
-      if(event.key.keysym.sym == SDLK_SPACE){ ordenar = true; }
-      //ChangeOutfit(&menu_level,&char_outfit, renderer);
-    }
-
-    DrawBorad(renderer);
-    //Update
-    if(ordenar){
-    SelectCasilla();
-    ordenar = false;
-    }
-    
-
-    // Clear screen
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-
-
-    // Draw Events
-    DrawBorad(renderer);  
-    //DrawCharacter(renderer);
-      
-    // Show what was drawn
-    SDL_RenderPresent(renderer);
-
-    do{
-      current_time = SDL_GetTicks();
-    }while((current_time - last_time) <= (1000.0/fps));
-  }
-
-  // Release resources
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-  TTF_Quit();
-  IMG_Quit();
-  SDL_Quit();
-
-  return 0;
-}
+}*/

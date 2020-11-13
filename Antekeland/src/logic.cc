@@ -9,17 +9,17 @@
 
 Logic::Logic(){
 
-  enabled_ = nullptr; // Not walkable, 1 = walkable
-  enter_ = 0; // Not entereable, 1 = allows to enter
+  enabled_ = 1; // 0 = Not walkable, 1 = walkable
+  enter_ = 0; // 0 = Not entereable, 1 = allows to enter
 
 }
 
 Logic::~Logic(){
 }
 
-Logic::init(){
+void Logic::init(){
 
-  enabled_ = nullptr; // Not walkable, 1 = walkable
-  enter_ = 0; // Not entereable, 1 = allows to enter
+  enabled_ = 1; // 0 = Not walkable, 1 = walkable
+  enter_ = 0; // 0 = Not entereable, 1 = allows to enter
 
 }

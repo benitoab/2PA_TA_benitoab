@@ -9,24 +9,22 @@
 #define __TILE_H__ 1
 
 #include "SDL.h"
-#include "entity.h"
 #include "sprite.h"
 
-class Tile : public Entity {
+class Tile : public Sprite {
 
   public:
     // Methods
     Tile();    
     ~Tile();
 
-    void init();
-    void initSubSprite();
+    void init(const SDL_Rect* r, const uint8_t t, const uint8_t s, const int8_t e);
+    void initSubSprite(); // To be done when the map is already created
   
     //Atributes  
     uint8_t state_;   // Cell State
     uint8_t type_;    // Cell Type
     
-    Sprite sprite_;
     // Inherites SDL_Rect dst_rect_ from Entity
   
 };

@@ -9,7 +9,6 @@
 #define __LOGIC_H__ 1
 
 #include <stdint.h>
-#include "gamemanager.h"
 
 class Logic{
   public:
@@ -20,7 +19,7 @@ class Logic{
     void init();
 
     // Attributes
-    uint8_t* enabled_;
+    uint8_t enabled_;
     uint8_t enter_;
 
 };

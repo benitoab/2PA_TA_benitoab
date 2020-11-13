@@ -10,23 +10,21 @@
 
 #include "tile.h"
 #include "texture.h"
-#include "gamemanager.h"
-
-//Constant of procedural generation
-const float kCellconcentration = 0.55f;
-const int kChanceToMove = 721;
-const unsigned char kSearchRange = (kBoardSize/4)*3;
-const unsigned char kNState = 7;
 
 class Board{  
-  public:  
+  public:
+    //Constant of procedural generation
+    static const unsigned char kBoardSize = 16;
+    const unsigned char kNState = 8;
+    const float kCellconcentration = 0.55f;
+
     //Methods
-    void initLayer1(const int window_w, const int window_h);
-    void initLayer2(const int window_w, const int window_h);
+    void initLayer1();
+    void initLayer2();
     void drawMap(SDL_Renderer* renderer);
       
     //Atributes
-    Tile map_[GameManager::kBoardSize][GameManager::kBoardSize];    
+    Tile map_[kBoardSize][kBoardSize];    
 
 };
 

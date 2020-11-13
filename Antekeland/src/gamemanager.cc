@@ -12,12 +12,14 @@
 #include "SDL_ttf.h"
 #include "gamemanager.h"
 
+GameManager* GameManager::instance_gm_ = nullptr;
+
 //Instantiates only one object (Singletone)
-GameManager* GameManager::Instantiate(){
+GameManager& GameManager::Instantiate(){
 
-  if(nullptr == instance_gm){ instance_gm = new GameManager(); }
+  if(nullptr == instance_gm_){ instance_gm_ = new GameManager(); }
 
-  return instance_gm;
+  return *instance_gm_;
 
 }
 

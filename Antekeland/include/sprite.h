@@ -28,12 +28,12 @@ class Sprite : public Entity{
 
     void set_texture(const Texture& tex);
     
-    void draw(const SDL_Renderer* render);
+    void draw(SDL_Renderer* render);
     
     //Atributes
     SDL_Rect snip_rect_;
 
-  private:
+  protected:
     Texture* texture_;
  
 };

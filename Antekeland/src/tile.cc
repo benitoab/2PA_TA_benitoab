@@ -6,6 +6,7 @@
  */
 
 #include "tile.h"
+#include "gamemanager.h"
 
 Tile::Tile(){
 
@@ -25,18 +26,19 @@ Tile::~Tile(){
 
 void Tile::init(const SDL_Rect* r, const uint8_t t, const uint8_t s, const int8_t e){
 
-  dst_rect_ = *r;
-  type_ = t;
+  dst_rect_ = *r;  
   state_ = s;
+  type_ = t;
   enabled_ = e;
+  texture_ = GameManager::Instantiate().map_texture_;
 
 }
 
 void Tile::initSubSprite(){
 
-  sprite_.snip_rect_.x = type_ * 64;
-  sprite_.snip_rect_.y = state_ * 64;
-  sprite_.snip_rect_.w = 64;
-  sprite_.snip_rect_.w = 64;
+  snip_rect_.x = type_ * 64;
+  snip_rect_.y = state_ * 64;
+  snip_rect_.w = 64;
+  snip_rect_.h = 64;
 
 }

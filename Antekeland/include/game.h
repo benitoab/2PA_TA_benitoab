@@ -8,7 +8,7 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include <SDL.h>
+#include "SDL.h"
 
 class Game {
   public:   
@@ -32,6 +32,7 @@ class Game {
     int quit_;
     double current_time_, last_time_;
     const unsigned char fps = 60;
+    bool show = true;
 
 };
 

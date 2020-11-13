@@ -5,15 +5,12 @@
  * University Development @ESAT
  */
 
-
 #ifndef __GAMEMANAGER_H__
 #define __GAMEMANAGER_H__ 1
 
-#include <SDL.h>
+#include "SDL.h"
 #include "texture.h"
-#include "rect.h"
 #include "board.h"
-#include "label.h"
 #include "logic.h"
 
 class GameManager{
@@ -21,25 +18,25 @@ class GameManager{
     //Constant
     static const int kWindowWidth = 640;
     static const int kWindowHeight = 640;    
-    static const unsigned char kBoardSize = 64;
-    static const unsigned char kViewSize = 64;
+    static const unsigned char kViewSize = 16;
    
     //Methods  
     ~GameManager();
 
     //Factory
-    static GameManager* Instantiate();
+    static GameManager& Instantiate();
     
     // Atributes
-    Board layer1_, layer2_;     // Graphic map
-    Logic board_[kBoardSize][kBoardSize], units_[kBoardSize][kBoardSize]; // Logical map
-    Texture map_texture_;
+    Board layer1_;
+    Board layer2_;     // Graphic map
+    Logic board_[Board::kBoardSize][Board::kBoardSize];
+    Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
+    Texture* map_texture_;
  
   private:
     //Methods
-    static GameManager* instance_gm;
     GameManager();
-  
+    static GameManager* instance_gm_;      
 
 };
 
