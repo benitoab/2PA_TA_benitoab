@@ -78,9 +78,6 @@ void Texture::loadTexture(int32_t width, int32_t height, uint8_t* data ){
   */
 int32_t Texture::width(){
   
-  if(texture_){
-    SDL_DestroyTexture(texture_);
-  }
   int32_t w, h;
   
   SDL_QueryTexture(texture_,NULL,NULL,&w,&h);
@@ -91,9 +88,6 @@ int32_t Texture::width(){
 
 int32_t Texture::height(){
   
-  if(texture_){
-    SDL_DestroyTexture(texture_);
-  }
   int32_t w, h;
   
   SDL_QueryTexture(texture_,NULL,NULL,&w,&h);
