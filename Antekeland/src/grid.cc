@@ -313,7 +313,10 @@ void PickCell(Tile layer[Board::kBoardSize][Board::kBoardSize],
 // Changes every tile to their new type
 void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
                     Tile aux_layer[Board::kBoardSize][Board::kBoardSize],
-                    unsigned char row, unsigned char col, unsigned char state){                  
+                    unsigned char row, unsigned char col, unsigned char state,
+                    unsigned char* ship, unsigned char* shop){
+
+  GameManager& gM = GameManager::Instantiate();                  
 
   if(state == 1 || state == 2 || state == 3 || state == 5){
 
@@ -328,6 +331,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
 
+          gM.board_[row][col].enabled_ = 0;
+
         }
 
         if(layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].state_ != state){               // Upper-Right                        
@@ -335,6 +340,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 12;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
         
         }   
 
@@ -343,6 +350,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 10;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
        
         }
 
@@ -351,6 +360,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 9;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
         
         }   
 
@@ -363,6 +374,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 2;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
        
         }                             
         if(layer[row][CheckSingleNeighbour(col, -1)].state_ != state){                                           // Left
@@ -370,6 +383,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 8;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
         
         }                             
         if(layer[row][CheckSingleNeighbour(col, +1)].state_ != state){                                           // Right
@@ -377,6 +392,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 4;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
        
         }                             
         if(layer[CheckSingleNeighbour(row, +1)][col].state_ != state){                                           // Lower
@@ -384,6 +401,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].type_ = 6;
           layer[row][col].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
+
+          gM.board_[row][col].enabled_ = 0;
        
         }                             
 
@@ -397,6 +416,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
             layer[row][col].type_ = 1;
             layer[row][col].enabled_ = 0;
             aux_layer[row][col].enabled_ = 0;
+
+            gM.board_[row][col].enabled_ = 0;
         
         }
 
@@ -406,6 +427,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
             layer[row][col].type_ = 3;
             layer[row][col].enabled_ = 0;
             aux_layer[row][col].enabled_ = 0;
+
+            gM.board_[row][col].enabled_ = 0;
         
         }                             
 
@@ -415,6 +438,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
             layer[row][col].type_ = 7;
             layer[row][col].enabled_ = 0;
             aux_layer[row][col].enabled_ = 0;
+
+            gM.board_[row][col].enabled_ = 0;
         
         } 
 
@@ -424,6 +449,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
             layer[row][col].type_ = 5;
             layer[row][col].enabled_ = 0;
             aux_layer[row][col].enabled_ = 0;
+
+            gM.board_[row][col].enabled_ = 0;
         
         }                             
 
@@ -434,7 +461,53 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   }
 
   // Normal Path
-  if(state == 0){    
+  if(state == 0){
+
+    // Shop (only one)
+    if(CheckNeighboursType(aux_layer, row, col, 4, 4, 0, 1) == 0 && *shop == 0){
+      
+      // Graphic
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -2)].type_ = 37;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 38;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 39;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 40;
+
+      aux_layer[row][CheckSingleNeighbour(col, -2)].type_ = 41;
+      aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 42;
+      aux_layer[row][col].type_ = 43;
+      aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 44;
+
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -2)].type_ = 45;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 46;
+      aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 47;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 48;
+
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      // Logic
+      gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enter_ = 2;
+
+      gM.board_[row][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      gM.board_[row][col].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+
+      *shop = 1;
+
+    }
   
     // Single plant
     if(rand()%20 == 7 && aux_layer[row][col].enabled_ == 1){   
@@ -452,6 +525,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[row][col].enabled_ = 0;
       aux_layer[row][col].type_ = 3 + rand()%4;
 
+      gM.board_[row][col].enabled_ = 0;
+
     }
 
     // Lights
@@ -463,6 +538,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
       aux_layer[row][col].type_ = 8;
       aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 7;
+
+      gM.board_[row][col].enabled_ = 0;
 
     }
 
@@ -492,6 +569,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       switch(rand()%4){
 
         case 0:
+
+          // Graphic
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 9;
           aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 10;
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 11;
@@ -501,18 +580,34 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 15;
           aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 16;
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 17;
+
+          // Logic
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;  // 12
+          gM.board_[row][col].enabled_ = 0;                            // 13
+          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;  // 14
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;  // 16
+
         break;
       
-        case 1:        
+        case 1:
+
+          // Graphic
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 18;
           aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 19;
           aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 20;
           aux_layer[row][col].type_ = 21;
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 22;
           aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 23;
+
+          // Logic
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;  // 20
+          gM.board_[row][col].enabled_ = 0;                            // 21  
+
         break;
 
         case 2:
+
+          // Graphic
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 24;
           aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 25;
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 26;
@@ -522,13 +617,27 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 30;
           aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 31;
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 32;
+
+          // Logic
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;  // 27
+          gM.board_[row][col].enabled_ = 0;                            // 28
+          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;  // 29
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;  // 31
+
         break;
 
-        case 3:        
+        case 3:     
+
+          // Graphic   
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 33;
           aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 34;
           aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 35;
           aux_layer[row][col].type_ = 36;
+
+          // Logic
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+
         break;
 
       }
@@ -538,6 +647,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   }
 
   // City
+  // Water Fountain
   if(CheckNeighboursType(aux_layer, row, col, 3, 3, 8, 1) == 0 && rand()%20 == 7){
 
     layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
@@ -547,6 +657,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
     layer[row][col].enabled_ = 0;
     layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
+    // Graphic
     aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 23;
     aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 24;
     aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 25;
@@ -560,6 +671,14 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
     aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
     aux_layer[row][col].enabled_ = 0;
     aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+    // Logic
+    gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;  // 23
+    gM.board_[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;                            // 24
+    gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;  // 25
+    gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;                            // 26
+    gM.board_[row][col].enabled_ = 0;                                                      // 27
+    gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;                            // 28
 
   }
 
@@ -581,6 +700,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
           layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
+          // Graphic
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
           aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 2;
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 3;
@@ -600,6 +720,14 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+          // Logic
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
           
         }
 
@@ -616,6 +744,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
+          // Graphic
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 10;
           aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 11;
           aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 12;
@@ -630,36 +759,49 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
+          // Logic         
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+
         }
 
       break;
 
       case 2: // 3x2 red house
 
-      if(CheckNeighboursType(aux_layer, row, col, 3, 2, 8, 1) == 0){
+        if(CheckNeighboursType(aux_layer, row, col, 3, 2, 8, 1) == 0){
 
-        layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 1;
-        layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
-        layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-        layer[row][col].enabled_ = 0;
-        layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-        layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 1;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 1;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
-        aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 16;
-        aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 17;
-        aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 18;
-        aux_layer[row][col].type_ = 19;
-        aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 20;
-        aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 21;
+          // Graphic
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 16;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 17;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 18;
+          aux_layer[row][col].type_ = 19;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 20;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 21;
 
-        aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-        aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
-        aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-        aux_layer[row][col].enabled_ = 0;
-        aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-        aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[row][col].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
-      }
+          // Logic
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+
+        }
 
       break;
 
@@ -671,8 +813,13 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   if(rand()%50 == 7 && CheckNeighboursType(aux_layer, row, col, 2, 2, 8, 1) == 0){
 
     layer[row][col].enabled_ = 0;
+     
+    // Graphic
     aux_layer[row][col].enabled_ = 0;
     aux_layer[row][col].type_ = 22;
+
+    // Logic
+    gM.board_[row][col].enabled_ = 0;
 
   }
 
@@ -681,7 +828,12 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
     layer[row][col].enabled_ = 0;
     aux_layer[row][col].enabled_ = 0;
-    aux_layer[row][col].type_ = 1+rand()%6;
+    aux_layer[row][col].type_ = 1+rand()%5;
+
+    if(aux_layer[row][col].type_ == 4){ gM.board_[row][col].enter_ = 1; }      // Sand stairs
+    if(aux_layer[row][col].type_ != 0 && aux_layer[row][col].type_ != 4){   // Sand obstacles
+      gM.board_[row][col].enabled_ = 0;
+    }
 
   }
 
@@ -697,6 +849,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
         case 0: // 2x2
 
+          // Graphic
           layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
           layer[CheckSingleNeighbour(row, -1)][col].type_ = 3;
           layer[row][CheckSingleNeighbour(col, -1)].type_ = 7;
@@ -706,16 +859,23 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
           layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           layer[row][col].enabled_ = 0;
-
+          
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
           aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           aux_layer[row][col].enabled_ = 0;
 
+          // Logic
+          gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+
         break;
 
         case 1:   // 2x3
 
+          // Graphic
           layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
           layer[CheckSingleNeighbour(row, -1)][col].type_ = 2;
           layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 3;
@@ -737,10 +897,19 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[row][col].enabled_ = 0;
           aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
+          // Logic
+          gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
         break;
 
         case 2:   // 3x2
 
+          // Graphic
           layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
           layer[CheckSingleNeighbour(row, -1)][col].type_ = 3;
           layer[row][CheckSingleNeighbour(col, -1)].type_ = 8;
@@ -754,7 +923,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           layer[row][col].enabled_ = 0;
           layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
-
+          
           aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
           aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
@@ -762,10 +931,19 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
 
+          // Logic
+          gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+
         break;
 
         case 3:   // 3x3
 
+          // Graphic
           layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 1;
           layer[CheckSingleNeighbour(row, -1)][col].type_ = 2;
           layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 3;
@@ -796,6 +974,17 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
+          // Logic
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[row][col].enabled_ = 0;
+          layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
         break;
 
       }
@@ -807,6 +996,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
       layer[row][col].type_ = 9;
       layer[row][col].enabled_ = 1;
+
+      gM.board_[row][col].enabled_ = 1;
 
     }
 
@@ -831,6 +1022,9 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       layer[row][col].enabled_ = 1;
       aux_layer[row][col].type_ = 14;
       aux_layer[row][col].enabled_ = 0;
+
+      // Logic
+      gM.board_[row][col].enter_ = 1;
         
     }  
 
@@ -840,6 +1034,9 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       layer[row][col].enabled_ = 0;
       aux_layer[row][col].type_ = 15;
       aux_layer[row][col].enabled_ = 0;
+
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
       
     }
 
@@ -849,6 +1046,10 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       layer[row][col].enabled_ = 1;
       aux_layer[row][col].type_ = 16;
       aux_layer[row][col].enabled_ = 0;
+
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
+      gM.board_[row][col].enter_ = 1;
          
     }
        
@@ -857,7 +1058,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   // Shallow Water
   if(CheckNeighboursType(aux_layer, row, col, 2, 2, 2, 1) == 0 && rand()%15 == 7){
 
-    switch(1){
+    switch(rand()%2){
 
       case 0:
 
@@ -873,7 +1074,11 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
         aux_layer[row][col].type_ = 14;
         aux_layer[row][col].enabled_ = 0;
 
-    }    
+      break;
+
+    }
+
+    gM.board_[row][col].enabled_ = 0;    
 
   }
 
@@ -881,25 +1086,32 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   if(state == 1){
 
     // Marine Cave
-    if(layer[row][col].type_ == 0 && rand()%20 == 7 && aux_layer[row][col].enabled_ == 1){
+    if(CheckNeighboursType(aux_layer, row, col, 3, 3, 1, 1) == 0 && rand()%20 == 7){
      
       layer[row][col].enabled_ = 1;
       aux_layer[row][col].type_ = 13;
       aux_layer[row][col].enabled_ = 0;
+
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
+      gM.board_[row][col].enter_ = 1;
          
     }
 
     // Marine Rock
     if(aux_layer[row][col].enabled_ == 1 && rand()%20 == 7){
       
-      aux_layer[row][col].type_ = 17;
+      aux_layer[row][col].type_ = 14;
       aux_layer[row][col].enabled_ = 0;
       layer[row][col].enabled_ = 0;
+
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
       
     }
 
     // One Piece Ship
-    if(CheckNeighboursType(aux_layer, row, col, 5, 5, 1, 1) == 0){
+    if(CheckNeighboursType(aux_layer, row, col, 5, 5, 1, 1) == 0 && *ship == 0){
 
       aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -2)].type_ = 15;
       aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 16;
@@ -931,15 +1143,39 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
       layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
+      // Disable Layer 2
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      aux_layer[row][CheckSingleNeighbour(col, -2)].enabled_ = 0;
       aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
       aux_layer[row][col].enabled_ = 0;
       aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      aux_layer[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +2)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      // Logic
+      gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      gM.board_[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, -2)].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +2)][col].enabled_ = 0;
+      gM.board_[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      *ship = 1;
 
     }
 
@@ -954,6 +1190,9 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[row][col].enabled_ = 0;
       layer[row][col].enabled_ = 0;
 
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
+
     }
 
   }
@@ -967,21 +1206,28 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[row][col].enabled_ = 0;
       layer[row][col].enabled_ = 0;
 
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
+
     }
 
     // Lava Cave
     if(layer[row][col].type_ == 0 && rand()%25 == 7 && aux_layer[row][col].enabled_ == 1){
-     
+    
       layer[row][col].enabled_ = 1;
       aux_layer[row][col].type_ = 15;
       aux_layer[row][col].enabled_ = 0;
+
+      // Logic
+      gM.board_[row][col].enabled_ = 0;
+      gM.board_[row][col].enter_ = 0;
          
     }
 
   }
 
   // Random Chest
-  if(layer[row][col].type_ == 0 && rand()%1000 == 21){
+  if(layer[row][col].type_ == 0 && rand()%1000 == 21 && aux_layer[row][col].enabled_ == 1){
 
     unsigned char rnd_chest = rand()%100;
 
@@ -989,15 +1235,6 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
       aux_layer[row][col].state_ = 9;
       aux_layer[row][col].type_ = 0;
-      layer[row][col].enabled_ = 0;
-      aux_layer[row][col].enabled_ = 0;
-
-    }
-
-    if(51 <= rnd_chest && rnd_chest <= 75){
-
-      aux_layer[row][col].state_ = 9;
-      aux_layer[row][col].type_ = 4;
       layer[row][col].enabled_ = 0;
       aux_layer[row][col].enabled_ = 0;
 
@@ -1030,7 +1267,11 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
     }
 
-  } 
+  }
+
+  // Logic
+  gM.board_[row][col].enabled_ = 0; 
+  gM.board_[row][col].enter_ = 3; 
 
 }
 
@@ -1042,6 +1283,8 @@ void CreateMap(){
   unsigned char rand_row;
   unsigned char rand_col;
   unsigned char gain;
+  unsigned char sunny = 0;
+  unsigned char shop = 0;
   
   while(repeats < (max_repeats * 1024)){
     
@@ -1091,7 +1334,7 @@ void CreateMap(){
       for(unsigned char j = 0; j < Board::kBoardSize; ++j){        
         
         ChangeTileType(gM.layer1_.map_, gM.layer2_.map_, i, j,
-                       gM.layer1_.map_[i][j].state_);
+                       gM.layer1_.map_[i][j].state_, &sunny, &shop);
 
       }
 

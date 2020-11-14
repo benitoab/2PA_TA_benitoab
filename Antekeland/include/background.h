@@ -21,16 +21,12 @@ class Background : public Entity{
                  
   void update(float dt);               
   void draw(SDL_Renderer* render);
-  //void drawOnly1(SDL_Renderer* render);
-  
+  //void drawOnly1(SDL_Renderer* render);  
   
   uint8_t horizontal_scroll_;
   uint8_t vertical_scroll_;
   RBM::Vec2 velocity_;
-  Texture* texture_;
-  
-  
-  
+  Texture* texture_;  
   
 };;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

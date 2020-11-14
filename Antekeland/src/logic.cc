@@ -20,6 +20,6 @@ Logic::~Logic(){
 void Logic::init(){
 
   enabled_ = 1; // 0 = Not walkable, 1 = walkable
-  enter_ = 0; // 0 = Not entereable, 1 = allows to enter
+  enter_ = 0; // 0 = Not entereable, 1 = Cave, 2 = Door, 3 = Chest
 
 }

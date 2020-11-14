@@ -46,7 +46,8 @@ void PickCell(Tile layer[Board::kBoardSize][Board::kBoardSize],
               const unsigned char orig_gain);
 void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
                     Tile aux_layer[Board::kBoardSize][Board::kBoardSize],
-                    unsigned char row, unsigned char col, unsigned char state);
+                    unsigned char row, unsigned char col, unsigned char state,
+                    unsigned char* ship, unsigned char* shop);
 void CreateMap();                                                                                                                             
 
 #endif  // __GRID_H__

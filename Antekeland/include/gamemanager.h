@@ -16,9 +16,9 @@
 class GameManager{
   public:  
     //Constant
-    static const int kWindowWidth = 800;
-    static const int kWindowHeight = 800;    
-    static const unsigned char kViewSize = 10;
+    static const int kWindowWidth = 640;
+    static const int kWindowHeight = 640;    
+    static const unsigned char kViewSize = 16;
    
     //Methods  
     ~GameManager();
