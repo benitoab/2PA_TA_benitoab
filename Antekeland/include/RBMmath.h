@@ -1,8 +1,8 @@
 /// @author Ricardo Beltrán Muriel
 /// Math Library implementation
 
-#ifndef __MATH_R1_H__
-#define __MATH_R1_H__ 1
+#ifndef __RBMMATH_H__
+#define __RBMMATH_H__ 1
 
 #include<math.h>
 
@@ -64,9 +64,10 @@ namespace RBM{
   //Mat4
   
   //Others
+  unsigned char GetMatrixPosition(unsigned char pos,
+                                  const int desp);
 
-
-
+  int Abs(int v);
 }
 
 #endif

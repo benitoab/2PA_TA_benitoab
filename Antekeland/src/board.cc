@@ -127,8 +127,15 @@ void Board::update0Position(){
   int y = gM.kWindowHeight/kBoardSize * (kBoardSize/gM.kViewSize);
   
   uint8_t speed = 7;
+  
   x_origin_ += speed* horizontal_mov_;
   y_origin_ += speed* vertical_mov_;
+  
+ 
+  if(!gM.c.cell()){ 
+    x_origin_ -= speed* horizontal_mov_;
+    y_origin_ -= speed* vertical_mov_;
+  }
   
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
@@ -136,8 +143,6 @@ void Board::update0Position(){
       map_[r][c].dst_rect_.y = r * y + y_origin_;
     }
   }
-  
-  
 }
 
 // Draws the map

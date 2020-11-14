@@ -71,6 +71,13 @@ int Game::init(){
   CreateBoard();
   InitLogic();
   CreateMap();
+  gM.c.init();
+  gM.c.dst_rect_.x = gM.layer1_.map_[0][0].dst_rect_.w *
+                     gM.kViewSize/2;
+  gM.c.dst_rect_.y = gM.layer1_.map_[0][0].dst_rect_.h *
+                     gM.kViewSize/2;
+  gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w;
+  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h;         
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -150,6 +157,7 @@ void Game::draw(){
 
   gM.layer1_.drawMap(ren_);
   /* Character */
+  gM.c.draw(ren_);
   if(show){
     gM.layer2_.drawMap(ren_);
   }
