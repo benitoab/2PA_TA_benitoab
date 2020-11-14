@@ -74,14 +74,14 @@ RBM::Vec2 Entity::position(){
 
 
 void Entity::set_rotation(float r){
-  transform_.rotation = f;
+  transform_.rotation = r;
 }
 float Entity::rotation(){
   return transform_.rotation;
 }
 
 
-void Entity::set_position(RBM::Vec2 v){
+void Entity::set_scale(RBM::Vec2 v){
   transform_.scale = v;
 }
 RBM::Vec2 Entity::scale(){

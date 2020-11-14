@@ -52,7 +52,7 @@ void Board::initLayer2(){
 
       aux_rect = {c*x, r*y, x, y};
         
-      map_[r][c].init(&aux_rect, 23, 0, 1);
+      map_[r][c].init(&aux_rect, 43, 0, 1);
       
     }
   }

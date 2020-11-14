@@ -313,7 +313,7 @@ void PickCell(Tile layer[Board::kBoardSize][Board::kBoardSize],
 // Changes every tile to their new type
 void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
                     Tile aux_layer[Board::kBoardSize][Board::kBoardSize],
-                    unsigned char row, unsigned char col, unsigned char state){
+                    unsigned char row, unsigned char col, unsigned char state){                  
 
   if(state == 1 || state == 2 || state == 3 || state == 5){
 
@@ -489,21 +489,80 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
       aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
-      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 9;
-      aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 10;
-      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 11;
-      aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 12;
-      aux_layer[row][col].type_ = 13;
-      aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 14;
-      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 15;
-      aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 16;
-      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 17;
+      switch(rand()%4){
+
+        case 0:
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 9;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 10;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 11;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 12;
+          aux_layer[row][col].type_ = 13;
+          aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 14;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 15;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 16;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 17;
+        break;
+      
+        case 1:        
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 18;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 19;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 20;
+          aux_layer[row][col].type_ = 21;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 22;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 23;
+        break;
+
+        case 2:
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 24;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 25;
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 26;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 27;
+          aux_layer[row][col].type_ = 28;
+          aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 29;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 30;
+          aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 31;
+          aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 32;
+        break;
+
+        case 3:        
+          aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 33;
+          aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 34;
+          aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 35;
+          aux_layer[row][col].type_ = 36;
+        break;
+
+      }
 
     }
 
   }
 
   // City
+  if(CheckNeighboursType(aux_layer, row, col, 3, 3, 8, 1) == 0 && rand()%20 == 7){
+
+    layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+    layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+    layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+    layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+    layer[row][col].enabled_ = 0;
+    layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+    aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 23;
+    aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 24;
+    aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 25;
+    aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 26;
+    aux_layer[row][col].type_ = 27;
+    aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 28;
+
+    aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+    aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+    aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+    aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+    aux_layer[row][col].enabled_ = 0;
+    aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+  }
+
   if(rand()%10 == 7){
 
     switch(rand()%3){
@@ -609,7 +668,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   }
 
   // Streetlights
-  if(rand()%50 == 7 && state == 8 && aux_layer[row][col].enabled_ == 1){
+  if(rand()%50 == 7 && CheckNeighboursType(aux_layer, row, col, 2, 2, 8, 1) == 0){
 
     layer[row][col].enabled_ = 0;
     aux_layer[row][col].enabled_ = 0;
@@ -618,11 +677,11 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   }
 
   // Yellow Desert
-  if(CheckNeighboursType(aux_layer, row, col, 3, 3, 7, 1) == 0 && rand()%10 == 7){
+  if(CheckNeighboursType(aux_layer, row, col, 3, 3, 7, 1) == 0){
 
     layer[row][col].enabled_ = 0;
     aux_layer[row][col].enabled_ = 0;
-    aux_layer[row][col].type_ = rand()%6;
+    aux_layer[row][col].type_ = 1+rand()%6;
 
   }
 
@@ -630,7 +689,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
   if(state == 6){
 
     if(layer[row][col].type_ == 0 &&
-       CheckNeighboursType(layer, row, col, 3, 3, 6, 1) == 0 && rand()%20 == 7){
+       CheckNeighboursType(aux_layer, row, col, 4, 3, 6, 1) == 0){
 
       unsigned char rand_building = rand()%4;
 
@@ -776,8 +835,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
     }  
 
     // Snowy Rock
-    if(layer[row][col].type_ == 0 && layer[CheckSingleNeighbour(row, +1)][col].type_ != 13 &&
-       rand()%20 == 7){
+    if(CheckNeighboursType(aux_layer, row, col, 3, 3, 3, 1) == 0){
       
       layer[row][col].enabled_ = 0;
       aux_layer[row][col].type_ = 15;
@@ -793,22 +851,37 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[row][col].enabled_ = 0;
          
     }
-
-    // Snowy floor
-    /*if(layer[row][col].type_ == 15 &&
-       layer[CheckSingleNeighbour(row, +1)][col].type_ == 13){
-
-        layer[row][col].type_ = 0;
-
-    }*/
        
+  }
+
+  // Shallow Water
+  if(CheckNeighboursType(aux_layer, row, col, 2, 2, 2, 1) == 0 && rand()%15 == 7){
+
+    switch(1){
+
+      case 0:
+
+        layer[row][col].enabled_ = 0;
+        aux_layer[row][col].type_ = 13;
+        aux_layer[row][col].enabled_ = 0;
+
+      break;
+
+      case 1:
+
+        layer[row][col].enabled_ = 0;
+        aux_layer[row][col].type_ = 14;
+        aux_layer[row][col].enabled_ = 0;
+
+    }    
+
   }
 
   // Deep Water
   if(state == 1){
 
     // Marine Cave
-    if(layer[row][col].type_ == 0 && rand()%50 == 7 && aux_layer[row][col].enabled_ == 1){
+    if(layer[row][col].type_ == 0 && rand()%20 == 7 && aux_layer[row][col].enabled_ == 1){
      
       layer[row][col].enabled_ = 1;
       aux_layer[row][col].type_ = 13;
@@ -825,12 +898,57 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       
     }
 
+    // One Piece Ship
+    if(CheckNeighboursType(aux_layer, row, col, 5, 5, 1, 1) == 0){
+
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -2)].type_ = 15;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].type_ = 16;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].type_ = 17;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].type_ = 18;
+
+      aux_layer[row][CheckSingleNeighbour(col, -2)].type_ = 19;
+      aux_layer[row][CheckSingleNeighbour(col, -1)].type_ = 20;
+      aux_layer[row][col].type_ = 21;
+      aux_layer[row][CheckSingleNeighbour(col, +1)].type_ = 22;
+
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -2)].type_ = 23;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].type_ = 24;
+      aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 25;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 26;
+
+      aux_layer[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, -2)].type_ = 27;
+      aux_layer[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, -1)].type_ = 28;
+      aux_layer[CheckSingleNeighbour(row, +2)][col].type_ = 29;
+      aux_layer[CheckSingleNeighbour(row, +2)][CheckSingleNeighbour(col, +1)].type_ = 30;
+
+      layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      layer[row][col].enabled_ = 0;
+      layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+      layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+      aux_layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+      aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+
+    }
+
   }
 
   // Grass
   if(state == 4){
 
-    if(aux_layer[row][col].enabled_ == 1 && rand()%20 == 7){
+    if(aux_layer[row][col].enabled_ == 1 && rand()%10 == 5){
 
       aux_layer[row][col].type_ = 2 + rand()%4;
       aux_layer[row][col].enabled_ = 0;
@@ -861,6 +979,58 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
     }
 
   }
+
+  // Random Chest
+  if(layer[row][col].type_ == 0 && rand()%1000 == 21){
+
+    unsigned char rnd_chest = rand()%100;
+
+    if(rnd_chest <= 50){
+
+      aux_layer[row][col].state_ = 9;
+      aux_layer[row][col].type_ = 0;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+
+    }
+
+    if(51 <= rnd_chest && rnd_chest <= 75){
+
+      aux_layer[row][col].state_ = 9;
+      aux_layer[row][col].type_ = 4;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+
+    }
+
+    if(51 <= rnd_chest && rnd_chest <= 75){
+
+      aux_layer[row][col].state_ = 9;
+      aux_layer[row][col].type_ = 4;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+
+    }
+
+    if(76 <= rnd_chest && rnd_chest <= 90){
+
+      aux_layer[row][col].state_ = 9;
+      aux_layer[row][col].type_ = 8;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+
+    }
+
+    if(91 <= rnd_chest && rnd_chest <= 100){
+
+      aux_layer[row][col].state_ = 9;
+      aux_layer[row][col].type_ = 12;
+      layer[row][col].enabled_ = 0;
+      aux_layer[row][col].enabled_ = 0;
+
+    }
+
+  } 
 
 }
 
