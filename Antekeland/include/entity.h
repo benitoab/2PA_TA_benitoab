@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include "SDL.h"
-#include "RBMmath.h"
+#include "rbmmath.h"
 
 class Entity{
   public:

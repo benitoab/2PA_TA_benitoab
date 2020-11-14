@@ -12,6 +12,7 @@
 #include "texture.h"
 #include "board.h"
 #include "logic.h"
+#include "character.h"
 
 class GameManager{
   public:  
@@ -31,6 +32,7 @@ class GameManager{
     Board layer2_;     // Graphic map
     Logic board_[Board::kBoardSize][Board::kBoardSize];
     Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
+    Character c;
     Texture* map_texture_;
  
   private:

@@ -1,7 +1,8 @@
 /// @author Ricardo Beltrán Muriel
 /// Math Library definition
 
-#include "RBMmath.h"
+#include "rbmmath.h"
+#include "board.h"
 #include <stdio.h>
 
 // Vec2
@@ -84,3 +85,25 @@ RBM::Mat3 RBM::M3Product(RBM::Mat3 m1, RBM::Mat3 m2){
  
 	return mr;
 }
+
+//Ohters
+
+unsigned char RBM::GetMatrixPosition(unsigned char pos,
+                                     const int desp){
+                                       
+  unsigned char resul = pos + (unsigned char)desp;
+    
+  resul %= Board::kBoardSize;
+  
+  return resul;
+
+}
+
+int RBM::Abs(int v){
+  
+  if(v< 0){
+    v *=-1;
+  }
+  return v;
+}
+
