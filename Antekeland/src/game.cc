@@ -102,7 +102,8 @@ void Game::quit(){
 void Game::input(){
   
   last_time_ = SDL_GetTicks();
-
+  GameManager& gM = GameManager::Instantiate();
+  
   SDL_Event event;
   while (SDL_PollEvent(&event))
   {
@@ -110,15 +111,16 @@ void Game::input(){
       quit_ = true;
       
     }
-
+/*
     if(event.key.keysym.sym == SDLK_UP){
       show = false;
     }
 
     if(event.key.keysym.sym == SDLK_DOWN){
       show = true;
-    }
-   
+    }*/
+    gM.layer1_.move0Position(&event);
+    gM.layer2_.move0Position(&event);
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
       event.window.windowID == SDL_GetWindowID(win_)) {
@@ -130,6 +132,13 @@ void Game::input(){
 }
 
 void Game::update(){
+  GameManager& gM = GameManager::Instantiate();
+  
+  gM.layer1_.reset0Position();
+  gM.layer2_.reset0Position();
+  
+  gM.layer1_.update0Position();
+  gM.layer2_.update0Position();
 }
 
 void Game::draw(){
