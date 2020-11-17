@@ -10,6 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int32_t Board::x_origin_ = 0;
+int32_t Board::y_origin_ = 0;
+
 // Initializes the Layer 1
 void Board::initLayer1(){
 
@@ -35,6 +38,7 @@ void Board::initLayer1(){
       }
     }
   }
+
   x_origin_ = 0;
   y_origin_ = 0;
   vertical_mov_ = 0;
@@ -73,7 +77,7 @@ void Board::move0Position(SDL_Event* e){
  // horizontal_mov_ = 0;
 
   if(e->type == SDL_KEYDOWN){
-    printf("Tecla pulsada\n");
+    
     if(e->key.keysym.sym == SDLK_UP ){vertical_mov_ = 1;}
     if(e->key.keysym.sym == SDLK_DOWN){vertical_mov_ = -1;}
     if(e->key.keysym.sym == SDLK_LEFT){horizontal_mov_ = 1;}
@@ -120,7 +124,7 @@ void Board::update0Position(){
   int x = gM.kWindowWidth/kBoardSize * (kBoardSize/gM.kViewSize);
   int y = gM.kWindowHeight/kBoardSize * (kBoardSize/gM.kViewSize);
   
-  uint8_t speed = 7;
+  uint8_t speed = 1;
   
   x_origin_ += speed* horizontal_mov_;
   y_origin_ += speed* vertical_mov_;
@@ -150,6 +154,8 @@ void Board::drawMap(SDL_Renderer* renderer){
     for(int c = 0; c < kBoardSize; ++c){
 
       map_[r][c].draw(renderer);
+      /*SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+      SDL_RenderDrawRect(renderer, &map_[r][c].dst_rect_);*/
 
     }
   }  

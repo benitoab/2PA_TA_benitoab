@@ -515,6 +515,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       layer[row][col].enabled_ = 1;
       aux_layer[row][col].enabled_ = 0;
       aux_layer[row][col].type_ = 2;
+      
+      gM.board_[row][col].enabled_ = 1;
 
     }
 
@@ -1267,11 +1269,11 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
     }
 
-  }
+    // Logic
+    gM.board_[row][col].enabled_ = 0; 
+    gM.board_[row][col].enter_ = 3;
 
-  // Logic
-  gM.board_[row][col].enabled_ = 0; 
-  gM.board_[row][col].enter_ = 3; 
+  }
 
 }
 
@@ -1340,6 +1342,13 @@ void CreateMap(){
 
     }
 
+  }
+
+  for(int i = 0; i < Board::kBoardSize; ++i){
+    for(int j = 0; j < Board::kBoardSize; ++j){
+      printf("%d ", gM.board_[i][j].enabled_);
+    }
+    printf("\n");
   }
   
 }

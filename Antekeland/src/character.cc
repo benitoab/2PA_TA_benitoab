@@ -1,6 +1,7 @@
 #include "character.h"
 #include "gamemanager.h"
 #include "rbmmath.h"
+#include <stdio.h>
 
 Character::Character(){
   hp_ = 100;
@@ -39,58 +40,58 @@ uint8_t Character::cell(){
   //sustituir por el ancho del personaje
   int w_tile =  gM.layer1_.map_[0][0].dst_rect_.w;
   int h_tile =  gM.layer1_.map_[0][0].dst_rect_.h;
+
+  // 4 points of the character
+  SDL_Point character_point[4];
+  character_point[0] = {dst_rect_.x, dst_rect_.y};
+  character_point[1] = {dst_rect_.x + dst_rect_.w, dst_rect_.y};
+  character_point[2] = {dst_rect_.x + dst_rect_.w, dst_rect_.y + dst_rect_.h};
+  character_point[3] = {dst_rect_.x, dst_rect_.y + dst_rect_.h};
+
+  uint8_t collision = 1;
   
   unsigned char x_c=0, y_c =0;
   
   x_c = RBM::GetMatrixPosition(0,
-        RBM::Abs(gM.layer1_.x_origin_)/w_tile);
+        (-Board::x_origin_)/w_tile);
   y_c = RBM::GetMatrixPosition(0,
-        RBM::Abs(gM.layer1_.y_origin_)/h_tile);
+        (-Board::y_origin_)/h_tile);
 
-  x_c = RBM::GetMatrixPosition(x_c,(gM.kViewSize/2));
-  y_c = RBM::GetMatrixPosition(y_c,(gM.kViewSize/2));
-  
-  /*
-  if(gM.layer1.x_origin_ % w_tile < (w_tile/2)){
-    
-   // x_c = x_c + (gM.kViewSize /2) -1;
-    x_c = GetMatrixPosition(x_c,(gM.kViewSize/2) -1);
+  if(Board::x_origin_ > 0){
+    x_c = RBM::GetMatrixPosition(x_c,(-gM.kViewSize/2)-1);
+  }else{
+    x_c = RBM::GetMatrixPosition(x_c,(-gM.kViewSize/2));
   }
-  else{
-    x_c = GetMatrixPosition(x_c,(gM.kViewSize/2));
+  if(Board::y_origin_ > 0){
+    y_c = RBM::GetMatrixPosition(y_c,(-gM.kViewSize/2)-1);
+  }else{
+    y_c = RBM::GetMatrixPosition(y_c,(-gM.kViewSize/2));    
   }
-  
-  if(gM.layer1.y_origin_ % h_tile < (h_tile/2)){
-    
-    y_c = GetMatrixPosition(y_c,(gM.kViewSize/2) -1);
-  }
-  else{
-   y_c = GetMatrixPosition(y_c,(gM.kViewSize/2));
-  }
-  
-  
-  */
-  
-  if( RBM::Abs(gM.layer1_.x_origin_)% w_tile == 0 &&
-      RBM::Abs(gM.layer1_.y_origin_)% h_tile == 0){
-        
-     if(gM.board_[x_c][y_c].enabled_ == 0){
-       return false;
-     }
-        
-  }
-  
-  else{
-    if(gM.board_[x_c][y_c].enabled_ == 0 ||
-       gM.board_[x_c][RBM::GetMatrixPosition(y_c,1)].enabled_ == 0 ||
-       gM.board_[RBM::GetMatrixPosition(x_c,1)][RBM::GetMatrixPosition(y_c,(gM.kViewSize/2))].enabled_ == 0 ||
-       gM.board_[RBM::GetMatrixPosition(x_c,1)][y_c].enabled_ == 0){
-         
-         return false;
+
+  for(int i = -1; i <= 1; ++i){
+
+    for(int j = -1; j <= 1; ++j){
+
+      if(gM.board_[RBM::GetMatrixPosition(y_c, i)][RBM::GetMatrixPosition(x_c, j)].enabled_ == 0){
+
+        //for(int h = 0; i < 4; ++h){
+
+          if(SDL_PointInRect(&character_point[0], &gM.layer1_.map_[RBM::GetMatrixPosition(y_c, i)][RBM::GetMatrixPosition(x_c, j)].dst_rect_)){
+            collision = 0;
+          }
+
+        //}
+
+      }
+
     }
   }
   
-  return true;
+  // SDL_PointInRect(const SDL_Point* p, const SDL_Rect* r);
+
+  // printf("%d %d\n", x_c, y_c);
+  
+  return collision;
 }
 
 void Character::draw(SDL_Renderer* ren){

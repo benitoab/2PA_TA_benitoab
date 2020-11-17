@@ -14,7 +14,7 @@
 class Board{  
   public:
     //Constant of procedural generation
-    static const unsigned char kBoardSize = 128;
+    static const unsigned char kBoardSize = 16;
     const unsigned char kNState = 8;
     const float kCellconcentration = 0.55f;
 
@@ -30,8 +30,8 @@ class Board{
       
     //Atributes
     Tile map_[kBoardSize][kBoardSize]; 
-    int32_t x_origin_;
-    int32_t y_origin_;
+    static int32_t x_origin_;
+    static int32_t y_origin_;
     int8_t vertical_mov_;
     int8_t horizontal_mov_;
 

@@ -46,10 +46,8 @@ class Character : public Entity{
   int32_t profession_;
   int32_t xp_;
   int32_t level_;
-  
-  
 
 };
 
 
-#endif
+#endif  // __CHARACTER_H__

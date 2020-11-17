@@ -62,7 +62,7 @@ int Game::init(){
     printf("Error al cargar SDL_ttf\n"); 
   }
 
-  srand((unsigned int)time(NULL));
+  // srand((unsigned int)time(NULL));
 
   GameManager& gM = GameManager::Instantiate();
 
@@ -72,12 +72,12 @@ int Game::init(){
   InitLogic();
   CreateMap();
   gM.c.init();
-  gM.c.dst_rect_.x = gM.layer1_.map_[0][0].dst_rect_.w *
+  gM.c.dst_rect_.x = 5 + gM.layer1_.map_[0][0].dst_rect_.w *
                      gM.kViewSize/2;
-  gM.c.dst_rect_.y = gM.layer1_.map_[0][0].dst_rect_.h *
+  gM.c.dst_rect_.y = 5 + gM.layer1_.map_[0][0].dst_rect_.h *
                      gM.kViewSize/2;
-  gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w;
-  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h;         
+  gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w - 10;
+  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h - 10;         
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -114,18 +114,10 @@ void Game::input(){
   SDL_Event event;
   while (SDL_PollEvent(&event))
   {
-    if (event.key.keysym.sym == SDLK_ESCAPE || event.type == SDL_QUIT ) {
-      quit_ = true;
-      
-    }
-/*
-    if(event.key.keysym.sym == SDLK_UP){
-      show = false;
+    if (/*event.key.keysym.sym == SDLK_ESCAPE || */event.type == SDL_QUIT ) {
+      quit_ = true;      
     }
 
-    if(event.key.keysym.sym == SDLK_DOWN){
-      show = true;
-    }*/
     gM.layer1_.move0Position(&event);
     gM.layer2_.move0Position(&event);
     if (event.type == SDL_WINDOWEVENT && 
@@ -146,6 +138,9 @@ void Game::update(){
   
   gM.layer1_.update0Position();
   gM.layer2_.update0Position();
+
+  // printf("%d %d\n", Board::x_origin_, Board::y_origin_);
+
 }
 
 void Game::draw(){
@@ -155,12 +150,12 @@ void Game::draw(){
   SDL_SetRenderDrawColor(ren_,0,0,0,0);
   SDL_RenderClear(ren_);
 
+  /* Layer 1 */
   gM.layer1_.drawMap(ren_);
   /* Character */
   gM.c.draw(ren_);
-  if(show){
-    gM.layer2_.drawMap(ren_);
-  }
+  /* Layer 2 */
+  gM.layer2_.drawMap(ren_);
 
   //Update the screen
   SDL_RenderPresent(ren_);
@@ -179,7 +174,7 @@ void Game::game(){
     input();
     update();
     draw();
-    
+
   }
 
   quit();
