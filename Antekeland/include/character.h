@@ -30,8 +30,9 @@ class Character : public Entity{
   
   void levelUp();
   void updatePosition(); 
+  void movCharacter(SDL_Event* e);
   
-  uint8_t Character::cell();
+  uint8_t cell();
   
   void draw(SDL_Renderer* ren);
   

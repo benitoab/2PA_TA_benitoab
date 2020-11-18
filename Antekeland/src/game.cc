@@ -72,12 +72,10 @@ int Game::init(){
   InitLogic();
   CreateMap();
   gM.c.init();
-  gM.c.dst_rect_.x = 5 + gM.layer1_.map_[0][0].dst_rect_.w *
-                     gM.kViewSize/2;
-  gM.c.dst_rect_.y = 5 + gM.layer1_.map_[0][0].dst_rect_.h *
-                     gM.kViewSize/2;
-  gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w - 10;
-  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h - 10;         
+  gM.c.dst_rect_.x = gM.kViewSize/2;
+  gM.c.dst_rect_.y = gM.kViewSize/2;
+  gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
+  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;         
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -118,8 +116,9 @@ void Game::input(){
       quit_ = true;      
     }
 
-    gM.layer1_.move0Position(&event);
-    gM.layer2_.move0Position(&event);
+    //gM.layer1_.move0Position(&event);
+   // gM.layer2_.move0Position(&event);
+    gM.c.movCharacter(&event);
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
       event.window.windowID == SDL_GetWindowID(win_)) {
@@ -135,7 +134,7 @@ void Game::update(){
   
   gM.layer1_.reset0Position();
   gM.layer2_.reset0Position();
-  
+  // printf("Casilla character x:%d y:%d\n",gM.c.dst_rect_.x, gM.c.dst_rect_.y );
   gM.layer1_.update0Position();
   gM.layer2_.update0Position();
 
@@ -149,7 +148,6 @@ void Game::draw(){
   
   SDL_SetRenderDrawColor(ren_,0,0,0,0);
   SDL_RenderClear(ren_);
-
   /* Layer 1 */
   gM.layer1_.drawMap(ren_);
   /* Character */

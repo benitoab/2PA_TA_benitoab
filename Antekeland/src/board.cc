@@ -39,10 +39,6 @@ void Board::initLayer1(){
     }
   }
 
-  x_origin_ = 0;
-  y_origin_ = 0;
-  vertical_mov_ = 0;
-  horizontal_mov_ = 0;
 
 }
 
@@ -64,13 +60,10 @@ void Board::initLayer2(){
       
     }
   }
-  x_origin_ = 0;
-  y_origin_ = 0;
-  vertical_mov_ = 0;
-  horizontal_mov_ = 0;
+
 }
 
-
+/*
 // Move the position of the origin of the draw of the board
 void Board::move0Position(SDL_Event* e){
  // vertical_mov_ = 0;
@@ -93,25 +86,25 @@ void Board::move0Position(SDL_Event* e){
     horizontal_mov_ = 0;
   }  
 }
-
+*/
 void Board::reset0Position(){
-  int total_w = (map_[0][0].dst_rect_.w*kBoardSize);
-  int total_h = (map_[0][0].dst_rect_.h*kBoardSize);
   GameManager& gM = GameManager::Instantiate();  
+  int total_w = (map_[0][0].dst_rect_.w*(kBoardSize));
+  int total_h = (map_[0][0].dst_rect_.h*(kBoardSize));
   
   if(x_origin_ > gM.kWindowWidth){
-    x_origin_ = gM.kWindowWidth - total_w;
-  }
-  
-  if(y_origin_ > gM.kWindowHeight){
-    y_origin_ = gM.kWindowHeight - total_h;
-  }
-  
-  if(x_origin_ < -total_w){
     x_origin_ %= total_w;
   }
   
-  if(y_origin_ < -total_h){
+  else if(y_origin_ > gM.kWindowHeight){
+    y_origin_ %= total_h;
+  }
+  
+  else if(x_origin_ < -total_w){
+    x_origin_ %= total_w;
+  }
+  
+  else if(y_origin_ < -total_h){
     y_origin_ %= total_h;
   }  
 }
@@ -123,7 +116,7 @@ void Board::update0Position(){
   
   int x = gM.kWindowWidth/kBoardSize * (kBoardSize/gM.kViewSize);
   int y = gM.kWindowHeight/kBoardSize * (kBoardSize/gM.kViewSize);
-  
+ /* 
   uint8_t speed = 1;
   
   x_origin_ += speed* horizontal_mov_;
@@ -134,7 +127,7 @@ void Board::update0Position(){
     x_origin_ -= speed* horizontal_mov_;
     y_origin_ -= speed* vertical_mov_;
   }
-  
+  */
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
       map_[r][c].dst_rect_.x = c * x + x_origin_;

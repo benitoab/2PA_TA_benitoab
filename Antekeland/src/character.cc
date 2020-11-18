@@ -3,6 +3,8 @@
 #include "rbmmath.h"
 #include <stdio.h>
 
+
+
 Character::Character(){
   hp_ = 100;
   attack_ = 10;
@@ -34,9 +36,69 @@ void Character::updatePosition(){
   
 }
 
+
+void Character::movCharacter(SDL_Event* e){
+  //Input i compruebo si me puedo mover
+  uint8_t can_move = 0;
+  int8_t vertical_mov = 0;
+  int8_t horizontal_mov = 0;
+  
+  // siempre me voy a mover de celda si puedo, y si me salgo del rango,
+  // tambien movere el tablero.
+  GameManager& gM = GameManager::Instantiate();
+  //sustituir por el ancho del personaje
+  int w_tile =  gM.layer1_.map_[0][0].dst_rect_.w;
+  int h_tile =  gM.layer1_.map_[0][0].dst_rect_.h;
+  
+  
+  
+  if(e->type == SDL_KEYDOWN){
+ 
+    if(e->key.keysym.sym == SDLK_UP &&
+    gM.board_[RBM::GetMatrixPosition(dst_rect_.y,-1)][dst_rect_.x].enabled_ == 1){
+      vertical_mov = 1;
+      dst_rect_.y = RBM::GetMatrixPosition(dst_rect_.y,-1);
+      can_move = 1;
+    }
+    else if(e->key.keysym.sym == SDLK_DOWN &&
+    gM.board_[RBM::GetMatrixPosition(dst_rect_.y,1)][dst_rect_.x].enabled_ == 1){
+      vertical_mov = -1;
+      dst_rect_.y = RBM::GetMatrixPosition(dst_rect_.y,1);
+      can_move = 1;
+    }
+      
+    else if(e->key.keysym.sym == SDLK_LEFT &&
+    gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,-1)].enabled_ == 1){
+      horizontal_mov = 1;
+      dst_rect_.x = RBM::GetMatrixPosition(dst_rect_.x,-1);
+      can_move = 1;
+      
+    }
+    else if(e->key.keysym.sym == SDLK_RIGHT &&
+    gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,1)].enabled_ == 1){
+      horizontal_mov = -1;
+      dst_rect_.x = RBM::GetMatrixPosition(dst_rect_.x,1);
+      can_move = 1;
+      
+    }
+
+    
+    printf("Casilla character x:%d y:%d\n",dst_rect_.x, dst_rect_.y );
+
+    if(1 == can_move){
+      
+      Board::x_origin_ += w_tile * horizontal_mov;
+      Board::y_origin_ += h_tile * vertical_mov;
+     // printf(" w:%d h:%d\n",w_tile, h_tile);
+    }
+    printf(" x:%d y:%d\n",Board::x_origin_, Board::y_origin_ );
+  }
+  
+}
+
 uint8_t Character::cell(){
 
-  GameManager& gM = GameManager::Instantiate();
+  /*GameManager& gM = GameManager::Instantiate();
   //sustituir por el ancho del personaje
   int w_tile =  gM.layer1_.map_[0][0].dst_rect_.w;
   int h_tile =  gM.layer1_.map_[0][0].dst_rect_.h;
@@ -91,10 +153,35 @@ uint8_t Character::cell(){
 
   // printf("%d %d\n", x_c, y_c);
   
-  return collision;
+  return collision;*/
+  return 1;
 }
 
 void Character::draw(SDL_Renderer* ren){
+  GameManager& gM = GameManager::Instantiate();
   SDL_SetRenderDrawColor(ren,0,255,0,255);
-  SDL_RenderDrawRect(ren,&dst_rect_);
+  
+  SDL_Rect aux_rect;
+  aux_rect = dst_rect_;
+  
+  aux_rect.x = gM.layer1_.map_[0][0].dst_rect_.w *
+               gM.kViewSize/2;
+  aux_rect.y = gM.layer1_.map_[0][0].dst_rect_.h *
+               gM.kViewSize/2;
+  
+  SDL_RenderDrawRect(ren,&aux_rect);
+  
+ /*
+  
+  aux_rect.x = dst_rect_.x * gM.kWindowWidth/(gM.kViewSize) 
+              + 4 + Board::x_origin_;
+                   
+  aux_rect.y = dst_rect_.y * gM.kWindowHeight/(gM.kViewSize) 
+              + 4 + Board::y_origin_;
+                    
+  
+  // SDL_RenderDrawRect(ren,&dst_rect_);*/
+  
+  
+  
 }

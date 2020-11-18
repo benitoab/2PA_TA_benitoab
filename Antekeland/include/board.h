@@ -14,7 +14,7 @@
 class Board{  
   public:
     //Constant of procedural generation
-    static const unsigned char kBoardSize = 16;
+    static const unsigned char kBoardSize = 64;
     const unsigned char kNState = 8;
     const float kCellconcentration = 0.55f;
 
@@ -24,7 +24,7 @@ class Board{
     
     void update0Position();
     void reset0Position();
-    void move0Position(SDL_Event* e);
+    //void move0Position(SDL_Event* e);
     
     void drawMap(SDL_Renderer* renderer);
       
@@ -32,8 +32,7 @@ class Board{
     Tile map_[kBoardSize][kBoardSize]; 
     static int32_t x_origin_;
     static int32_t y_origin_;
-    int8_t vertical_mov_;
-    int8_t horizontal_mov_;
+
 
 };
 
