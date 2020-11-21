@@ -37,21 +37,6 @@ void InitLogic(){
   }
 }
 
-/*void InitCharacter(){
-  
-  int x = rand()%kNumCols;
-  int y = rand()%kNumRows;
-  
-  Character.info_body.x = x;
-  Character.info_body.y = y;
-  
-  Character.info_body.w = kWindowWidth/kNumCols-8;
-  Character.info_body.h = kWindowHeight/kNumRows-8;
-  
-  Character.is_moving = 1;
-  
-}*/
-
 // Checks one cell depending on the pos and desp
 unsigned char CheckSingleNeighbour(unsigned char pos, const int desp){
   
@@ -1342,13 +1327,6 @@ void CreateMap(){
 
     }
 
-  }
-
-  for(int i = 0; i < Board::kBoardSize; ++i){
-    for(int j = 0; j < Board::kBoardSize; ++j){
-      printf("%d ", gM.board_[i][j].enabled_);
-    }
-    printf("\n");
   }
   
 }

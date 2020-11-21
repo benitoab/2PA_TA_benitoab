@@ -13,6 +13,8 @@
 #include "board.h"
 #include "logic.h"
 #include "character.h"
+#include "imgui.h"
+#include "imgui_sdl.h"
 
 class GameManager{
   public:  
@@ -20,6 +22,9 @@ class GameManager{
     static const int kWindowWidth = 640;
     static const int kWindowHeight = 640;    
     static const unsigned char kViewSize = 16;
+    static const int kImGuiWidth = 500;
+    static const int kImGuiHeight = 500;
+    ImGuiWindowFlags window_flags = 0;
    
     //Methods  
     ~GameManager();

@@ -16,6 +16,9 @@
 #include "gamemanager.h"
 #include "grid.h"
 
+#include "imgui.h"
+#include "imgui_sdl.h"
+
 Game::Game(){
   win_ = nullptr;
   ren_ = nullptr;
@@ -29,6 +32,46 @@ Game::~Game(){
   if(nullptr != win_){ SDL_DestroyWindow(win_); }
   if(nullptr != ren_){ SDL_DestroyRenderer(ren_); }
    
+}
+
+/** @brief Process mouse events for the ImGuiSDL binding.
+ *
+ * @param Pointer to an SDL_Event captured this frame.
+ */
+void ImGuiSDLProcessEvent(SDL_Event* e) {
+  if (e == nullptr) return;
+
+  ImGuiIO& io = ImGui::GetIO();
+
+  int wheel = 0;
+
+  while (SDL_PollEvent(e))
+  {
+    if (e->type == SDL_WINDOWEVENT)
+    {
+      if (e->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+      {
+        io.DisplaySize.x = static_cast<float>(e->window.data1);
+        io.DisplaySize.y = static_cast<float>(e->window.data2);
+      }
+    }
+    else if (e->type == SDL_MOUSEWHEEL)
+    {
+      wheel = e->wheel.y;
+    }
+  }
+
+  int mouseX, mouseY;
+  const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+
+  // Setup low-level inputs (e.g. on Win32, GetKeyboardState(), or 
+  // write to those fields from your Windows message loop handlers, etc.)
+
+  io.DeltaTime = 1.0f / 60.0f;
+  io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+  io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+  io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+  io.MouseWheel = static_cast<float>(wheel);
 }
 
 
@@ -62,6 +105,9 @@ int Game::init(){
     printf("Error al cargar SDL_ttf\n"); 
   }
 
+  ImGui::CreateContext();
+	ImGuiSDL::Initialize(ren_, 600, 600);
+
   // srand((unsigned int)time(NULL));
 
   GameManager& gM = GameManager::Instantiate();
@@ -91,15 +137,21 @@ void Game::quit(){
   
   // Rest of the other quit functions
   // Clean up our objects and quit
+
+  ImGuiSDL::Deinitialize();
   
   SDL_DestroyRenderer(ren_);
   SDL_DestroyWindow(win_);
   
   // Cleanup
 
+  // Cleanup
+  ImGui::DestroyContext();
+
   IMG_Quit();
   SDL_Quit();
   TTF_Quit();
+  
   printf("Me he cerrado perfe. Adioh");
   
 }
@@ -112,12 +164,13 @@ void Game::input(){
   SDL_Event event;
   while (SDL_PollEvent(&event))
   {
+    ImGuiSDLProcessEvent(&event);
     if (/*event.key.keysym.sym == SDLK_ESCAPE || */event.type == SDL_QUIT ) {
       quit_ = true;      
     }
 
     //gM.layer1_.move0Position(&event);
-   // gM.layer2_.move0Position(&event);
+    // gM.layer2_.move0Position(&event);
     gM.c.movCharacter(&event);
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
@@ -130,8 +183,20 @@ void Game::input(){
 }
 
 void Game::update(){
+
   GameManager& gM = GameManager::Instantiate();
+
+  gM.window_flags |= ImGuiWindowFlags_NoMove;
+  gM.window_flags |= ImGuiWindowFlags_NoResize;
+  gM.window_flags |= ImGuiWindowFlags_NoCollapse;
   
+  // Start the Dear ImGui frame
+  ImGui::NewFrame();
+  ImGui::SetNextWindowPos(ImVec2(gM.kWindowWidth/2, gM.kWindowHeight/2), 0, ImVec2(0.5, 0.5));
+  ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth, gM.kImGuiHeight));
+  ImGui::Begin("Antekeland", NULL, gM.window_flags);
+  // ImGui::ShowDemoWindow();
+
   gM.layer1_.reset0Position();
   gM.layer2_.reset0Position();
   // printf("Casilla character x:%d y:%d\n",gM.c.dst_rect_.x, gM.c.dst_rect_.y );
@@ -140,20 +205,27 @@ void Game::update(){
 
   // printf("%d %d\n", Board::x_origin_, Board::y_origin_);
 
+  ImGui::End();
+
 }
 
 void Game::draw(){
 
-  GameManager& gM = GameManager::Instantiate();
+  // GameManager& gM = GameManager::Instantiate();
   
   SDL_SetRenderDrawColor(ren_,0,0,0,0);
   SDL_RenderClear(ren_);
+
+  //ImGui
+  ImGui::Render();  
+  ImGuiSDL::Render(ImGui::GetDrawData());
+
   /* Layer 1 */
-  gM.layer1_.drawMap(ren_);
+  // gM.layer1_.drawMap(ren_);
   /* Character */
-  gM.c.draw(ren_);
+  // gM.c.draw(ren_);
   /* Layer 2 */
-  gM.layer2_.drawMap(ren_);
+  // gM.layer2_.drawMap(ren_);
 
   //Update the screen
   SDL_RenderPresent(ren_);
@@ -169,10 +241,10 @@ void Game::game(){
  
   while(!quit_){
     
-    input();
-    update();
+    input();    
+    update();    
     draw();
-
+    
   }
 
   quit();
