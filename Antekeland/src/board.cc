@@ -19,8 +19,8 @@ void Board::initLayer1(){
   GameManager& gM = GameManager::Instantiate();
 
   SDL_Rect aux_rect;  // Storages the info to init every tile of the board
-  int x = gM.kWindowWidth/kBoardSize * (kBoardSize/gM.kViewSize);
-  int y = gM.kWindowHeight/kBoardSize * (kBoardSize/gM.kViewSize);
+  int x = gM.kBoardWidth/kBoardSize * (kBoardSize/gM.kViewSize);
+  int y = gM.kBoardHeight/kBoardSize * (kBoardSize/gM.kViewSize);
   
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
@@ -48,8 +48,8 @@ void Board::initLayer2(){
   GameManager& gM = GameManager::Instantiate();
 
   SDL_Rect aux_rect;  // Storages the info to init every tile of the board
-  int x = gM.kWindowWidth/kBoardSize * (kBoardSize/gM.kViewSize);
-  int y = gM.kWindowHeight/kBoardSize * (kBoardSize/gM.kViewSize);
+  int x = gM.kBoardWidth/kBoardSize * (kBoardSize/gM.kViewSize);
+  int y = gM.kBoardHeight/kBoardSize * (kBoardSize/gM.kViewSize);
   
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
@@ -92,11 +92,11 @@ void Board::reset0Position(){
   int total_w = (map_[0][0].dst_rect_.w*(kBoardSize));
   int total_h = (map_[0][0].dst_rect_.h*(kBoardSize));
   
-  if(x_origin_ > gM.kWindowWidth){
+  if(x_origin_ > gM.kBoardWidth){
     x_origin_ %= total_w;
   }
   
-  else if(y_origin_ > gM.kWindowHeight){
+  else if(y_origin_ > gM.kBoardHeight){
     y_origin_ %= total_h;
   }
   
@@ -114,8 +114,8 @@ void Board::update0Position(){
   
   GameManager& gM = GameManager::Instantiate();
   
-  int x = gM.kWindowWidth/kBoardSize * (kBoardSize/gM.kViewSize);
-  int y = gM.kWindowHeight/kBoardSize * (kBoardSize/gM.kViewSize);
+  int x = gM.kBoardWidth/kBoardSize * (kBoardSize/gM.kViewSize);
+  int y = gM.kBoardHeight/kBoardSize * (kBoardSize/gM.kViewSize);
  /* 
   uint8_t speed = 1;
   

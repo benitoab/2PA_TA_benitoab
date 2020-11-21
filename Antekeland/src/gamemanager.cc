@@ -14,7 +14,7 @@
 
 GameManager* GameManager::instance_gm_ = nullptr;
 
-//Instantiates only one object (Singletone)
+/// @brief Instantiates only one object (Singletone)
 GameManager& GameManager::Instantiate(){
 
   if(nullptr == instance_gm_){ instance_gm_ = new GameManager(); }
