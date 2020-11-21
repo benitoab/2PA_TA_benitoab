@@ -28,3 +28,24 @@ GameManager::GameManager(){
 
 GameManager::~GameManager(){  
 }
+
+void GameManager::drawBlackRects(SDL_Renderer* ren){
+  
+  SDL_Rect aux1, aux2;
+  
+  aux1.x = kBoardWidth;
+  aux1.y = 0;
+  aux1.w = kWindowWidth - kBoardWidth;
+  aux1.h = kWindowHeight;
+  //aux1.h = kBoardHeight;
+  
+  aux2.x = 0;
+  aux2.y = kBoardHeight;
+  aux2.w = kWindowWidth;
+  // aux2.w = kBoardWidth;
+  aux2.h = kWindowHeight - kBoardHeight;
+  
+  SDL_SetRenderDrawColor(ren,0,0,0,255);
+  SDL_RenderFillRect(ren,&aux1);
+  SDL_RenderFillRect(ren,&aux2);
+}

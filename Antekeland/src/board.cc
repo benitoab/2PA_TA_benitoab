@@ -136,7 +136,10 @@ void Board::update0Position(){
   }
 }
 
-// Draws the map
+/**
+ *  @brief Draws the map. It draw others map
+ *  @param the renderer
+ */
 void Board::drawMap(SDL_Renderer* renderer){
     
   int diagonal = 0;

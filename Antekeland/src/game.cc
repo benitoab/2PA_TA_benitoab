@@ -154,6 +154,8 @@ void Game::draw(){
   gM.c.draw(ren_);
   /* Layer 2 */
   gM.layer2_.drawMap(ren_);
+  /* Layer3 */
+  gM.drawBlackRects(ren_);
 
   //Update the screen
   SDL_RenderPresent(ren_);

@@ -25,7 +25,8 @@ class GameManager{
    
     //Methods  
     ~GameManager();
-
+    //It has to be change of .h
+    void drawBlackRects(SDL_Renderer* ren);
     //Factory
     static GameManager& Instantiate();
     
