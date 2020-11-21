@@ -152,6 +152,7 @@ void Game::draw(){
   gM.layer1_.drawMap(ren_);
   /* Character */
   gM.c.draw(ren_);
+  gM.combat_.drawMark(ren_);
   /* Layer 2 */
   gM.layer2_.drawMap(ren_);
   /* Layer3 */

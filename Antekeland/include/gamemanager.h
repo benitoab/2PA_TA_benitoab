@@ -13,6 +13,7 @@
 #include "board.h"
 #include "logic.h"
 #include "character.h"
+#include "combat.h"
 
 class GameManager{
   public:  
@@ -37,6 +38,7 @@ class GameManager{
     Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
     Character c;
     Texture* map_texture_;
+    Combat combat_;
  
   private:
     //Methods
