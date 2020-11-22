@@ -5,6 +5,8 @@
 
 
 
+
+
 Character::Character(){
   hp_ = 100;
   attack_ = 10;
@@ -12,7 +14,11 @@ Character::Character(){
   movement_ = 10;
   profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
-  level_ = 1;
+  level_ = 1;/*
+  char_attacks_[0] = GameManager::Instantiate().attacks[1];
+  char_attacks_[1] = GameManager::Instantiate().attacks[2];
+  char_attacks_[2] = GameManager::Instantiate().attacks[3];
+  char_attacks_[3] = GameManager::Instantiate().attacks[4];*/
 }
 
 Character::~Character(){}
@@ -26,6 +32,11 @@ void Character::init(){
   profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
   level_ = 1;
+  
+  char_attacks_[0] = GameManager::Instantiate().attacks[1];
+  char_attacks_[1] = GameManager::Instantiate().attacks[2];
+  char_attacks_[2] = GameManager::Instantiate().attacks[3];
+  char_attacks_[3] = GameManager::Instantiate().attacks[4];
   
 }
 

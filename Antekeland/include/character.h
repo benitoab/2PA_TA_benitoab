@@ -10,6 +10,16 @@
 
 #include "entity.h"
 
+
+struct Attacks{
+  int32_t id;
+  int32_t dmg; ///@var damage of the attack
+  int32_t mana_cost; ///@var how many mana it costs
+  uint8_t range; ///@var the manhatan distance you need to be to use it.
+  uint8_t type; ///@var the type of the damage magic(0) or physic(1)
+  char* name; ///@var the name of the attack
+};
+
 enum kEnumProfession{
   kEnumProfession_Warrior = 0,
   kEnumProfession_Hunter ,
@@ -36,6 +46,7 @@ class Character : public Entity{
   
   void draw(SDL_Renderer* ren);
   
+  Attacks char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
   protected:
   
   RBM::Vec2 velocity;

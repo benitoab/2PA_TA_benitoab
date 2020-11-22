@@ -71,11 +71,14 @@ int Game::init(){
   CreateBoard();
   InitLogic();
   CreateMap();
+  gM.initsAttacks();
   gM.c.init();
   gM.c.dst_rect_.x = gM.kViewSize/2;
   gM.c.dst_rect_.y = gM.kViewSize/2;
   gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
-  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;         
+  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
+  gM.combat_.initCombat();
+  
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -152,11 +155,12 @@ void Game::draw(){
   gM.layer1_.drawMap(ren_);
   /* Character */
   gM.c.draw(ren_);
-  gM.combat_.drawMark(ren_);
+  //gM.combat_.drawMark(ren_);
   /* Layer 2 */
   gM.layer2_.drawMap(ren_);
   /* Layer3 */
-  gM.drawBlackRects(ren_);
+  //gM.drawBlackRects(ren_);
+  //gM.combat_.drawAttacks(ren_);
 
   //Update the screen
   SDL_RenderPresent(ren_);
