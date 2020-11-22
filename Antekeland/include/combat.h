@@ -20,7 +20,7 @@ class Combat {
     Combat();
     ~Combat();
     
-    void initCombat();
+    void initCombat(Character& current_char);
     //DrawUI  
     //void drawCombatUI(SDL_Renderer* ren);
     void drawMark(SDL_Renderer* ren);

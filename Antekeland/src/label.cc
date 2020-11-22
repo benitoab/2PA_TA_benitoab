@@ -81,16 +81,23 @@ void Label::drawText(SDL_Renderer* render){
   text_surface=TTF_RenderUTF8_Solid(font_,text_,color_);
   if(!text_surface){
     //handle error here, perhaps print TTF_GetError at least
+    printf("Adios texto :D\n");
   } 
   else {
     
     //SDL_BlitSurface(text_surface,NULL,sur,&dst_rect_);
     SDL_Texture* text_texture;
+   
     text_texture = SDL_CreateTextureFromSurface(render, 
                                                 text_surface);
+    
+    if(text_texture == NULL){
+      printf("Adios texto :D\n");
+    }      
                                                 
     SDL_RenderCopy(render, text_texture, NULL, &dst_rect_);                                           
     //perhaps we can reuse it, but I assume not for simplicity.
-    //SDL_FreeSurface(text_surface);
+    SDL_FreeSurface(text_surface);
+    SDL_DestroyTexture(text_texture);
   }
 }

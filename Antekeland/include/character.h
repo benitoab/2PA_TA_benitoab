@@ -61,7 +61,7 @@ class Character : public Entity{
   Attacks char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
   public:
   
-  RBM::Vec2 velocity;
+  RBM::Vec2 velocity;//¿?
   
   ///@var Stats base of the characters.
   Character_Stats base_;

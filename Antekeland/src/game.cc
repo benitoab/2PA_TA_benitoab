@@ -77,7 +77,7 @@ int Game::init(){
   gM.c.dst_rect_.y = gM.kViewSize/2;
   gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
   gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
-  gM.combat_.initCombat();
+  gM.combat_.initCombat(gM.c);
   
 
   for(int i = 0; i < Board::kBoardSize; ++i){
