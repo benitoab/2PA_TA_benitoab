@@ -118,9 +118,9 @@ void Game::input(){
     if (/*event.key.keysym.sym == SDLK_ESCAPE || */event.type == SDL_QUIT ) {
       quit_ = true;      
     }
+    if(event.key.keysym.sym == SDLK_1){ ++gM.c.current_.hp;}
+    if(event.key.keysym.sym == SDLK_2){ --gM.c.current_.hp;}
 
-    //gM.layer1_.move0Position(&event);
-   // gM.layer2_.move0Position(&event);
     gM.c.movCharacter(&event);
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
@@ -159,8 +159,9 @@ void Game::draw(){
   /* Layer 2 */
   gM.layer2_.drawMap(ren_);
   /* Layer3 */
-  //gM.drawBlackRects(ren_);
-  //gM.combat_.drawAttacks(ren_);
+  gM.drawBlackRects(ren_);
+  gM.combat_.drawAttacks(ren_);
+  gM.combat_.drawStats(ren_, gM.c);
 
   //Update the screen
   SDL_RenderPresent(ren_);

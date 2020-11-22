@@ -5,30 +5,36 @@
 
 
 
-
-
 Character::Character(){
-  hp_ = 100;
-  attack_ = 10;
-  defense_ = 10;
-  movement_ = 10;
+  base_.hp = 100;
+  base_.mana = 100;
+  base_.physical_att = 10;
+  base_.magic_att = 10;
+  base_.armor = 10;
+  base_.magic_resist = 10;
+  base_.movement = 7; 
+  
+  current_ = base_;
   profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
-  level_ = 1;/*
-  char_attacks_[0] = GameManager::Instantiate().attacks[1];
-  char_attacks_[1] = GameManager::Instantiate().attacks[2];
-  char_attacks_[2] = GameManager::Instantiate().attacks[3];
-  char_attacks_[3] = GameManager::Instantiate().attacks[4];*/
+  level_ = 1;
+  
 }
 
 Character::~Character(){}
 
 void Character::init(){
   
-  hp_ = 100;
-  attack_ = 10;
-  defense_ = 10;
-  movement_ = 10;
+  base_.hp = 100;
+  base_.mana = 100;
+  base_.physical_att = 10;
+  base_.magic_att = 10;
+  base_.armor = 10;
+  base_.magic_resist = 10;
+  base_.movement = 7; 
+  
+  current_ = base_;
+
   profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
   level_ = 1;
