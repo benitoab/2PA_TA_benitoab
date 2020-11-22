@@ -15,12 +15,15 @@
 #include "character.h"
 #include "imgui.h"
 #include "imgui_sdl.h"
+#include "combat.h"
 
 class GameManager{
   public:  
     //Constant
-    static const int kWindowWidth = 640;
-    static const int kWindowHeight = 640;    
+    static const int kWindowWidth = 1024;
+    static const int kWindowHeight = 768;
+    static const int kBoardWidth = 640;
+    static const int kBoardHeight = 640;    
     static const unsigned char kViewSize = 16;
     static const int kImGuiWidth = 500;
     static const int kImGuiHeight = 500;
@@ -28,7 +31,8 @@ class GameManager{
    
     //Methods  
     ~GameManager();
-
+    //It has to be change of .h
+    void drawBlackRects(SDL_Renderer* ren);
     //Factory
     static GameManager& Instantiate();
     
@@ -39,6 +43,7 @@ class GameManager{
     Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
     Character c;
     Texture* map_texture_;
+    Combat combat_;
  
   private:
     //Methods

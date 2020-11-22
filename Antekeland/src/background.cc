@@ -46,7 +46,7 @@ void Background::update(float dt){
       transform_.position.x += dst_rect_.w;
     }
     else if(transform_.position.x /*+ dst_rect_.w*/
-    > GameManager::kWindowWidth){
+    > GameManager::kBoardWidth){
       transform_.position.x -= dst_rect_.w;
     }
     
@@ -54,7 +54,7 @@ void Background::update(float dt){
       transform_.position.y += dst_rect_.h;
     }
     else if(transform_.position.y /*+ dst_rect_.h */
-    > GameManager::kWindowHeight){
+    > GameManager::kBoardHeight){
       transform_.position.y -= dst_rect_.h;
     }
     
@@ -89,7 +89,7 @@ void Background::draw(SDL_Renderer* render){
   end = false;
   
   while(!end){
-    if(x_end + width > GameManager::kWindowWidth){
+    if(x_end + width > GameManager::kBoardWidth){
       end = true;
     }
     x_end += width;
@@ -105,7 +105,7 @@ void Background::draw(SDL_Renderer* render){
   end = false;
   
   while(!end){
-    if(y_end + height > GameManager::kWindowHeight){
+    if(y_end + height > GameManager::kBoardHeight){
       end = true;
     }
     y_end += height;

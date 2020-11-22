@@ -105,12 +105,16 @@ int Game::init(){
     printf("Error al cargar SDL_ttf\n"); 
   }
 
-  ImGui::CreateContext();
-	ImGuiSDL::Initialize(ren_, 600, 600);
-
-  // srand((unsigned int)time(NULL));
-
   GameManager& gM = GameManager::Instantiate();
+
+  /*gM.window_flags |= ImGuiWindowFlags_NoMove;
+  gM.window_flags |= ImGuiWindowFlags_NoResize;
+  gM.window_flags |= ImGuiWindowFlags_NoCollapse;*/
+
+  ImGui::CreateContext();
+	ImGuiSDL::Initialize(ren_, gM.kWindowWidth, gM.kWindowHeight);
+
+  srand((unsigned int)time(NULL));
 
   gM.map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren_);
 
@@ -169,8 +173,12 @@ void Game::input(){
       quit_ = true;      
     }
 
-    //gM.layer1_.move0Position(&event);
-    // gM.layer2_.move0Position(&event);
+    /*if(event.key.keysym.sym == SDLK_SPACE){
+
+      SDL_SetWindowSize(win_, 300, 300);
+
+    }*/
+
     gM.c.movCharacter(&event);
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
@@ -185,23 +193,30 @@ void Game::input(){
 void Game::update(){
 
   GameManager& gM = GameManager::Instantiate();
-
-  gM.window_flags |= ImGuiWindowFlags_NoMove;
-  gM.window_flags |= ImGuiWindowFlags_NoResize;
-  gM.window_flags |= ImGuiWindowFlags_NoCollapse;
+  float size;
   
   // Start the Dear ImGui frame
   ImGui::NewFrame();
-  ImGui::SetNextWindowPos(ImVec2(gM.kWindowWidth/2, gM.kWindowHeight/2), 0, ImVec2(0.5, 0.5));
+  // ImGui::SetNextWindowPos(ImVec2(gM.kWindowWidth/2, gM.kWindowHeight/2), 0, ImVec2(0.5, 0.5));
   ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth, gM.kImGuiHeight));
   ImGui::Begin("Antekeland", NULL, gM.window_flags);
+  size = ImGui::GetWindowWidth();
   // ImGui::ShowDemoWindow();
+  printf("%f\n", size);
+  ImGui::SameLine(100);
+  ImGui::Text("Select Skin:");
+  ImGui::AlignTextToFramePadding();
+  ImGui::ArrowButton("##left", ImGuiDir_Left);
+  ImGui::SameLine();
+  ImGui::Text("Skin");
+  ImGui::SameLine();
+  ImGui::ArrowButton("##right", ImGuiDir_Right);
 
-  gM.layer1_.reset0Position();
-  gM.layer2_.reset0Position();
-  // printf("Casilla character x:%d y:%d\n",gM.c.dst_rect_.x, gM.c.dst_rect_.y );
-  gM.layer1_.update0Position();
-  gM.layer2_.update0Position();
+  // gM.layer1_.reset0Position();
+  // gM.layer2_.reset0Position();
+  
+  // gM.layer1_.update0Position();
+  // gM.layer2_.update0Position();
 
   // printf("%d %d\n", Board::x_origin_, Board::y_origin_);
 
@@ -211,7 +226,7 @@ void Game::update(){
 
 void Game::draw(){
 
-  // GameManager& gM = GameManager::Instantiate();
+  GameManager& gM = GameManager::Instantiate();
   
   SDL_SetRenderDrawColor(ren_,0,0,0,0);
   SDL_RenderClear(ren_);
@@ -224,8 +239,11 @@ void Game::draw(){
   // gM.layer1_.drawMap(ren_);
   /* Character */
   // gM.c.draw(ren_);
+  // gM.combat_.drawMark(ren_);
   /* Layer 2 */
   // gM.layer2_.drawMap(ren_);
+  /* Layer3 */
+  // gM.drawBlackRects(ren_);
 
   //Update the screen
   SDL_RenderPresent(ren_);
