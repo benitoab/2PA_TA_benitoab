@@ -55,6 +55,8 @@ struct Character_Stats{
   int32_t armor;
   int32_t magic_resist;
   int32_t movement; 
+  int32_t mana_regen; 
+  int32_t crit_chance; 
 };
 
 

@@ -19,6 +19,6 @@ int callbackProffesion(void *proffdata, int argc,
   (p_data+i)->magic_resist = atoi(argv[6]);
   (p_data+i)->movement = atoi(argv[7]);
   (p_data+i)->mana_regen = atoi(argv[8]);
-  (p_data+i)->crit_chance = (float) atoi(argv[9]);
+  (p_data+i)->crit_chance = atoi(argv[9]);
   return 0;
 }
