@@ -23,6 +23,8 @@
 Game::Game(){
   win_ = nullptr;
   ren_ = nullptr;
+  current_scene_ = nullptr;
+  previous_scene_ = nullptr;
   quit_ = 0;
   current_time_ = 0;
   last_time_ = 0;
@@ -32,8 +34,19 @@ Game::~Game(){
 
   if(nullptr != win_){ SDL_DestroyWindow(win_); }
   if(nullptr != ren_){ SDL_DestroyRenderer(ren_); }
-   
 }
+
+Scene* Game::LoadScene(Scene* new_scene){
+  
+  Scene* aux_scene = current_scene_;
+  
+  //previous_scene_ = current_scene_;
+  
+  current_scene_ =  new_scene;
+  
+  return aux_scene;
+}
+
 
 int Game::init(){
   //SDL
