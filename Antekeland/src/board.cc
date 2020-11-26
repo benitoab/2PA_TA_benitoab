@@ -63,30 +63,6 @@ void Board::initLayer2(){
 
 }
 
-/*
-// Move the position of the origin of the draw of the board
-void Board::move0Position(SDL_Event* e){
- // vertical_mov_ = 0;
- // horizontal_mov_ = 0;
-
-  if(e->type == SDL_KEYDOWN){
-    
-    if(e->key.keysym.sym == SDLK_UP ){vertical_mov_ = 1;}
-    if(e->key.keysym.sym == SDLK_DOWN){vertical_mov_ = -1;}
-    if(e->key.keysym.sym == SDLK_LEFT){horizontal_mov_ = 1;}
-    if(e->key.keysym.sym == SDLK_RIGHT){horizontal_mov_ = -1;}
-
-  }
-  if(e->type == SDL_KEYUP && 
-    (e->key.keysym.sym == SDLK_UP ||
-     e->key.keysym.sym == SDLK_DOWN ||
-     e->key.keysym.sym == SDLK_LEFT ||
-     e->key.keysym.sym == SDLK_RIGHT)){   
-    vertical_mov_ = 0;
-    horizontal_mov_ = 0;
-  }  
-}
-*/
 void Board::reset0Position(){
   GameManager& gM = GameManager::Instantiate();  
   int total_w = (map_[0][0].dst_rect_.w*(kBoardSize));
@@ -116,18 +92,7 @@ void Board::update0Position(){
   
   int x = gM.kBoardWidth/kBoardSize * (kBoardSize/gM.kViewSize);
   int y = gM.kBoardHeight/kBoardSize * (kBoardSize/gM.kViewSize);
- /* 
-  uint8_t speed = 1;
-  
-  x_origin_ += speed* horizontal_mov_;
-  y_origin_ += speed* vertical_mov_;
-  
- 
-  if(!gM.c.cell()){ 
-    x_origin_ -= speed* horizontal_mov_;
-    y_origin_ -= speed* vertical_mov_;
-  }
-  */
+
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
       map_[r][c].dst_rect_.x = c * x + x_origin_;
@@ -137,8 +102,8 @@ void Board::update0Position(){
 }
 
 /**
- *  @brief Draws the map. It draw others map
- *  @param the renderer
+ *  @brief Draws the map. It draw other maps
+ *  @param renderer It's the renderer to be drawn
  */
 void Board::drawMap(SDL_Renderer* renderer){
     
@@ -150,14 +115,12 @@ void Board::drawMap(SDL_Renderer* renderer){
     for(int c = 0; c < kBoardSize; ++c){
 
       map_[r][c].draw(renderer);
-      /*SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-      SDL_RenderDrawRect(renderer, &map_[r][c].dst_rect_);*/
 
     }
   }  
   
   if(x_origin_ > 0){
-    //printf("x_o positiva \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x - map_[r][c].dst_rect_.w*kBoardSize;
@@ -174,7 +137,7 @@ void Board::drawMap(SDL_Renderer* renderer){
   }  
   
   if(x_origin_ < -map_[0][0].dst_rect_.w){
-    //printf("x_o negativa mucho \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x + map_[r][c].dst_rect_.w * kBoardSize;
@@ -191,7 +154,7 @@ void Board::drawMap(SDL_Renderer* renderer){
   }  
   
   if(y_origin_ > 0){
-    //printf("y_o positiva \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x ;
@@ -208,7 +171,7 @@ void Board::drawMap(SDL_Renderer* renderer){
   }  
   
   if(y_origin_ < -map_[0][0].dst_rect_.h){
-    //printf("y_o negativa mucho \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x ;
@@ -228,7 +191,7 @@ void Board::drawMap(SDL_Renderer* renderer){
   
   // upper and left
   if(diagonal == 101){
-   // printf("diagonal arriba izq \n");
+   
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x - map_[r][c].dst_rect_.w*kBoardSize;
@@ -245,7 +208,7 @@ void Board::drawMap(SDL_Renderer* renderer){
   
   // botton and left
   else if(diagonal == 1001){
-    //printf("diagonal abajo izq \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x - map_[r][c].dst_rect_.w*kBoardSize;
@@ -262,7 +225,7 @@ void Board::drawMap(SDL_Renderer* renderer){
   
   // upper right
   else if(diagonal == 110){
-    //printf("diagonal arriba derecha \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x + map_[r][c].dst_rect_.w*kBoardSize;
@@ -279,7 +242,7 @@ void Board::drawMap(SDL_Renderer* renderer){
  
  // bottom right
   else if(diagonal == 1010){
-    //printf("diagonal abajo derecha \n");
+    
     for(int r = 0; r < kBoardSize; ++r){
       for(int c = 0; c < kBoardSize; ++c){
         aux_rect.x = map_[r][c].dst_rect_.x + map_[r][c].dst_rect_.w*kBoardSize;

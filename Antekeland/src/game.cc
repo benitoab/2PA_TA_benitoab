@@ -15,9 +15,12 @@
 #include "game.h"
 #include "gamemanager.h"
 #include "grid.h"
+#include "customization.h"
 
 #include "imgui.h"
 #include "imgui_sdl.h"
+
+int skin_counter = 1;
 
 Game::Game(){
   win_ = nullptr;
@@ -33,47 +36,6 @@ Game::~Game(){
   if(nullptr != ren_){ SDL_DestroyRenderer(ren_); }
    
 }
-
-/** @brief Process mouse events for the ImGuiSDL binding.
- *
- * @param Pointer to an SDL_Event captured this frame.
- */
-void ImGuiSDLProcessEvent(SDL_Event* e) {
-  if (e == nullptr) return;
-
-  ImGuiIO& io = ImGui::GetIO();
-
-  int wheel = 0;
-
-  while (SDL_PollEvent(e))
-  {
-    if (e->type == SDL_WINDOWEVENT)
-    {
-      if (e->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-      {
-        io.DisplaySize.x = static_cast<float>(e->window.data1);
-        io.DisplaySize.y = static_cast<float>(e->window.data2);
-      }
-    }
-    else if (e->type == SDL_MOUSEWHEEL)
-    {
-      wheel = e->wheel.y;
-    }
-  }
-
-  int mouseX, mouseY;
-  const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
-
-  // Setup low-level inputs (e.g. on Win32, GetKeyboardState(), or 
-  // write to those fields from your Windows message loop handlers, etc.)
-
-  io.DeltaTime = 1.0f / 60.0f;
-  io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-  io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
-  io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
-  io.MouseWheel = static_cast<float>(wheel);
-}
-
 
 int Game::init(){
   //SDL
@@ -107,12 +69,7 @@ int Game::init(){
 
   GameManager& gM = GameManager::Instantiate();
 
-  /*gM.window_flags |= ImGuiWindowFlags_NoMove;
-  gM.window_flags |= ImGuiWindowFlags_NoResize;
-  gM.window_flags |= ImGuiWindowFlags_NoCollapse;*/
-
-  ImGui::CreateContext();
-	ImGuiSDL::Initialize(ren_, gM.kWindowWidth, gM.kWindowHeight);
+  InitImGui(ren_);
 
   srand((unsigned int)time(NULL));
 
@@ -121,11 +78,14 @@ int Game::init(){
   CreateBoard();
   InitLogic();
   CreateMap();
+  gM.initsAttacks();
   gM.c.init();
   gM.c.dst_rect_.x = gM.kViewSize/2;
   gM.c.dst_rect_.y = gM.kViewSize/2;
   gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
-  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;         
+  gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
+  gM.combat_.initCombat();
+  
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -141,17 +101,12 @@ void Game::quit(){
   
   // Rest of the other quit functions
   // Clean up our objects and quit
-
-  ImGuiSDL::Deinitialize();
   
   SDL_DestroyRenderer(ren_);
   SDL_DestroyWindow(win_);
   
   // Cleanup
-
-  // Cleanup
-  ImGui::DestroyContext();
-
+  QuitImGui();
   IMG_Quit();
   SDL_Quit();
   TTF_Quit();
@@ -193,24 +148,8 @@ void Game::input(){
 void Game::update(){
 
   GameManager& gM = GameManager::Instantiate();
-  float size;
   
-  // Start the Dear ImGui frame
-  ImGui::NewFrame();
-  // ImGui::SetNextWindowPos(ImVec2(gM.kWindowWidth/2, gM.kWindowHeight/2), 0, ImVec2(0.5, 0.5));
-  ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth, gM.kImGuiHeight));
-  ImGui::Begin("Antekeland", NULL, gM.window_flags);
-  size = ImGui::GetWindowWidth();
-  // ImGui::ShowDemoWindow();
-  printf("%f\n", size);
-  ImGui::SameLine(100);
-  ImGui::Text("Select Skin:");
-  ImGui::AlignTextToFramePadding();
-  ImGui::ArrowButton("##left", ImGuiDir_Left);
-  ImGui::SameLine();
-  ImGui::Text("Skin");
-  ImGui::SameLine();
-  ImGui::ArrowButton("##right", ImGuiDir_Right);
+  UpdateImGui();
 
   // gM.layer1_.reset0Position();
   // gM.layer2_.reset0Position();
@@ -219,8 +158,6 @@ void Game::update(){
   // gM.layer2_.update0Position();
 
   // printf("%d %d\n", Board::x_origin_, Board::y_origin_);
-
-  ImGui::End();
 
 }
 
@@ -232,18 +169,18 @@ void Game::draw(){
   SDL_RenderClear(ren_);
 
   //ImGui
-  ImGui::Render();  
-  ImGuiSDL::Render(ImGui::GetDrawData());
+  DrawImGui();
 
   /* Layer 1 */
   // gM.layer1_.drawMap(ren_);
   /* Character */
   // gM.c.draw(ren_);
-  // gM.combat_.drawMark(ren_);
+  //gM.combat_.drawMark(ren_);
   /* Layer 2 */
   // gM.layer2_.drawMap(ren_);
   /* Layer3 */
-  // gM.drawBlackRects(ren_);
+  //gM.drawBlackRects(ren_);
+  //gM.combat_.drawAttacks(ren_);
 
   //Update the screen
   SDL_RenderPresent(ren_);

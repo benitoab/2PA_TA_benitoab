@@ -33,6 +33,7 @@ class GameManager{
     ~GameManager();
     //It has to be change of .h
     void drawBlackRects(SDL_Renderer* ren);
+    void initsAttacks();
     //Factory
     static GameManager& Instantiate();
     
@@ -44,7 +45,7 @@ class GameManager{
     Character c;
     Texture* map_texture_;
     Combat combat_;
- 
+    Attacks attacks[6];
   private:
     //Methods
     GameManager();

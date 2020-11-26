@@ -13,7 +13,7 @@
 
 class Texture{
   public: 
-    static const int32_t kMaxTextures = 10;
+    static const int32_t kMaxTextures = 100;
     
     //Methods 
     ~Texture();

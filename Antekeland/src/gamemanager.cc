@@ -49,3 +49,54 @@ void GameManager::drawBlackRects(SDL_Renderer* ren){
   SDL_RenderFillRect(ren,&aux1);
   SDL_RenderFillRect(ren,&aux2);
 }
+
+
+void GameManager::initsAttacks(){
+  
+  attacks[0].id = 0;
+  attacks[0].dmg = 0;
+  attacks[0].mana_cost = 0;
+  attacks[0].range = 0;
+  attacks[0].type = 0;
+  attacks[0].name = "nada";
+  
+  attacks[1].id = 1;
+  attacks[1].dmg = 10;
+  attacks[1].mana_cost = 0;
+  attacks[1].range = 1;
+  attacks[1].type = 1;
+  attacks[1].name = "Golpe simple";
+  
+  
+  attacks[2].id = 2;
+  attacks[2].dmg = 20;
+  attacks[2].mana_cost = 5;
+  attacks[2].range = 1;
+  attacks[2].type = 1;
+  attacks[2].name = "Golpe potente";
+  
+  
+  attacks[3].id = 3;
+  attacks[3].dmg = 10;
+  attacks[3].mana_cost = 5;
+  attacks[3].range = 2;
+  attacks[3].type = 0;
+  attacks[3].name = "Bola de Fuego";
+  
+  
+  attacks[4].id = 4;
+  attacks[4].dmg = 20;
+  attacks[4].mana_cost = 10;
+  attacks[4].range = 2;
+  attacks[4].type = 0;
+  attacks[4].name = "Ventisca";
+  
+  
+  attacks[5].id = 5;
+  attacks[5].dmg = 15;
+  attacks[5].mana_cost = 2;
+  attacks[5].range = 1;
+  attacks[5].type = 1;
+  attacks[5].name = "Estocada veloz";
+}
+

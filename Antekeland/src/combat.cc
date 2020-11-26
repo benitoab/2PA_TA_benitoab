@@ -1,6 +1,7 @@
 #include "combat.h"
 #include "gamemanager.h"
 
+
 Combat::Combat(){
   turn_ = 0;
   stage_ = 0;
@@ -42,3 +43,46 @@ void Combat::drawMark(SDL_Renderer* ren){
   
 }
 
+
+void Combat::initCombat(){
+  
+  GameManager& gM = GameManager::Instantiate();
+  
+  SDL_Color white = {255,255,255,255};
+  SDL_Rect aux_rect;
+  aux_rect.x = 0;
+  aux_rect.y = gM.kBoardHeight;
+  aux_rect.w = 200;
+  aux_rect.h = 50;
+  
+  att_text_[0].init("../data/fonts/combat.ttf",25,white,
+                    gM.c.char_attacks_[0].name,aux_rect);
+  aux_rect.x = 200;
+  aux_rect.y = gM.kBoardHeight;
+  
+  att_text_[1].init("../data/fonts/combat.ttf",25,white,
+                    gM.c.char_attacks_[1].name,aux_rect);               
+
+  aux_rect.x = 0;
+  aux_rect.y = gM.kBoardHeight+50;
+  
+  att_text_[2].init("../data/fonts/combat.ttf",25,white,
+                    gM.c.char_attacks_[2].name,aux_rect);
+
+  aux_rect.x = 200;
+  aux_rect.y = gM.kBoardHeight+50;
+  
+  att_text_[3].init("../data/fonts/combat.ttf",25,white,
+                    "el zumo de naranja lleva mucha azucar xdddddddddddddddd",aux_rect); 
+}
+
+
+
+void Combat::drawAttacks(SDL_Renderer* ren){
+  
+  att_text_[0].drawText(ren);
+  att_text_[1].drawText(ren);
+  att_text_[2].drawText(ren);
+  att_text_[3].drawText(ren);
+  
+}
