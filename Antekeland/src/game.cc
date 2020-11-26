@@ -20,8 +20,6 @@
 #include "imgui.h"
 #include "imgui_sdl.h"
 
-int skin_counter = 1;
-
 Game::Game(){
   win_ = nullptr;
   ren_ = nullptr;
@@ -84,7 +82,7 @@ int Game::init(){
   gM.c.dst_rect_.y = gM.kViewSize/2;
   gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
   gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
-  gM.combat_.initCombat();
+  gM.combat_.initCombat(gM.c);
   
 
   for(int i = 0; i < Board::kBoardSize; ++i){
@@ -127,6 +125,8 @@ void Game::input(){
     if (/*event.key.keysym.sym == SDLK_ESCAPE || */event.type == SDL_QUIT ) {
       quit_ = true;      
     }
+    if(event.key.keysym.sym == SDLK_1){ ++gM.c.current_.hp;}
+    if(event.key.keysym.sym == SDLK_2){ --gM.c.current_.hp;}
 
     /*if(event.key.keysym.sym == SDLK_SPACE){
 
@@ -179,8 +179,9 @@ void Game::draw(){
   /* Layer 2 */
   // gM.layer2_.drawMap(ren_);
   /* Layer3 */
-  //gM.drawBlackRects(ren_);
-  //gM.combat_.drawAttacks(ren_);
+  // gM.drawBlackRects(ren_);
+  // gM.combat_.drawAttacks(ren_);
+  // gM.combat_.drawStats(ren_, gM.c);
 
   //Update the screen
   SDL_RenderPresent(ren_);

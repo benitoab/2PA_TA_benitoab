@@ -46,6 +46,18 @@ struct SkinsCustomization{
 
 };
 
+///@brief strcut that store the stats of the characters
+struct Character_Stats{
+  int32_t hp;
+  int32_t mana;
+  int32_t physical_att; 
+  int32_t magic_att;
+  int32_t armor;
+  int32_t magic_resist;
+  int32_t movement; 
+};
+
+
 enum kEnumProfession{
   kEnumProfession_Warrior = 0,
   kEnumProfession_Hunter ,
@@ -73,14 +85,15 @@ class Character : public Entity{
   void draw(SDL_Renderer* ren);
   
   Attacks char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
-  protected:
+  public:
   
-  RBM::Vec2 velocity;
+  RBM::Vec2 velocity;//¿?
   
-  int32_t hp_;
-  int32_t attack_;
-  int32_t defense_;
-  int32_t movement_;
+  ///@var Stats base of the characters.
+  Character_Stats base_;
+  ///@var Stats that change during the combat.
+  Character_Stats current_;
+  
   int32_t profession_;
   int32_t xp_;
   int32_t level_;
