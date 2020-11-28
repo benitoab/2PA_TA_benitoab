@@ -10,16 +10,19 @@
 
 #include "SDL.h"
 
+
+class Scene;
+
 class Game {
   public:   
     //Methods
     Game();    
     ~Game();    
     
-    Scene* LoadScene(Scene* new_scene);
+    void loadScene(int n_scene);
     
     
-    void game();
+    void mainGame();
     void input();
     void update();
     void draw();
@@ -27,17 +30,18 @@ class Game {
     int init();
     void quit();    
 
-    void ImGuiSDLProcessEvent1(SDL_Event* e);
+    //void ImGuiSDLProcessEvent1(SDL_Event* e);
     
     // Attributes
     SDL_Window *win_;
     SDL_Renderer *ren_;
-    Scene* current_scene_;
-    Scene* previous_scene_;
+    Scene* current_scene_[4];
+    //Scene* previous_scene_;
     int quit_;
     double current_time_, last_time_;
     const unsigned char fps = 60;
-    bool show = true;
+    
+
 
 };
 

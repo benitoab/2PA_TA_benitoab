@@ -24,6 +24,8 @@ GameManager& GameManager::Instantiate(){
 }
 
 GameManager::GameManager(){
+  map_texture_ = nullptr;
+  over_world_scene_ = 0;
 }
 
 GameManager::~GameManager(){  

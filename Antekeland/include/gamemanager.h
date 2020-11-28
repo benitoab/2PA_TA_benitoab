@@ -16,6 +16,7 @@
 #include "imgui.h"
 #include "imgui_sdl.h"
 #include "combat.h"
+#include "rect.h"
 
 class GameManager{
   public:  
@@ -46,6 +47,10 @@ class GameManager{
     Texture* map_texture_;
     Combat combat_;
     Attacks attacks[6];
+    uint8_t over_world_scene_ ;
+    
+    Rect ui_rects_[2];
+    
   private:
     //Methods
     GameManager();

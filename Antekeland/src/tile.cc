@@ -33,6 +33,10 @@ void Tile::init(const SDL_Rect* r, const uint8_t t, const uint8_t s, const int8_
   texture_ = GameManager::Instantiate().map_texture_;
 
 }
+/*
+void Tile::draw(SDL_Renderer* ren){
+  tile_sprite_.draw(ren);
+}*/
 
 void Tile::initSubSprite(){
 

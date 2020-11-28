@@ -32,7 +32,10 @@ class Label: public Entity{
   
   void setPosition(const SDL_Rect* r);
   
-  void drawText(SDL_Renderer* render);
+  void initRect(const int x, const int y,
+                const int w, const int h);
+  
+  void draw(SDL_Renderer* render) override;
   
   void changeColor(const SDL_Color c);
   

@@ -7,11 +7,13 @@
 
 #ifndef __COMBAT_H__  
 #define __COMBAT_H__ 1
+#define _CRT_SECURE_NO_WARNINGS
 
 #include "SDL.h"
 #include "label.h"
-#include "character.h"
+#include "rect.h"
 
+class Character;
 
 
 class Combat {
@@ -25,13 +27,16 @@ class Combat {
     //void drawCombatUI(SDL_Renderer* ren);
     void drawMark(SDL_Renderer* ren);
     void drawAttacks(SDL_Renderer* ren);
-    void drawStats(SDL_Renderer* ren, 
-                        Character& aux_char);
+    void updateStats();
   
     //Atributes
+    Character* current_char_;
+    
     Label att_text_[4];
     Label stats_text_[10];
-    SDL_Rect stats_rect_;
+    Rect stats_rect_[6];
+    
+    SDL_Rect ui_stats_rect_;
     SDL_Rect attacks_rect_;
     float stats_scale_; ///@var scale of the box where the stats are shown
     

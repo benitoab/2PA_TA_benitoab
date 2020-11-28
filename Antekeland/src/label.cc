@@ -75,7 +75,7 @@ void Label::setPosition(const SDL_Rect* r){
 }
 
 
-void Label::drawText(SDL_Renderer* render){
+void Label::draw(SDL_Renderer* render){
   
   SDL_Surface* text_surface;
   text_surface=TTF_RenderUTF8_Solid(font_,text_,color_);

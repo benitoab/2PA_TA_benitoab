@@ -16,6 +16,7 @@
 #include "gamemanager.h"
 #include "grid.h"
 #include "customization.h"
+#include "mainscene.h"
 
 #include "imgui.h"
 #include "imgui_sdl.h"
@@ -23,8 +24,11 @@
 Game::Game(){
   win_ = nullptr;
   ren_ = nullptr;
-  current_scene_ = nullptr;
-  previous_scene_ = nullptr;
+  current_scene_[0] = nullptr;
+  current_scene_[1] = nullptr;
+  current_scene_[2] = nullptr;
+  current_scene_[3] = nullptr;
+  //previous_scene_ = nullptr;
   quit_ = 0;
   current_time_ = 0;
   last_time_ = 0;
@@ -36,15 +40,11 @@ Game::~Game(){
   if(nullptr != ren_){ SDL_DestroyRenderer(ren_); }
 }
 
-Scene* Game::LoadScene(Scene* new_scene){
-  
-  Scene* aux_scene = current_scene_;
-  
-  //previous_scene_ = current_scene_;
-  
-  current_scene_ =  new_scene;
-  
-  return aux_scene;
+void Game::loadScene(int n_scene){
+  if(n_scene < 4){
+    current_scene_[n_scene]->init();
+  }
+ 
 }
 
 
@@ -96,7 +96,7 @@ int Game::init(){
   gM.c.dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
   gM.c.dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
   gM.combat_.initCombat(gM.c);
-  
+  gM.combat_.current_char_ = &gM.c;
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -104,7 +104,9 @@ int Game::init(){
       gM.layer2_.map_[i][j].initSubSprite();
     }
   }
- 
+  current_scene_[0] = new MainScene();
+  current_scene_[0]->init();
+  gM.over_world_scene_ = 1;
   return 0;
 }
 
@@ -141,13 +143,14 @@ void Game::input(){
     if(event.key.keysym.sym == SDLK_1){ ++gM.c.current_.hp;}
     if(event.key.keysym.sym == SDLK_2){ --gM.c.current_.hp;}
 
+    current_scene_[0]->input(&event);
     /*if(event.key.keysym.sym == SDLK_SPACE){
 
       SDL_SetWindowSize(win_, 300, 300);
 
     }*/
 
-    gM.c.movCharacter(&event);
+    //gM.c.movCharacter(&event);
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
       event.window.windowID == SDL_GetWindowID(win_)) {
@@ -160,15 +163,16 @@ void Game::input(){
 
 void Game::update(){
 
-  GameManager& gM = GameManager::Instantiate();
+  //GameManager& gM = GameManager::Instantiate();
   
-  UpdateImGui();
+  current_scene_[0]->update();
+  //UpdateImGui();
 
-  // gM.layer1_.reset0Position();
-  // gM.layer2_.reset0Position();
+   //gM.layer1_.reset0Position();
+   //gM.layer2_.reset0Position();
   
-  // gM.layer1_.update0Position();
-  // gM.layer2_.update0Position();
+   //gM.layer1_.update0Position();
+   //gM.layer2_.update0Position();
 
   // printf("%d %d\n", Board::x_origin_, Board::y_origin_);
 
@@ -181,8 +185,14 @@ void Game::draw(){
   SDL_SetRenderDrawColor(ren_,0,0,0,0);
   SDL_RenderClear(ren_);
 
+  current_scene_[0]->draw(ren_);
+  
+  if(gM.over_world_scene_){
+    gM.layer1_.drawMap(ren_);
+    gM.layer2_.drawMap(ren_);
+  }
   //ImGui
-  DrawImGui();
+  //DrawImGui();
 
   /* Layer 1 */
   // gM.layer1_.drawMap(ren_);
@@ -204,7 +214,7 @@ void Game::draw(){
   }while((current_time_ - last_time_) <= (1000.0/fps));
 }
 
-void Game::game(){
+void Game::mainGame(){
   
   init();
  

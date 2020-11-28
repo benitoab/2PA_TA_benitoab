@@ -7,14 +7,14 @@
   * @date Nov-2020
   * @copyright ESAT
   */
-
+ 
 #include"game.h"
 
 int main(int argc, char* argv[]){
   
   Game g; /** <Represents the game> */ 
 
-  g.game();
+  g.mainGame();
 
 	return 0;
 }

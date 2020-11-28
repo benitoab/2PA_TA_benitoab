@@ -76,7 +76,7 @@ class Character : public Entity{
   Character();
   ~Character();
   
-  void init();
+  void init() override;
   
   void levelUp();
   void updatePosition(); 
@@ -84,7 +84,7 @@ class Character : public Entity{
   
   uint8_t cell();
   
-  void draw(SDL_Renderer* ren);
+  void draw(SDL_Renderer* ren) override;
   
   Attacks char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
   public:

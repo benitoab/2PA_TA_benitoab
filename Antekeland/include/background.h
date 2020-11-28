@@ -11,7 +11,7 @@ class Background : public Entity{
   public:
  
   Background();
-  ~Background();
+  virtual ~Background();
   
   void init(const RBM::Transform2 tr, 
             const uint8_t hs, 
@@ -20,7 +20,7 @@ class Background : public Entity{
             const RBM::Vec2* vel);
                  
   void update(float dt);               
-  void draw(SDL_Renderer* render);
+  void draw(SDL_Renderer* render) override;
   //void drawOnly1(SDL_Renderer* render);  
   
   uint8_t horizontal_scroll_;

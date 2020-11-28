@@ -110,14 +110,14 @@ void Board::drawMap(SDL_Renderer* renderer){
   int diagonal = 0;
   SDL_Rect aux_rect;
   SDL_Texture* map_t = GameManager::Instantiate().map_texture_->texture_;
-
+/*
   for(int r = 0; r < kBoardSize; ++r){
     for(int c = 0; c < kBoardSize; ++c){
 
       map_[r][c].draw(renderer);
 
     }
-  }  
+  }  */
   
   if(x_origin_ > 0){
     

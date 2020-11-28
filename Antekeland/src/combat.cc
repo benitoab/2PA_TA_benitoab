@@ -7,6 +7,7 @@ Combat::Combat(){
   turn_ = 0;
   stage_ = 0;
   n_entities_ = 0;
+  current_char_ = nullptr;
 }
 
 Combat::~Combat(){}
@@ -54,11 +55,11 @@ void Combat::initCombat(Character& current_char){
   char* font = "../data/fonts/combat.otf";
   char aux_text[50];
   stats_scale_ = 1;
-  stats_rect_.x = gM.kBoardWidth;
-  stats_rect_.y = 0;
-  stats_rect_.w = (int)(stats_scale_ * 
+  ui_stats_rect_.x = gM.kBoardWidth;
+  ui_stats_rect_.y = 0;
+  ui_stats_rect_.w = (int)(stats_scale_ * 
                   (gM.kWindowWidth - gM.kBoardWidth));
-  stats_rect_.h = (int)(stats_scale_ * 
+  ui_stats_rect_.h = (int)(stats_scale_ * 
                   (gM.kWindowHeight - gM.kBoardHeight));
   
   SDL_Color white = {255,255,255,255};
@@ -88,8 +89,8 @@ void Combat::initCombat(Character& current_char){
   att_text_[3].init("../data/fonts/combat.otf",font_size,white,
                     "el zumo de naranja lleva mucha azucar xdddddddddddddddd",aux_rect); 
 
-  aux_rect.x = (int)(stats_rect_.x + stats_scale_ * spacing);
-  aux_rect.y = (int)(stats_rect_.y + stats_scale_ * 200);
+  aux_rect.x = (int)(ui_stats_rect_.x + stats_scale_ * spacing);
+  aux_rect.y = (int)(ui_stats_rect_.y + stats_scale_ * 200);
   aux_rect.w = (int)(stats_scale_ * 15*3);
   aux_rect.h = (int)(stats_scale_ * font_size);
  
@@ -158,44 +159,77 @@ void Combat::initCombat(Character& current_char){
   aux_rect.w = (int)(stats_scale_ * 15*n);
   stats_text_[7].init(font,
                      (uint16_t)(stats_scale_ *font_size),
-                      white, aux_text, aux_rect);                       
-
-}
-
-void Combat::drawAttacks(SDL_Renderer* ren){
-  
-  att_text_[0].drawText(ren);
-  att_text_[1].drawText(ren);
-  att_text_[2].drawText(ren);
-  att_text_[3].drawText(ren);
-  
-  
-}
-
-void Combat::drawStats(SDL_Renderer* ren, 
-                        Character& aux_char){
-  //HP
-  
-  float bar_percentage = 1;
-  SDL_Rect grey_rect, hp_rect;
- // GameManager& gM = GameManager::Instantiate();
-  
+                      white, aux_text, aux_rect);  
+  SDL_Rect grey_rect;
+  SDL_Color grey = {170,170,170,170};
+  //HP Grey Rect
   grey_rect.x =(int)(stats_text_[0].dst_rect_.x + stats_scale_*60);
   grey_rect.y =(int)(stats_text_[0].dst_rect_.y+7 * stats_scale_);
   grey_rect.w =(int)(150 * stats_scale_);
   grey_rect.h =(int)(15 * stats_scale_);
   
-  hp_rect = grey_rect;
+  stats_rect_[0].dst_rect_ = grey_rect;
+  stats_rect_[3].dst_rect_ = grey_rect;
+  stats_rect_[0].fill_color_ = grey;
+ 
   
-  bar_percentage = ((float)aux_char.current_.hp / 
-                   (float)aux_char.base_.hp);  
-  stats_text_[0].drawText(ren);                   
-  SDL_SetRenderDrawColor(ren, 170,170,170,170);
-  SDL_RenderFillRect(ren,&grey_rect);
-  hp_rect.w = (int)(bar_percentage * grey_rect.w);
+  //Mana Grey Rect
+  grey_rect.y = (int)(stats_text_[1].dst_rect_.y+7 * stats_scale_);
+  grey_rect.x += (int)(20 * stats_scale_);
   
+  stats_rect_[1].dst_rect_ = grey_rect;
+  stats_rect_[4].dst_rect_ = grey_rect;
+  stats_rect_[1].fill_color_ = grey;
+  stats_rect_[4].fill_color_ = {0,105,255,255};
+  
+  
+  //Exp Grey Rect
+  grey_rect.y = (int)(stats_text_[7].dst_rect_.y+40 * stats_scale_);
+  grey_rect.x = (int)(stats_text_[7].dst_rect_.x+20 * stats_scale_);
+  grey_rect.h = (int)(8 * stats_scale_);
+  
+  stats_rect_[2].dst_rect_ = grey_rect;
+  stats_rect_[5].dst_rect_ = grey_rect;
+  stats_rect_[2].fill_color_ = grey;
+  stats_rect_[5].fill_color_ = {209,151,219,200};
+  
+
+
+
+                      
+
+}
+
+void Combat::drawAttacks(SDL_Renderer* ren){
+  
+  att_text_[0].draw(ren);
+  att_text_[1].draw(ren);
+  att_text_[2].draw(ren);
+  att_text_[3].draw(ren);
+  
+  
+}
+
+void Combat::updateStats(){
+  //HP
+  
+  float bar_percentage = 1;
+  //SDL_Rect grey_rect, hp_rect;
+ // GameManager& gM = GameManager::Instantiate();
+  
+  //grey_rect.x =(int)(stats_text_[0].dst_rect_.x + stats_scale_*60);
+  //grey_rect.y =(int)(stats_text_[0].dst_rect_.y+7 * stats_scale_);
+  //grey_rect.w =(int)(150 * stats_scale_);
+  //grey_rect.h =(int)(15 * stats_scale_);
+  
+  //hp_rect = grey_rect;
+  bar_percentage = ((float)(current_char_->current_.hp) / 
+                   (float)(current_char_->base_.hp));  
+  //stats_text_[0].draw(ren);                   
+  //SDL_SetRenderDrawColor(ren, 170,170,170,170);
+  //SDL_RenderFillRect(ren,&grey_rect);
+  stats_rect_[3].dst_rect_.w = (int)(bar_percentage * stats_rect_[0].dst_rect_.w);
   SDL_Color hp_color;
-  
     hp_color.b = 0;
     hp_color.a = 255;
     
@@ -219,54 +253,55 @@ void Combat::drawStats(SDL_Renderer* ren,
     hp_color.r = 255;
     hp_color.g = 0;
   }
-  
-  SDL_SetRenderDrawColor(ren, hp_color.r, hp_color.g, 
-                         hp_color.b, hp_color.a);
-  SDL_RenderFillRect(ren,&hp_rect);
+  stats_rect_[3].fill_color_ = hp_color;
+
+ // SDL_SetRenderDrawColor(ren, hp_color.r, hp_color.g, 
+                         //hp_color.b, hp_color.a);
+  //SDL_RenderFillRect(ren,&hp_rect);
   
   
   //MANA
   
-  grey_rect.y = (int)(stats_text_[1].dst_rect_.y+7 * stats_scale_);
-  grey_rect.x += (int)(20 * stats_scale_);
+  //grey_rect.y = (int)(stats_text_[1].dst_rect_.y+7 * stats_scale_);
+ // grey_rect.x += (int)(20 * stats_scale_);
  
-  hp_rect = grey_rect;
+  //hp_rect = grey_rect;
   
-  bar_percentage = ((float)aux_char.current_.mana / 
-                   (float)aux_char.base_.mana);  
-  stats_text_[1].drawText(ren);   
-  SDL_SetRenderDrawColor(ren, 170,170,170,170);
-  SDL_RenderFillRect(ren,&grey_rect);
-  hp_rect.w = (int)(bar_percentage * grey_rect.w);
+  bar_percentage = ((float)current_char_->current_.mana / 
+                   (float)current_char_->base_.mana);  
+  //stats_text_[1].draw(ren);   
+  //SDL_SetRenderDrawColor(ren, 170,170,170,170);
+ // SDL_RenderFillRect(ren,&grey_rect);
+  stats_rect_[4].dst_rect_.w = (int)(bar_percentage *stats_rect_[1].dst_rect_.w);
 
-  SDL_SetRenderDrawColor(ren,0,105,255,hp_color.a);
-  SDL_RenderFillRect(ren,&hp_rect);
+  //SDL_SetRenderDrawColor(ren,0,105,255,hp_color.a);
+  //SDL_RenderFillRect(ren,&hp_rect);
   
+
+  //stats_text_[2].draw(ren); 
+  //stats_text_[3].draw(ren); 
+  //stats_text_[4].draw(ren); 
+  //stats_text_[5].draw(ren); 
+  //stats_text_[6].draw(ren); 
   
-  stats_text_[2].drawText(ren); 
-  stats_text_[3].drawText(ren); 
-  stats_text_[4].drawText(ren); 
-  stats_text_[5].drawText(ren); 
-  stats_text_[6].drawText(ren); 
+  //stats_text_[7].draw(ren);
   
-  stats_text_[7].drawText(ren);
-  
-  grey_rect.y = (int)(stats_text_[7].dst_rect_.y+40 * stats_scale_);
-  grey_rect.x = (int)(stats_text_[7].dst_rect_.x+20 * stats_scale_);
-  grey_rect.h = (int)(8 * stats_scale_);
+  //grey_rect.y = (int)(stats_text_[7].dst_rect_.y+40 * stats_scale_);
+  //grey_rect.x = (int)(stats_text_[7].dst_rect_.x+20 * stats_scale_);
+  //grey_rect.h = (int)(8 * stats_scale_);
  
-  hp_rect = grey_rect;
+  //hp_rect = grey_rect;
   
   // bar_percentage = ((float)aux_char.current_.xp_ / 
                    // (float)aux_char.base_.xp_); 
   bar_percentage = 30.0f/100.0f;
-  stats_text_[1].drawText(ren);   
-  SDL_SetRenderDrawColor(ren, 170,170,170,170);
-  SDL_RenderFillRect(ren,&grey_rect);
-  hp_rect.w = (int)(bar_percentage * grey_rect.w);
+  //stats_text_[1].draw(ren);   
+  //SDL_SetRenderDrawColor(ren, 170,170,170,170);
+  //SDL_RenderFillRect(ren,&grey_rect);
+  stats_rect_[5].dst_rect_.w = (int)(bar_percentage * stats_rect_[2].dst_rect_.w);
 
-  SDL_SetRenderDrawColor(ren,209,151,219,200);
-  SDL_RenderFillRect(ren,&hp_rect);
+  //SDL_SetRenderDrawColor(ren,209,151,219,200);
+  //SDL_RenderFillRect(ren,&hp_rect);
 
  
 }

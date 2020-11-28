@@ -20,9 +20,10 @@ class Entity{
   Entity();
   Entity(const Entity& e);
   
-  ~Entity();
+  virtual ~Entity();
   
-  void init();
+  virtual void init();
+  virtual void draw(SDL_Renderer* ren)=0;;
   void init(const int32_t t, 
             const int8_t e, 
             const RBM::Transform2* tr,
