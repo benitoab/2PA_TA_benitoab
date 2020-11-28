@@ -29,7 +29,7 @@ void MainScene::init(){
   }
 
 
-  ent_list.push_back(&gM.c);
+  ent_list.push_back(&gM.player_[0]);
   
   
 
@@ -52,7 +52,7 @@ void MainScene::init(){
 
 void MainScene::input(SDL_Event* eve){
   
-  GameManager::Instantiate().c.movCharacter(eve);
+  GameManager::Instantiate().player_[0].movCharacter(eve);
 }
 
 void MainScene::update(){

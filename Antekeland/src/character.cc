@@ -46,7 +46,7 @@ void Character::init(){
 
   int32_t* skin_ptr = (int32_t*)&skin_id_;
 
-  for(int i = 2; i < 20; ++i){
+  for(int i = 2; i < 23; ++i){
 
     *(skin_ptr+i) = 0;
 
@@ -54,12 +54,6 @@ void Character::init(){
 
   skin_id_.gender = 1;
   skin_id_.skin = 1;
-
-  for(int i = 0; i < 20; ++i){
-
-    printf("%d ", *(skin_ptr+i));
-    
-  }
   
 }
 

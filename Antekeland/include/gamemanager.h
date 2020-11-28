@@ -43,7 +43,8 @@ class GameManager{
     Board layer2_;     // Graphic map
     Logic board_[Board::kBoardSize][Board::kBoardSize];
     Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
-    Character c;
+    Character player_[4];
+    Character NPC_[10];
     Texture* map_texture_;
     Combat combat_;
     Attacks attacks[6];

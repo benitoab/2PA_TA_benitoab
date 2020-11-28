@@ -9,19 +9,16 @@
 #define __CUSTOMIZATION_H__
 
 #include "SDL.h"
+#include "gamemanager.h"
+#include "imgui_internal.h"
 
-static int gender = 0;
-static int skin_index = 1;
-static int hair_index = 1;
-static int hair_color = 1;
-static int ears_index = 0;
-static int nose_index = 0;
-static int eyes_color = 0;
+static ImFont* newFont;
 
 void ImGuiSDLProcessEvent(SDL_Event* e);
-void InitImGui(SDL_Renderer* ren);
-void UpdateImGui();
-void DrawImGui();
-void QuitImGui();
+void InitCustomization(SDL_Renderer* ren);
+void DrawCharacter(SDL_Renderer* ren, Character c);
+void CustomizeCharacter(Character *c);
+void DrawCustomization();
+void QuitCustomization();
 
 #endif  // __CUSTOMIZATION_H__
