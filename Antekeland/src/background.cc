@@ -12,10 +12,11 @@ Background::Background(){
 Background::~Background(){}
 
 
+
 void Background::init(const RBM::Transform2 tr, 
                       const uint8_t hs, 
                       const uint8_t vs,
-                       Texture& tex,
+                      Texture& tex,
                       const RBM::Vec2* vel){
               
   transform_ = tr;
@@ -31,7 +32,7 @@ void Background::init(const RBM::Transform2 tr,
 }
 
 
-void Background::update(float dt){
+void Background::updateB(float dt){
   if(enabled_){
     
     if(horizontal_scroll_){
@@ -67,7 +68,44 @@ void Background::update(float dt){
   printf("%d,%d\n",dst_rect_.w, dst_rect_.h);*/
 }
 
-void Background::draw(SDL_Renderer* render){
+void Background::update(float dt){
+  if(enabled_){
+    
+    if(horizontal_scroll_){
+      transform_.position.x += velocity_.x * dt;
+    }
+    
+    if(vertical_scroll_){
+      transform_.position.y += velocity_.y * dt;
+    }
+    
+    if(transform_.position.x < 0){
+      transform_.position.x += dst_rect_.w;
+    }
+    else if(transform_.position.x /*+ dst_rect_.w*/
+    > GameManager::kWindowWidth){
+      transform_.position.x -= dst_rect_.w;
+    }
+    
+    if(transform_.position.y < 0){
+      transform_.position.y += dst_rect_.h;
+    }
+    else if(transform_.position.y /*+ dst_rect_.h */
+    > GameManager::kWindowHeight){
+      transform_.position.y -= dst_rect_.h;
+    }
+    
+  }
+  dst_rect_.x = (int)transform_.position.x;
+  dst_rect_.y = (int)transform_.position.y;
+  
+  /*printf("%f,%f\n",transform_.position.x, transform_.position.y);
+  printf("%d,%d\n",dst_rect_.x, dst_rect_.y);
+  printf("%d,%d\n",dst_rect_.w, dst_rect_.h);*/
+}
+
+
+void Background::draw(SDL_Renderer* ren){
   
   int x_origin = dst_rect_.x , x_end = 0;
   int y_origin = dst_rect_.y , y_end = 0;
@@ -89,7 +127,7 @@ void Background::draw(SDL_Renderer* render){
   end = false;
   
   while(!end){
-    if(x_end + width > GameManager::kBoardWidth){
+    if(x_end + width > GameManager::kWindowWidth){
       end = true;
     }
     x_end += width;
@@ -105,7 +143,7 @@ void Background::draw(SDL_Renderer* render){
   end = false;
   
   while(!end){
-    if(y_end + height > GameManager::kBoardHeight){
+    if(y_end + height > GameManager::kWindowHeight){
       end = true;
     }
     y_end += height;
@@ -117,12 +155,13 @@ void Background::draw(SDL_Renderer* render){
   x_end = x_end/width;
   y_end = y_end/height;
   
+
   
   for(int i=0; i< y_end; ++i){
     for(int j=0; j< x_end; ++j){
       aux_rect.x = x_origin + j*width;
       aux_rect.y = y_origin + i*height;
-      SDL_RenderCopy(render,texture_->texture_,NULL,&aux_rect);
+      SDL_RenderCopy(ren,texture_->texture_,NULL,&aux_rect);
     }
   }
   //SDL_RenderCopy(render,texture_->texture_,NULL,&dst_rect_);

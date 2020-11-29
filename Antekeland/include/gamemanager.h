@@ -10,6 +10,7 @@
 
 #include "SDL.h"
 #include "texture.h"
+#include "background.h"
 #include "board.h"
 #include "logic.h"
 #include "character.h"
@@ -33,7 +34,7 @@ class GameManager{
     //Methods  
     ~GameManager();
     //It has to be change of .h
-    void drawBlackRects(SDL_Renderer* ren);
+   
     void initsAttacks();
     //Factory
     static GameManager& Instantiate();
@@ -46,10 +47,11 @@ class GameManager{
     Character player_[4];
     Character NPC_[10];
     Texture* map_texture_;
+    Texture* bg_texture_;
+    Background bg_custo_;
     Combat combat_;
     Attacks attacks[6];
     uint8_t over_world_scene_ ;
-    
     Rect ui_rects_[2];
     
   private:

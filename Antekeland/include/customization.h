@@ -11,6 +11,7 @@
 #include "SDL.h"
 #include "gamemanager.h"
 #include "imgui_internal.h"
+#include <string>
 
 static ImFont* newFont;
 

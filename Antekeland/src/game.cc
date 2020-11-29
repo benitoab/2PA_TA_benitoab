@@ -17,6 +17,7 @@
 #include "grid.h"
 #include "customization.h"
 #include "mainscene.h"
+#include "custoscene.h"
 
 #include "imgui.h"
 #include "imgui_sdl.h"
@@ -85,6 +86,7 @@ int Game::init(){
   srand((unsigned int)time(NULL));
 
   gM.map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren_);
+  gM.bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren_);
 
   CreateBoard();
   InitLogic();
@@ -97,6 +99,10 @@ int Game::init(){
   gM.player_[0].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
   gM.combat_.initCombat(gM.player_[0]);
   gM.combat_.current_char_ = &gM.player_[0];
+  
+  RBM::Transform2 aux_tr = {{0.0f,0.0f},0.0f,{0.0f,0.0f}};
+  RBM::Vec2 aux_v2 = {0.5f,0.0f};
+  gM.bg_custo_.init(aux_tr,1,0,*gM.bg_texture_, &aux_v2);
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
@@ -104,10 +110,13 @@ int Game::init(){
       gM.layer2_.map_[i][j].initSubSprite();
     }
   }
-  /*
+  
+  //current_scene_[0] = new Customization();
   current_scene_[0] = new MainScene();
   current_scene_[0]->init();
-  gM.over_world_scene_ = 1;*/
+  current_scene_[1] = new CustoScene();
+  current_scene_[1]->init();
+
   return 0;
 }
 
@@ -144,7 +153,7 @@ void Game::input(){
     if(event.key.keysym.sym == SDLK_1){ ++gM.player_[0].current_.hp;}
     if(event.key.keysym.sym == SDLK_2){ --gM.player_[0].current_.hp;}
 
-    //current_scene_[0]->input(&event);
+    current_scene_[1]->input(&event);
     /*if(event.key.keysym.sym == SDLK_SPACE){
 
       SDL_SetWindowSize(win_, 300, 300);
@@ -166,17 +175,8 @@ void Game::update(){
   GameManager& gM = GameManager::Instantiate();
   
   CustomizeCharacter(&gM.player_[0]);
-   //current_scene_[0]->update();
+  current_scene_[1]->update();
   //UpdateImGui();
-
-   //gM.layer1_.reset0Position();
-   //gM.layer2_.reset0Position();
-  
-   //gM.layer1_.update0Position();
-   //gM.layer2_.update0Position();
-
-  // printf("%d %d\n", Board::x_origin_, Board::y_origin_);
-
 }
 
 void Game::draw(){
@@ -186,12 +186,9 @@ void Game::draw(){
   SDL_SetRenderDrawColor(ren_,222,208,158,87);
   SDL_RenderClear(ren_);
 
-  //current_scene_[0]->draw(ren_);
+  current_scene_[1]->draw(ren_);
   
-  if(gM.over_world_scene_){
-    gM.layer1_.drawMap(ren_);
-    gM.layer2_.drawMap(ren_);
-  }
+
   //ImGui
   DrawCustomization();
   DrawCharacter(ren_, gM.player_[0]);
