@@ -33,10 +33,134 @@ void Tile::init(const SDL_Rect* r, const uint8_t t, const uint8_t s, const int8_
   texture_ = GameManager::Instantiate().map_texture_;
 
 }
-/*
+
 void Tile::draw(SDL_Renderer* ren){
-  tile_sprite_.draw(ren);
-}*/
+  Sprite::draw(ren);
+  
+  if(GameManager::Instantiate().over_world_scene_){
+    int diagonal = 0;
+    SDL_Rect aux_rect;
+    SDL_Texture* map_t = GameManager::Instantiate().map_texture_->texture_;
+    
+    if(Board::x_origin_ > 0){
+      aux_rect.x = dst_rect_.x - dst_rect_.w*Board::kBoardSize;
+      aux_rect.y = dst_rect_.y ;
+                   
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+     
+      SDL_RenderCopy(ren, map_t, 
+                         &snip_rect_, &aux_rect);
+        
+      
+      diagonal+=1;
+    }  
+    
+   // if(Board::x_origin_ < -map_[0][0].dst_rect_.w){
+    if(Board::x_origin_ < dst_rect_.w){
+     
+      aux_rect.x = dst_rect_.x + dst_rect_.w * Board::kBoardSize;
+      aux_rect.y = dst_rect_.y ;
+      
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+     
+      SDL_RenderCopy(ren, map_t, 
+                     &snip_rect_, &aux_rect);
+    
+      diagonal+=10;
+    }  
+    
+    if(Board::y_origin_ > 0){
+      
+      aux_rect.x = dst_rect_.x ;
+      aux_rect.y = dst_rect_.y - dst_rect_.h * Board::kBoardSize;
+          
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+         
+      SDL_RenderCopy(ren, map_t, 
+                      &snip_rect_, &aux_rect);
+     
+      diagonal+=100;
+    }  
+    
+    //if(Board::y_origin_ < -map_[0][0].dst_rect_.h){
+    if(Board::y_origin_ < dst_rect_.h){
+      
+      aux_rect.x = dst_rect_.x ;
+      aux_rect.y = dst_rect_.y + dst_rect_.h * Board::kBoardSize;
+      
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+     
+      SDL_RenderCopy(ren, map_t, 
+                     &snip_rect_, &aux_rect);
+      
+      diagonal+=1000;
+    }
+    
+    //DIAGONALS
+    
+    // upper and left
+    if(diagonal == 101){
+     
+      aux_rect.x = dst_rect_.x - dst_rect_.w * Board::kBoardSize;
+      aux_rect.y = dst_rect_.y - dst_rect_.h * Board::kBoardSize;
+                   
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+     
+      SDL_RenderCopy(ren, map_t, 
+                     &snip_rect_, &aux_rect);
+     
+    }
+    
+    // botton and left
+    else if(diagonal == 1001){
+      
+     
+      aux_rect.x = dst_rect_.x - dst_rect_.w * Board::kBoardSize;
+      aux_rect.y = dst_rect_.y + dst_rect_.h * Board::kBoardSize;
+      
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+   
+      SDL_RenderCopy(ren, map_t, 
+                     &snip_rect_, &aux_rect);
+     
+    }
+    
+    // upper right
+    else if(diagonal == 110){
+      
+      
+      aux_rect.x = dst_rect_.x + dst_rect_.w * Board::kBoardSize;
+      aux_rect.y = dst_rect_.y - dst_rect_.h * Board::kBoardSize;
+      
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+      
+      SDL_RenderCopy(ren, map_t, 
+                     &snip_rect_, &aux_rect);
+
+    }
+   
+   // bottom right
+    else if(diagonal == 1010){
+      
+      aux_rect.x = dst_rect_.x + dst_rect_.w * Board::kBoardSize;
+      aux_rect.y = dst_rect_.y + dst_rect_.h * Board::kBoardSize;
+      
+      aux_rect.w = dst_rect_.w;
+      aux_rect.h = dst_rect_.h;
+      
+      SDL_RenderCopy(ren, map_t, 
+                     &snip_rect_, &aux_rect);
+     
+    }
+  }
+}
 
 void Tile::initSubSprite(){
 

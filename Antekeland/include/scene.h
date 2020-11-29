@@ -7,7 +7,6 @@
 
 class Entity;
 
-
 class Scene{
   
   public:
@@ -27,7 +26,7 @@ class Scene{
   
   //Sustituir por el vector de IA
   std::list <Entity*> ent_list; 
-  //Entity* ent_list[10000];
+  
   
 };
 

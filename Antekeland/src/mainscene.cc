@@ -2,10 +2,27 @@
 #include "gamemanager.h"
 
 
+MainScene::MainScene(){
+  
+  //ent_list = nullptr;
+  
+}
+
+MainScene::~MainScene(){
+ // if(nullptr != ent_list){
+   // ent_list.clear();
+    //ent_list = nullptr;
+  //}
+}
+
+
+
 void MainScene::init(){
 
   GameManager& gM = GameManager::Instantiate();
-  SDL_Color black = {102,0,0,255};
+  SDL_Color black = {102,0,0,50};
+  
+  gM.over_world_scene_ = 1;
  
   gM.ui_rects_[0].dst_rect_.x = gM.kBoardWidth;
   gM.ui_rects_[0].dst_rect_.y = 0;

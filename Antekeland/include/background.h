@@ -19,8 +19,9 @@ class Background : public Entity{
             Texture& tex,
             const RBM::Vec2* vel);
                  
+  void updateB(float dt);               
   void update(float dt);               
-  void draw(SDL_Renderer* render) override;
+  void draw(SDL_Renderer* ren) override;
   //void drawOnly1(SDL_Renderer* render);  
   
   uint8_t horizontal_scroll_;
