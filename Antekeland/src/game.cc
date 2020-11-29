@@ -112,10 +112,10 @@ int Game::init(){
   }
   
   //current_scene_[0] = new Customization();
-  current_scene_[0] = new MainScene();
-  current_scene_[0]->init();
-  current_scene_[1] = new CustoScene();
+  current_scene_[1] = new MainScene();
   current_scene_[1]->init();
+  current_scene_[0] = new CustoScene();
+  current_scene_[0]->init();
 
   return 0;
 }
@@ -153,7 +153,7 @@ void Game::input(){
     if(event.key.keysym.sym == SDLK_1){ ++gM.player_[0].current_.hp;}
     if(event.key.keysym.sym == SDLK_2){ --gM.player_[0].current_.hp;}
 
-    current_scene_[1]->input(&event);
+    current_scene_[0]->input(&event);
     /*if(event.key.keysym.sym == SDLK_SPACE){
 
       SDL_SetWindowSize(win_, 300, 300);
@@ -175,7 +175,7 @@ void Game::update(){
   GameManager& gM = GameManager::Instantiate();
   
   CustomizeCharacter(&gM.player_[0]);
-  current_scene_[1]->update();
+  current_scene_[0]->update();
   //UpdateImGui();
 }
 
@@ -186,12 +186,15 @@ void Game::draw(){
   SDL_SetRenderDrawColor(ren_,222,208,158,87);
   SDL_RenderClear(ren_);
 
-  current_scene_[1]->draw(ren_);
+  current_scene_[0]->draw(ren_);
   
 
   //ImGui
-  DrawCustomization();
-  DrawCharacter(ren_, gM.player_[0]);
+  
+ //if(current_id_scene == 0){
+    DrawCustomization();
+    DrawCharacter(ren_, gM.player_[0]);
+  //}
   /* Layer 1 */
   // gM.layer1_.drawMap(ren_);
   /* Character */

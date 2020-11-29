@@ -142,9 +142,9 @@ void InitCustomization(SDL_Renderer* ren){
 
   GameManager& gM = GameManager::Instantiate();
 
-  /*gM.window_flags |= ImGuiWindowFlags_NoMove;
+  gM.window_flags |= ImGuiWindowFlags_NoMove;
   gM.window_flags |= ImGuiWindowFlags_NoResize;
-  gM.window_flags |= ImGuiWindowFlags_NoCollapse;*/
+  gM.window_flags |= ImGuiWindowFlags_NoCollapse;
 
   ImGui::CreateContext();
 
