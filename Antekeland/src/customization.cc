@@ -8,6 +8,7 @@
 #include "gamemanager.h"
 #include "customization.h"
 #include "stdio.h"
+#include <stdlib.h>
 #include "string.h"
 #include "SDL_image.h"
 
@@ -84,13 +85,19 @@ void InitCustomization(SDL_Renderer* ren){
 
 }
 
-/*void SetClipTexture(Sprite* skin){
-
-  *skin->snip_rect_ = (0, 64, 64, 64);
-
-}*/
-
 void DrawCharacter(SDL_Renderer* ren, Character c){
+
+  SDL_Rect fsrc_rect = {0,128,64,64};
+  SDL_Rect fdest_rect = {310,637,64,64};
+
+  SDL_Rect bsrc_rect = {0,0,64,64};
+  SDL_Rect bdest_rect = {490,637,64,64};
+
+  SDL_Rect lsrc_rect = {0,64,64,64};
+  SDL_Rect ldest_rect = {666,637,64,64};
+
+  SDL_Rect rsrc_rect = {0,192,64,64};
+  SDL_Rect rdest_rect = {840,637,64,64};
   
   // Body Path
   std::string tmp_dir = "../data/skins/body/male/body$.png";
@@ -103,25 +110,210 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   }
 
   // Set Body  
-  tmp_dir.replace(tmp_dir.find("$"), 1, std::to_string(c.skin_id_.skin));
-  std::cout << tmp_dir << "\n";
-  int length = tmp_dir.length();
-
+  tmp_dir.replace(tmp_dir.find("$"), 1, std::to_string(c.skin_id_.skin)); 
   char* skin_dir = (char*)malloc(tmp_dir.length());
   strcpy(skin_dir, tmp_dir.c_str());
-  
-  SDL_Surface* image = IMG_Load(skin_dir);
-  
-  SDL_Rect src_rect = {0,128,64,64};
-  SDL_Rect dest_rect = {0,0,64,64};
-  
-  SDL_Texture* skins_to_draw = SDL_CreateTextureFromSurface(ren, image);
-    
-  SDL_RenderCopy(ren, skins_to_draw, &src_rect, &dest_rect);
-  SDL_FreeSurface(image);
-  SDL_DestroyTexture(skins_to_draw);
 
-  // SDL_RenderCopy(ren, texure, &src_rect, &dest_rect);
+  // Set Hair
+  std::string tmp_hair = "../data/skins/hair/hair ($).png";
+  tmp_hair.replace(tmp_hair.find("$"), 1, std::to_string(c.skin_id_.hair));  
+  char* hair_dir = (char*)malloc(tmp_hair.length());
+  strcpy(hair_dir, tmp_hair.c_str());
+
+  // Set Hair Color
+  std::string tmp_hair_color = "../data/skins/hair/hairs/hair ($)/color (%).png";
+  tmp_hair_color.replace(tmp_hair_color.find("$"), 1, std::to_string(c.skin_id_.hair));
+  tmp_hair_color.replace(tmp_hair_color.find("%"), 1, std::to_string(c.skin_id_.hair_color));
+  char* haircolor_dir = (char*)malloc(tmp_hair_color.length());
+  strcpy(haircolor_dir, tmp_hair_color.c_str());  
+
+  // Set Eyes Color
+  std::string tmp_eyes = "../data/skins/body/male/eyes/$.png";
+  tmp_eyes.replace(tmp_eyes.find("$"), 1, std::to_string(c.skin_id_.eyes));
+  char* eyes_dir = (char*)malloc(tmp_eyes.length());
+  strcpy(eyes_dir, tmp_eyes.c_str());
+
+  // Set Nose
+  std::string tmp_nose = "../data/skins/body/male/nose/$-%.png";
+  tmp_nose.replace(tmp_nose.find("$"), 1, std::to_string(c.skin_id_.skin));
+  tmp_nose.replace(tmp_nose.find("%"), 1, std::to_string(c.skin_id_.nose));
+  char* nose_dir = (char*)malloc(tmp_nose.length());
+  strcpy(nose_dir, tmp_nose.c_str());
+
+  // Set Nose
+  std::string tmp_ears = "../data/skins/body/male/ears/$-%.png";
+  tmp_ears.replace(tmp_ears.find("$"), 1, std::to_string(c.skin_id_.skin));
+  tmp_ears.replace(tmp_ears.find("%"), 1, std::to_string(c.skin_id_.ears));
+  char* ears_dir = (char*)malloc(tmp_ears.length());
+  strcpy(ears_dir, tmp_ears.c_str());
+
+  // Set Beard
+  std::string tmp_beard = "../data/skins/facial/beard/color ($).png";
+  tmp_beard.replace(tmp_beard.find("$"), 1, std::to_string(c.skin_id_.beard));
+  char* beard_dir = (char*)malloc(tmp_beard.length());
+  strcpy(beard_dir, tmp_beard.c_str());
+
+  // Set Mustache
+  std::string tmp_mustache = "../data/skins/facial/mustache ($).png";
+  tmp_mustache.replace(tmp_mustache.find("$"), 1, std::to_string(c.skin_id_.mustache));
+  char* mustache_dir = (char*)malloc(tmp_mustache.length());
+  strcpy(mustache_dir, tmp_mustache.c_str());
+
+  // Set Mustache Color
+  std::string tmp_mustachecolor = "../data/skins/facial/mustaches/mustache ($)/color (%).png";
+  tmp_mustachecolor.replace(tmp_mustachecolor.find("$"), 1, std::to_string(c.skin_id_.mustache));
+  tmp_mustachecolor.replace(tmp_mustachecolor.find("%"), 1, std::to_string(c.skin_id_.mustache_color));  
+  char* mcolor_dir = (char*)malloc(tmp_mustachecolor.length());
+  strcpy(mcolor_dir, tmp_mustachecolor.c_str());
+
+  // Set Torso
+  std::string tmp_torso = "../data/skins/torso/clothes/piece ($).png";
+  tmp_torso.replace(tmp_torso.find("$"), 1, std::to_string(c.skin_id_.torso));
+  char* torso_dir = (char*)malloc(tmp_torso.length());
+  strcpy(torso_dir, tmp_torso.c_str());
+
+  // Set Cape
+  std::string tmp_cape = "../data/skins/torso/back/capes/piece ($).png";
+  tmp_cape.replace(tmp_cape.find("$"), 1, std::to_string(c.skin_id_.cape));
+  char* cape_dir = (char*)malloc(tmp_cape.length());
+  strcpy(cape_dir, tmp_cape.c_str());
+
+  // Set Legs
+  std::string tmp_legs = "../data/skins/legs/clothes/piece ($).png";
+  tmp_legs.replace(tmp_legs.find("$"), 1, std::to_string(c.skin_id_.legs));
+  // std::cout << tmp_legs << "\n";
+  char* legs_dir = (char*)malloc(tmp_legs.length());
+  strcpy(legs_dir, tmp_legs.c_str());
+  
+  // Body
+  SDL_Surface* image = IMG_Load(skin_dir);
+  SDL_Texture* skins_to_draw = SDL_CreateTextureFromSurface(ren, image);  
+
+  // Hair
+  SDL_Surface* hair = IMG_Load(hair_dir);
+  SDL_Texture* hair_to_draw = SDL_CreateTextureFromSurface(ren, hair);  
+
+  // Hair Color
+  SDL_Surface* hair_color = IMG_Load(haircolor_dir);
+  SDL_Texture* haircolor_to_draw = SDL_CreateTextureFromSurface(ren, hair_color);  
+
+  // Eyes Color
+  SDL_Surface* eyes = IMG_Load(eyes_dir);
+  SDL_Texture* eyes_to_draw = SDL_CreateTextureFromSurface(ren, eyes);
+
+  // Nose
+  SDL_Surface* nose = IMG_Load(nose_dir);
+  SDL_Texture* nose_to_draw = SDL_CreateTextureFromSurface(ren, nose);
+
+  // Ears
+  SDL_Surface* ears = IMG_Load(ears_dir);
+  SDL_Texture* ears_to_draw = SDL_CreateTextureFromSurface(ren, ears);
+
+  // Beard
+  SDL_Surface* beard = IMG_Load(beard_dir);
+  SDL_Texture* beard_to_draw = SDL_CreateTextureFromSurface(ren, beard);
+
+  // Mustache
+  SDL_Surface* mustache = IMG_Load(mustache_dir);
+  SDL_Texture* mustache_to_draw = SDL_CreateTextureFromSurface(ren, mustache);
+
+  // Mustache
+  SDL_Surface* mustache_color = IMG_Load(mcolor_dir);
+  SDL_Texture* mcolor_to_draw = SDL_CreateTextureFromSurface(ren, mustache_color);
+
+  // Torso
+  SDL_Surface* torso = IMG_Load(torso_dir);
+  SDL_Texture* torso_to_draw = SDL_CreateTextureFromSurface(ren, torso);
+
+  // Cape
+  SDL_Surface* cape = IMG_Load(cape_dir);
+  SDL_Texture* cape_to_draw = SDL_CreateTextureFromSurface(ren, cape);
+
+  // Legs
+  SDL_Surface* legs = IMG_Load(legs_dir);
+  SDL_Texture* legs_to_draw = SDL_CreateTextureFromSurface(ren, legs);
+  
+  // Front View
+  SDL_RenderCopy(ren, skins_to_draw, &fsrc_rect, &fdest_rect);
+  SDL_RenderCopy(ren, hair_to_draw, &fsrc_rect, &fdest_rect);
+  SDL_RenderCopy(ren, haircolor_to_draw, &fsrc_rect, &fdest_rect);
+  SDL_RenderCopy(ren, eyes_to_draw, &fsrc_rect, &fdest_rect);
+  SDL_RenderCopy(ren, nose_to_draw, &fsrc_rect, &fdest_rect);
+  SDL_RenderCopy(ren, ears_to_draw, &fsrc_rect, &fdest_rect);
+  SDL_RenderCopy(ren, beard_to_draw, &fsrc_rect, &fdest_rect); 
+  SDL_RenderCopy(ren, mustache_to_draw, &fsrc_rect, &fdest_rect); 
+  SDL_RenderCopy(ren, mcolor_to_draw, &fsrc_rect, &fdest_rect); 
+  SDL_RenderCopy(ren, torso_to_draw, &fsrc_rect, &fdest_rect); 
+  SDL_RenderCopy(ren, legs_to_draw, &fsrc_rect, &fdest_rect); 
+  SDL_RenderCopy(ren, cape_to_draw, &fsrc_rect, &fdest_rect); 
+
+  // Back View
+  SDL_RenderCopy(ren, skins_to_draw, &bsrc_rect, &bdest_rect);
+  SDL_RenderCopy(ren, hair_to_draw, &bsrc_rect, &bdest_rect);
+  SDL_RenderCopy(ren, haircolor_to_draw, &bsrc_rect, &bdest_rect);
+  SDL_RenderCopy(ren, eyes_to_draw, &bsrc_rect, &bdest_rect);
+  SDL_RenderCopy(ren, nose_to_draw, &bsrc_rect, &bdest_rect);
+  SDL_RenderCopy(ren, ears_to_draw, &bsrc_rect, &bdest_rect);
+  SDL_RenderCopy(ren, beard_to_draw, &bsrc_rect, &bdest_rect); 
+  SDL_RenderCopy(ren, mustache_to_draw, &bsrc_rect, &bdest_rect); 
+  SDL_RenderCopy(ren, mcolor_to_draw, &bsrc_rect, &bdest_rect); 
+  SDL_RenderCopy(ren, torso_to_draw, &bsrc_rect, &bdest_rect); 
+  SDL_RenderCopy(ren, legs_to_draw, &bsrc_rect, &bdest_rect); 
+  SDL_RenderCopy(ren, cape_to_draw, &bsrc_rect, &bdest_rect); 
+
+  // Left View
+  SDL_RenderCopy(ren, skins_to_draw, &lsrc_rect, &ldest_rect);
+  SDL_RenderCopy(ren, hair_to_draw, &lsrc_rect, &ldest_rect);
+  SDL_RenderCopy(ren, haircolor_to_draw, &lsrc_rect, &ldest_rect);
+  SDL_RenderCopy(ren, eyes_to_draw, &lsrc_rect, &ldest_rect);
+  SDL_RenderCopy(ren, nose_to_draw, &lsrc_rect, &ldest_rect);
+  SDL_RenderCopy(ren, ears_to_draw, &lsrc_rect, &ldest_rect);
+  SDL_RenderCopy(ren, beard_to_draw, &lsrc_rect, &ldest_rect); 
+  SDL_RenderCopy(ren, mustache_to_draw, &lsrc_rect, &ldest_rect); 
+  SDL_RenderCopy(ren, mcolor_to_draw, &lsrc_rect, &ldest_rect); 
+  SDL_RenderCopy(ren, torso_to_draw, &lsrc_rect, &ldest_rect); 
+  SDL_RenderCopy(ren, legs_to_draw, &lsrc_rect, &ldest_rect); 
+  SDL_RenderCopy(ren, cape_to_draw, &lsrc_rect, &ldest_rect); 
+
+  // Right View
+  SDL_RenderCopy(ren, skins_to_draw, &rsrc_rect, &rdest_rect);
+  SDL_RenderCopy(ren, hair_to_draw, &rsrc_rect, &rdest_rect);
+  SDL_RenderCopy(ren, haircolor_to_draw, &rsrc_rect, &rdest_rect);
+  SDL_RenderCopy(ren, eyes_to_draw, &rsrc_rect, &rdest_rect);
+  SDL_RenderCopy(ren, nose_to_draw, &rsrc_rect, &rdest_rect);
+  SDL_RenderCopy(ren, ears_to_draw, &rsrc_rect, &rdest_rect);
+  SDL_RenderCopy(ren, beard_to_draw, &rsrc_rect, &rdest_rect); 
+  SDL_RenderCopy(ren, mustache_to_draw, &rsrc_rect, &rdest_rect); 
+  SDL_RenderCopy(ren, mcolor_to_draw, &rsrc_rect, &rdest_rect); 
+  SDL_RenderCopy(ren, torso_to_draw, &rsrc_rect, &rdest_rect); 
+  SDL_RenderCopy(ren, legs_to_draw, &rsrc_rect, &rdest_rect); 
+  SDL_RenderCopy(ren, cape_to_draw, &rsrc_rect, &rdest_rect); 
+
+  SDL_FreeSurface(image);
+  SDL_FreeSurface(hair);
+  SDL_FreeSurface(hair_color);
+  SDL_FreeSurface(eyes);
+  SDL_FreeSurface(nose);
+  SDL_FreeSurface(ears);
+  SDL_FreeSurface(beard);
+  SDL_FreeSurface(mustache);
+  SDL_FreeSurface(mustache_color);
+  SDL_FreeSurface(torso);
+  SDL_FreeSurface(legs);
+  SDL_FreeSurface(cape);
+
+  SDL_DestroyTexture(skins_to_draw);
+  SDL_DestroyTexture(hair_to_draw);
+  SDL_DestroyTexture(haircolor_to_draw);
+  SDL_DestroyTexture(eyes_to_draw);
+  SDL_DestroyTexture(nose_to_draw);
+  SDL_DestroyTexture(ears_to_draw);
+  SDL_DestroyTexture(beard_to_draw);
+  SDL_DestroyTexture(mustache_to_draw);
+  SDL_DestroyTexture(mcolor_to_draw);
+  SDL_DestroyTexture(torso_to_draw);
+  SDL_DestroyTexture(legs_to_draw);
+  SDL_DestroyTexture(cape_to_draw);
 }
 
 void CustomizeCharacter(Character *c){
@@ -176,24 +368,24 @@ void CustomizeCharacter(Character *c){
   ImGui::TextColored(ImVec4(0.79f, 0.63f, 0.96f, 1.0f), "Select Hair");
   if (ImGui::ArrowButton("##lefthair", ImGuiDir_Left)) {
     --c->skin_id_.hair;
-    if(c->skin_id_.hair < 0){ c->skin_id_.hair = 31; c->skin_id_.hair%=32; }
+    if(c->skin_id_.hair < 0){ c->skin_id_.hair = 30; c->skin_id_.hair%=31; }
   }
   ImGui::SameLine();
   ImGui::Text("Hair %d", c->skin_id_.hair);
   ImGui::SameLine();
-  if(ImGui::ArrowButton("##righthair", ImGuiDir_Right)) { ++c->skin_id_.hair%=32; }
+  if(ImGui::ArrowButton("##righthair", ImGuiDir_Right)) { ++c->skin_id_.hair%=31; }
   ImGui::Text("\n");
 
   // Hair Color
   ImGui::TextColored(ImVec4(0.79f, 0.63f, 0.96f, 1.0f), "Select Hair Color");
   if (ImGui::ArrowButton("##leftcolor", ImGuiDir_Left)) {
     --c->skin_id_.hair_color;
-    if(c->skin_id_.hair_color < 0){ c->skin_id_.hair_color = 31; c->skin_id_.hair_color%=32; }
+    if(c->skin_id_.hair_color < 0){ c->skin_id_.hair_color = 29; c->skin_id_.hair_color%=30; }
   }
   ImGui::SameLine();
   ImGui::Text("Hair Color %d", c->skin_id_.hair_color);
   ImGui::SameLine();
-  if(ImGui::ArrowButton("##rightcolor", ImGuiDir_Right)) { ++c->skin_id_.hair_color%=32; }
+  if(ImGui::ArrowButton("##rightcolor", ImGuiDir_Right)) { ++c->skin_id_.hair_color%=30; }
   ImGui::Text("\n");
 
   // Ears Type
@@ -237,36 +429,36 @@ void CustomizeCharacter(Character *c){
   ImGui::TextColored(ImVec4(0.79f, 0.63f, 0.96f, 1.0f), "Select Beard");
   if (ImGui::ArrowButton("##leftbeard", ImGuiDir_Left)) {
     --c->skin_id_.beard;
-    if(c->skin_id_.beard < 0){ c->skin_id_.beard = 30; c->skin_id_.beard%=31; }
+    if(c->skin_id_.beard < 0){ c->skin_id_.beard = 29; c->skin_id_.beard%=30; }
   }
   ImGui::SameLine();
   ImGui::Text("Beard %d", c->skin_id_.beard);
   ImGui::SameLine();
-  if(ImGui::ArrowButton("##rightbeard", ImGuiDir_Right)) { ++c->skin_id_.beard%=31; }
+  if(ImGui::ArrowButton("##rightbeard", ImGuiDir_Right)) { ++c->skin_id_.beard%=30; }
   ImGui::Text("\n");
 
   // Mustache
   ImGui::TextColored(ImVec4(0.79f, 0.63f, 0.96f, 1.0f), "Select Mustache");
   if (ImGui::ArrowButton("##leftmustache", ImGuiDir_Left)) {
     --c->skin_id_.mustache;
-    if(c->skin_id_.mustache < 0){ c->skin_id_.mustache = 5; c->skin_id_.mustache%=6; }
+    if(c->skin_id_.mustache < 0){ c->skin_id_.mustache = 4; c->skin_id_.mustache%=5; }
   }
   ImGui::SameLine();
   ImGui::Text("Mustache %d", c->skin_id_.mustache);
   ImGui::SameLine();
-  if(ImGui::ArrowButton("##rightmustache", ImGuiDir_Right)) { ++c->skin_id_.mustache%=6; }
+  if(ImGui::ArrowButton("##rightmustache", ImGuiDir_Right)) { ++c->skin_id_.mustache%=5; }
   ImGui::Text("\n");
 
   // Mustache Color
   ImGui::TextColored(ImVec4(0.79f, 0.63f, 0.96f, 1.0f), "Select Mustache Color");
   if (ImGui::ArrowButton("##leftmustachecolor", ImGuiDir_Left)) {
     --c->skin_id_.mustache_color;
-    if(c->skin_id_.mustache_color < 0){ c->skin_id_.mustache_color = 30; c->skin_id_.mustache_color%=31; }
+    if(c->skin_id_.mustache_color < 0){ c->skin_id_.mustache_color = 29; c->skin_id_.mustache_color%=30; }
   }
   ImGui::SameLine();
   ImGui::Text("Mustache %d", c->skin_id_.mustache_color);
   ImGui::SameLine();
-  if(ImGui::ArrowButton("##rightmustachecolor", ImGuiDir_Right)) { ++c->skin_id_.mustache_color%=31; }
+  if(ImGui::ArrowButton("##rightmustachecolor", ImGuiDir_Right)) { ++c->skin_id_.mustache_color%=30; }
   ImGui::Text("\n");
 
   // Torso
@@ -297,16 +489,51 @@ void CustomizeCharacter(Character *c){
   ImGui::TextColored(ImVec4(0.79f, 0.63f, 0.96f, 1.0f), "Select Pants");
   if (ImGui::ArrowButton("##leftleg", ImGuiDir_Left)) {
     --c->skin_id_.legs;
-    if(c->skin_id_.legs < 0){ c->skin_id_.legs = 6; c->skin_id_.legs%=7; }
+    if(c->skin_id_.legs < 0){ c->skin_id_.legs = 10; c->skin_id_.legs%=11; }
   }
   ImGui::SameLine();
   ImGui::Text("Pants %d", c->skin_id_.legs);
   ImGui::SameLine();
-  if(ImGui::ArrowButton("##rightleg", ImGuiDir_Right)) { ++c->skin_id_.legs%=7; }
+  if(ImGui::ArrowButton("##rightleg", ImGuiDir_Right)) { ++c->skin_id_.legs%=11; }
   ImGui::Text("\n");
+
+  // Randomize
+  if(ImGui::Button("Randomize Character")){
+
+    c->skin_id_.gender = 1+(rand()%2);
+    c->skin_id_.skin = 1+ (rand()%7);
+    c->skin_id_.hair = rand()%31;
+    c->skin_id_.hair_color = rand()%30;
+    c->skin_id_.ears = rand()%3;
+    c->skin_id_.nose = rand()%4;
+    c->skin_id_.eyes = rand()%9;
+    c->skin_id_.beard = rand()%30;
+    c->skin_id_.mustache = rand()%5;
+    c->skin_id_.mustache_color = 1+(rand()%29);
+    c->skin_id_.torso = rand()%39;
+    c->skin_id_.cape = rand()%24;
+    c->skin_id_.legs = rand()%11;
+
+  } 
 
   ImGui::EndColumns();
 
+  ImGui::End();
+
+  ImGui::SetNextWindowSize(ImVec2(150, 150));
+  ImGui::Begin("Preview Front", NULL, gM.window_flags);
+  ImGui::End();
+
+  ImGui::SetNextWindowSize(ImVec2(150, 150));
+  ImGui::Begin("Preview Back", NULL, gM.window_flags);
+  ImGui::End();
+
+  ImGui::SetNextWindowSize(ImVec2(150, 150));
+  ImGui::Begin("Preview Left", NULL, gM.window_flags);
+  ImGui::End();
+
+  ImGui::SetNextWindowSize(ImVec2(150, 150));
+  ImGui::Begin("Preview Right", NULL, gM.window_flags);
   ImGui::End();
 
 }

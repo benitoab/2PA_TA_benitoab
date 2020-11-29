@@ -183,7 +183,7 @@ void Game::draw(){
 
   GameManager& gM = GameManager::Instantiate();
   
-  SDL_SetRenderDrawColor(ren_,0,0,0,0);
+  SDL_SetRenderDrawColor(ren_,222,208,158,87);
   SDL_RenderClear(ren_);
 
   //current_scene_[0]->draw(ren_);
