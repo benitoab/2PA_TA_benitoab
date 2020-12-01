@@ -54,6 +54,7 @@ void Character::init(){
 
   skin_id_.gender = 1;
   skin_id_.skin = 1;
+  skin_id_.hair_color = 1;
   
 }
 

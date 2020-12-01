@@ -28,9 +28,9 @@ struct SkinsCustomization{
   int32_t skin;           /** @var ID of the skin */
   int32_t hair;           /** @var ID of the hair */
   int32_t hair_color;     /** @var ID of the hair color */
-  int32_t ears;           /** @var ID of the ears */
-  int32_t nose;           /** @var ID of the nose */
   int32_t eyes;           /** @var ID of the eyes */
+  int32_t ears;           /** @var ID of the ears */
+  int32_t nose;           /** @var ID of the nose */  
   int32_t beard;          /** @var ID of the beard */
   int32_t mustache;       /** @var ID of the mustache */
   int32_t mustache_color; /** @var ID of the mustache */
