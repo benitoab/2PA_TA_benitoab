@@ -271,6 +271,7 @@ void CustomizeCharacter(Character *c){
   ImGui::NewFrame();
   // ImGui::SetNextWindowPos(ImVec2(gM.kWindowWidth/2, gM.kWindowHeight/2), 0, ImVec2(0.5, 0.5));
   ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth/2, 320));
+  ImGui::SetNextWindowPos(ImVec2(58, 51));
 
   ImGui::Begin("Create Character", NULL, gM.window_flags);
   ImGui::Indent(25.0f);
@@ -281,10 +282,19 @@ void CustomizeCharacter(Character *c){
   ImGui::ListBox("", &c->profession_, profession, IM_ARRAYSIZE(profession), 10);
   // ImGui::Combo("Class", &c->profession_, profession, IM_ARRAYSIZE(profession));
 
+  /** @brief Stats box */
   if(0 <= c->profession_ && c->profession_ < 10){
-    ImGui::SetNextWindowPos(ImVec2(250, 520));
+    ImGui::SetNextWindowPos(ImVec2(58, 380));
     ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth/2, 200));
+
     ImGui::Begin("Stats", NULL, gM.window_flags);
+    ImGui::BeginColumns("Attributes", 2, ImGuiColumnsFlags_NoResize);
+
+    ImGui::Text("HP");
+    ImGui::Text("Mana");
+    ImGui::Text("AD");
+    ImGui::Text("AP");  
+
     ImGui::End();
   }
 
