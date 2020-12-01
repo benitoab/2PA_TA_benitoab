@@ -19,69 +19,6 @@
  *
  * @param Pointer to an SDL_Event captured this frame.
  */
-/* 
-void ImGuiSDLProcessEvent(SDL_Event* event){
- 
- ImGuiIO& io = ImGui::GetIO();
- 
- bool g_MousePressed[3];
- 
-  switch (event->type){
-    case SDL_MOUSEWHEEL:
-    {
-      if (event->wheel.x > 0) io.MouseWheelH += 1;
-      if (event->wheel.x < 0) io.MouseWheelH -= 1;
-      if (event->wheel.y > 0) io.MouseWheel += 1;
-      if (event->wheel.y < 0) io.MouseWheel -= 1;
-      return true;
-    }
-    case SDL_MOUSEBUTTONDOWN:
-    {
-      if (event->button.button == SDL_BUTTON_LEFT) g_MousePressed[0] = true;
-      if (event->button.button == SDL_BUTTON_RIGHT) g_MousePressed[1] = true;
-      if (event->button.button == SDL_BUTTON_MIDDLE) g_MousePressed[2] = true;
-      return true;
-    }
-    case SDL_TEXTINPUT:
-    {
-      io.AddInputCharactersUTF8(event->text.text);
-      return true;
-    }
-    case SDL_KEYDOWN:
-    case SDL_KEYUP:
-    {
-      int key = event->key.keysym.scancode;
-      IM_ASSERT(key >= 0 && key < IM_ARRAYSIZE(io.KeysDown));
-      io.KeysDown[key] = (event->type == SDL_KEYDOWN);
-      io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
-      io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
-      io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
-      #ifdef _WIN32
-      io.KeySuper = false;
-      #else
-      io.KeySuper = ((SDL_GetModState() & KMOD_GUI) != 0);
-      #endif
-      return true;
-    }
-  }
-  
-    
-    
-  int mouseX, mouseY;
-  const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
-  int wheel = 0;
-  // Setup low-level inputs (e.g. on Win32, GetKeyboardState(), or 
-  // write to those fields from your Windows message loop handlers, etc.)
-
-  io.DeltaTime = 1.0f / 60.0f;
-  io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-  io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
-  io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
-  io.MouseWheel = static_cast<float>(wheel);
-  
-  return false;
-}
-  */  
  
 void ImGuiSDLProcessEvent(SDL_Event* e) {
   if (e == nullptr) return ;
@@ -165,7 +102,7 @@ void InitCustomization(SDL_Renderer* ren){
 
 }
 
-/** @brief Loads a new image into the image-array*/
+/** @brief Loads a new image into the image-array */
 void SetImage(SDL_Surface** img, char* dir, unsigned char* id, int32_t skin_id, SDL_Texture** texture, SDL_Renderer* ren){
 
   *img = IMG_Load(dir);
@@ -339,6 +276,13 @@ void CustomizeCharacter(Character *c){
   ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Choose Class");
   ImGui::ListBox("", &c->profession_, profession, IM_ARRAYSIZE(profession), 10);
   // ImGui::Combo("Class", &c->profession_, profession, IM_ARRAYSIZE(profession));
+
+  if(0 <= c->profession_ && c->profession_ < 10){
+    ImGui::SetNextWindowPos(ImVec2(250, 520));
+    ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth/2, 200));
+    ImGui::Begin("Stats", NULL, gM.window_flags);
+    ImGui::End();
+  }
 
   ImGui::End();
 
