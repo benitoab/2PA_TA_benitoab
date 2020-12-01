@@ -161,6 +161,7 @@ void Background::draw(SDL_Renderer* ren){
     for(int j=0; j< x_end; ++j){
       aux_rect.x = x_origin + j*width;
       aux_rect.y = y_origin + i*height;
+
       SDL_RenderCopy(ren,texture_->texture_,NULL,&aux_rect);
     }
   }
