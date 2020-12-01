@@ -6,7 +6,7 @@
  */
 
 #ifndef __CUSTOMIZATION_H__
-#define __CUSTOMIZATION_H__
+#define __CUSTOMIZATION_H__ 1
 
 #include "SDL.h"
 #include "SDL_image.h"

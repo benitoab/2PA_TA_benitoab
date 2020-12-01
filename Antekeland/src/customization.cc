@@ -5,15 +5,19 @@
  * University Development @ESAT
  */
 
-#include "gamemanager.h"
-#include "customization.h"
-#include "stdio.h"
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
 #include <stdlib.h>
-#include "string.h"
+#include <string.h>
+#include <iostream>
+
 #include "SDL_image.h"
 
-#include <iostream>
-#include <string>
+#include "customization.h"
+#include "gamemanager.h"
+
+
 
 /** @brief Process mouse events for the ImGuiSDL binding.
  *
