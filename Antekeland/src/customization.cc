@@ -37,7 +37,6 @@ void ImGuiSDLProcessEvent(SDL_Event* e) {
 
   while (SDL_PollEvent(e))
   {
-
     
     if (e->type == SDL_WINDOWEVENT)
     {
@@ -50,16 +49,12 @@ void ImGuiSDLProcessEvent(SDL_Event* e) {
     else if (e->type == SDL_MOUSEWHEEL)
     {
       wheel = e->wheel.y;
-    }
-    
+    }    
     
     if(e->type == SDL_TEXTINPUT){
       io.AddInputCharactersUTF8(e->text.text);
       
     }
-    
-     
-    
     
   }
 
@@ -279,26 +274,51 @@ void CustomizeCharacter(Character *c){
   
   ImGui::InputText("", c->name_, 128);
   ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Choose Class");
-  ImGui::ListBox("", &c->profession_, profession, IM_ARRAYSIZE(profession), 10);
-  // ImGui::Combo("Class", &c->profession_, profession, IM_ARRAYSIZE(profession));
+  ImGui::ListBox("", &c->profession_, profession, IM_ARRAYSIZE(profession), 10);  
+  ImGui::End();
 
   /** @brief Stats box */
   if(0 <= c->profession_ && c->profession_ < 10){
     ImGui::SetNextWindowPos(ImVec2(58, 380));
-    ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth/2, 200));
+    ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth/2, 170));
 
     ImGui::Begin("Stats", NULL, gM.window_flags);
-    ImGui::BeginColumns("Attributes", 2, ImGuiColumnsFlags_NoResize);
+    ImGui::BeginColumns("Attributes", 4, ImGuiColumnsFlags_NoBorder | ImGuiColumnsFlags_NoResize);
+    ImGui::SetColumnWidth(0, 50.0f);
+    ImGui::SetColumnWidth(1, 60.0f);
+    ImGui::SetColumnWidth(2, 90.0f);
 
-    ImGui::Text("HP");
-    ImGui::Text("Mana");
-    ImGui::Text("AD");
-    ImGui::Text("AP");  
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),"HP");
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),"Mana");
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),"AD");
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),"AP");
 
+    ImGui::NextColumn();
+    
+    ImGui::Text("Test");
+
+    ImGui::NextColumn();
+
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Armor");
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Magig Res");
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Movement");
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Mana Regen");  
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Crit. Chance");
+
+    ImGui::NextColumn();
+    
+    ImGui::Text("Test2");  
+    
+    ImGui::EndColumns();
     ImGui::End();
   }
-
-  ImGui::End();
 
   ImGui::SetNextWindowSize(ImVec2(gM.kImGuiWidth, gM.kImGuiHeight));
   ImGui::Begin("Antekeland", NULL, gM.window_flags);

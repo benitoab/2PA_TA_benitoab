@@ -81,7 +81,7 @@ int Game::init(){
 
   GameManager& gM = GameManager::Instantiate();
 
-  InitCustomization(ren_);
+  // InitCustomization(ren_);
 
   srand((unsigned int)time(NULL));
 
@@ -174,7 +174,7 @@ void Game::update(){
 
   GameManager& gM = GameManager::Instantiate();
   
-  CustomizeCharacter(&gM.player_[0]);
+  // CustomizeCharacter(&gM.player_[0]);
   current_scene_[0]->update();
   //UpdateImGui();
 }
@@ -192,8 +192,8 @@ void Game::draw(){
   //ImGui
   
  //if(current_id_scene == 0){
-    DrawCustomization();
-    DrawCharacter(ren_, gM.player_[0]);
+    // DrawCustomization();
+    // DrawCharacter(ren_, gM.player_[0]);
   //}
   /* Layer 1 */
   // gM.layer1_.drawMap(ren_);
