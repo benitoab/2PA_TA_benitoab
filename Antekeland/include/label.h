@@ -8,7 +8,7 @@
 #ifndef __LABEL_H__
 #define __LABEL_H__ 1
 
-#include "SDL.h"
+
 #include "SDL_ttf.h"
 #include "entity.h"
 

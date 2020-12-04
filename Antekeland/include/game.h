@@ -19,7 +19,7 @@ class Game {
     Game();    
     ~Game();    
     
-    void loadScene(int n_scene);
+    int loadScene(int n_scene);
     
     
     void mainGame();
@@ -36,7 +36,10 @@ class Game {
     SDL_Window *win_;
     SDL_Renderer *ren_;
     Scene* current_scene_[4];
-    //Scene* previous_scene_;
+    int32_t current_id_scene_;
+    //int32_t previous_id_scene_;
+    
+  
     int quit_;
     double current_time_, last_time_;
     const unsigned char fps = 60;

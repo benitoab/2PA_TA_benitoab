@@ -39,10 +39,7 @@ void Character::init(){
   xp_ = 0;
   level_ = 1;
   
-  char_attacks_[0] = GameManager::Instantiate().attacks[1];
-  char_attacks_[1] = GameManager::Instantiate().attacks[2];
-  char_attacks_[2] = GameManager::Instantiate().attacks[3];
-  char_attacks_[3] = GameManager::Instantiate().attacks[4];
+  
 
   int32_t* skin_ptr = (int32_t*)&skin_id_;
 

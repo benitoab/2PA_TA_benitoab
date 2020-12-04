@@ -74,22 +74,12 @@ void ImGuiSDLProcessEvent(SDL_Event* e) {
 
 }
 
-void InitCustomization(SDL_Renderer* ren){
+void InitCustomization(){
 
-  GameManager& gM = GameManager::Instantiate();
+ //GameManager& gM = GameManager::Instantiate();
 
-  gM.window_flags |= ImGuiWindowFlags_NoMove;
-  gM.window_flags |= ImGuiWindowFlags_NoResize;
-  gM.window_flags |= ImGuiWindowFlags_NoCollapse;
 
-  ImGui::CreateContext();
-
-  ImGuiIO& io = ImGui::GetIO();
-  newFont = io.Fonts->AddFontFromFileTTF("../data/fonts/BreathFire.ttf", 16.0f);  
-  io.Fonts->Build();
-
-	ImGuiSDL::Initialize(ren, gM.kWindowWidth, gM.kWindowHeight);
-
+  
   for(int i = 0; i < 13; ++i){
 
     id_[i] = 255;

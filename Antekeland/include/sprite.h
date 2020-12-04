@@ -8,7 +8,6 @@
 #ifndef __SPRITE_H__
 #define __SPRITE_H__ 1
 
-#include "SDL.h"
 #include "entity.h"
 #include "texture.h"
 

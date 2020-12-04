@@ -1,10 +1,12 @@
 #ifndef __BACKGROUND_H__
 #define __BACKGROUND_H__ 1
 
-#include "SDL.h"
-#include "entity.h"
-#include "texture.h"
 #include <stdint.h>
+
+
+#include "entity.h"
+
+class Texture;
 
 class Background : public Entity{
   
@@ -22,7 +24,7 @@ class Background : public Entity{
   void updateB(float dt);               
   void update(float dt);               
   void draw(SDL_Renderer* ren) override;
-  //void drawOnly1(SDL_Renderer* render);  
+
   
   uint8_t horizontal_scroll_;
   uint8_t vertical_scroll_;

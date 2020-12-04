@@ -9,7 +9,7 @@
 #define __BOARD_H__ 1
 
 #include "tile.h"
-#include "texture.h"
+
 
 class Board{  
   public:

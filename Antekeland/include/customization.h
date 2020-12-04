@@ -20,7 +20,7 @@ static SDL_Surface* images_[11];
 static SDL_Texture* textures_[11];
 
 void ImGuiSDLProcessEvent(SDL_Event* e);
-void InitCustomization(SDL_Renderer* ren);
+void InitCustomization();
 void SetImage(SDL_Surface** img, char* dir, unsigned char* id, int32_t skin_id, SDL_Texture** texture, SDL_Renderer* ren);
 void DrawCharacter(SDL_Renderer* ren, Character c);
 void CustomizeCharacter(Character *c);

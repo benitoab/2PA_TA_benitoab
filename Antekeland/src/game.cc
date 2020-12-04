@@ -41,11 +41,14 @@ Game::~Game(){
   if(nullptr != ren_){ SDL_DestroyRenderer(ren_); }
 }
 
-void Game::loadScene(int n_scene){
-  if(n_scene < 4){
-    current_scene_[n_scene]->init();
-  }
- 
+int Game::loadScene(int n_scene){
+  
+  int32_t last_scene = current_id_scene_;
+  // current_scene[current_id_scene]->quit();
+  current_id_scene_ = n_scene;
+  //current_scene[current_id_scene]->init();
+  
+  return last_scene;
 }
 
 
@@ -75,23 +78,37 @@ int Game::init(){
   //SDL_IMG
   int flags= IMG_INIT_PNG;
   IMG_Init(flags);
+  
+  //SDL_TEXT
   if(TTF_Init() == -1){
     printf("Error al cargar SDL_ttf\n"); 
   }
 
   GameManager& gM = GameManager::Instantiate();
+  //IMGUI
+  gM.window_flags |= ImGuiWindowFlags_NoMove;
+  gM.window_flags |= ImGuiWindowFlags_NoResize;
+  gM.window_flags |= ImGuiWindowFlags_NoCollapse;
 
-  // InitCustomization(ren_);
+  ImGui::CreateContext();
+  
+
+  ImGuiIO& io = ImGui::GetIO();
+  newFont = io.Fonts->AddFontFromFileTTF("../data/fonts/BreathFire.ttf", 16.0f);  
+  io.Fonts->Build();
+  
+  ImGuiSDL::Initialize(ren_, gM.kWindowWidth, gM.kWindowHeight);
+	 
 
   srand((unsigned int)time(NULL));
-
+  // Se modificará
   gM.map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren_);
   gM.bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren_);
 
   CreateBoard();
   InitLogic();
   CreateMap();
-  gM.initsAttacks();
+
   gM.player_[0].init();
   gM.player_[0].dst_rect_.x = gM.kViewSize/2;
   gM.player_[0].dst_rect_.y = gM.kViewSize/2;
@@ -99,7 +116,7 @@ int Game::init(){
   gM.player_[0].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
   gM.combat_.initCombat(gM.player_[0]);
   gM.combat_.current_char_ = &gM.player_[0];
-  
+
   RBM::Transform2 aux_tr = {{0.0f,0.0f},0.0f,{0.0f,0.0f}};
   RBM::Vec2 aux_v2 = {0.5f,0.0f};
   gM.bg_custo_.init(aux_tr,1,0,*gM.bg_texture_, &aux_v2);
@@ -110,12 +127,16 @@ int Game::init(){
       gM.layer2_.map_[i][j].initSubSprite();
     }
   }
-  
+
   //current_scene_[0] = new Customization();
   current_scene_[1] = new MainScene();
   current_scene_[1]->init();
+
   current_scene_[0] = new CustoScene();
   current_scene_[0]->init();
+
+  
+  current_id_scene_ = 1;
 
   return 0;
 }
@@ -147,19 +168,17 @@ void Game::input(){
   while (SDL_PollEvent(&event))
   {
     ImGuiSDLProcessEvent(&event);
-    if (/*event.key.keysym.sym == SDLK_ESCAPE || */event.type == SDL_QUIT ) {
+    if (event.type == SDL_QUIT ) {
       quit_ = true;      
     }
-    if(event.key.keysym.sym == SDLK_1){ ++gM.player_[0].current_.hp;}
-    if(event.key.keysym.sym == SDLK_2){ --gM.player_[0].current_.hp;}
+    if(event.key.keysym.sym == SDLK_1){ loadScene(0);}
+    if(event.key.keysym.sym == SDLK_2){ loadScene(1);}
+    // if(event.key.keysym.sym == SDLK_3){ ;}
+    // if(event.key.keysym.sym == SDLK_4){ ;}
+    // if(event.key.keysym.sym == SDLK_5){ ;}
 
-    current_scene_[0]->input(&event);
-    /*if(event.key.keysym.sym == SDLK_SPACE){
-
-      SDL_SetWindowSize(win_, 300, 300);
-
-    }*/
-
+    current_scene_[current_id_scene_]->input(&event);
+  
     if (event.type == SDL_WINDOWEVENT && 
       event.window.event == SDL_WINDOWEVENT_CLOSE && 
       event.window.windowID == SDL_GetWindowID(win_)) {
@@ -172,40 +191,26 @@ void Game::input(){
 
 void Game::update(){
 
-  GameManager& gM = GameManager::Instantiate();
-  
-  // CustomizeCharacter(&gM.player_[0]);
-  current_scene_[0]->update();
-  //UpdateImGui();
+  //GameManager& gM = GameManager::Instantiate();
+ 
+  current_scene_[current_id_scene_]->update();
+
 }
 
 void Game::draw(){
 
-  GameManager& gM = GameManager::Instantiate();
+  //GameManager& gM = GameManager::Instantiate();
   
   SDL_SetRenderDrawColor(ren_,222,208,158,87);
   SDL_RenderClear(ren_);
 
-  current_scene_[0]->draw(ren_);
+  current_scene_[current_id_scene_]->draw(ren_);
+  current_scene_[current_id_scene_]->drawImgui(ren_);
   
 
-  //ImGui
+
   
- //if(current_id_scene == 0){
-    // DrawCustomization();
-    // DrawCharacter(ren_, gM.player_[0]);
-  //}
-  /* Layer 1 */
-  // gM.layer1_.drawMap(ren_);
-  /* Character */
-  // gM.player.draw(ren_);
-  //gM.playerombat_.drawMark(ren_);
-  /* Layer 2 */
-  // gM.layer2_.drawMap(ren_);
-  /* Layer3 */
-  // gM.drawBlackRects(ren_);
-  // gM.playerombat_.drawAttacks(ren_);
-  // gM.playerombat_.drawStats(ren_, gM.player);
+
 
   //Update the screen
   SDL_RenderPresent(ren_);
@@ -218,11 +223,13 @@ void Game::draw(){
 void Game::mainGame(){
   
   init();
- 
+
   while(!quit_){
     
     input();    
-    update();    
+
+    update();   
+ 
     draw();
     
   }

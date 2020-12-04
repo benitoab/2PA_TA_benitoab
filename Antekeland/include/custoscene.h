@@ -2,8 +2,9 @@
 #define __CUSTOSCENE_H__ 1
 
 #include "scene.h"
-#include "SDL.h"
-#include "character.h"
+
+
+class Character;
 
 class CustoScene : public Scene{
   
@@ -12,12 +13,14 @@ class CustoScene : public Scene{
   CustoScene();
   virtual ~CustoScene();
   
-  void init(SDL_Renderer* ren) override;
+  void init() override;
   void input(SDL_Event* eve) override;
-  void update(Character* c) override;
-  void drawCustomCharacter(SDL_Renderer* ren, Character c);
+  void update() override;
+  void drawImgui(SDL_Renderer* ren) override;
   
   //Atributes
+  
+  Character* current_c_;
   
 };
 

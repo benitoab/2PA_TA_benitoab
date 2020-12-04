@@ -8,7 +8,7 @@
 #ifndef __TILE_H__  
 #define __TILE_H__ 1
 
-#include "SDL.h"
+
 #include "sprite.h"
 
 class Tile : public Sprite {

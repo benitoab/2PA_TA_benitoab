@@ -1,6 +1,6 @@
 #include "custoscene.h"
 #include "gamemanager.h"
-
+#include "customization.h"
 CustoScene::CustoScene(){
 
 
@@ -10,27 +10,27 @@ CustoScene::~CustoScene(){
   
 }
 
-void CustoScene::init(SDL_Renderer* ren){
+void CustoScene::init(){
   GameManager& gM = GameManager::Instantiate();
   ent_list.push_back(&gM.bg_custo_);
-  InitCustomization(ren);
+  InitCustomization();
   
 }
 
 void CustoScene::input(SDL_Event* eve){}
 
-void CustoScene::update(Character* c){
+void CustoScene::update(){
   
   GameManager& gM = GameManager::Instantiate();
   gM.bg_custo_.update(1);
-  CustomizeCharacter(&c);
+  CustomizeCharacter(&gM.player_[0]);
   
 }
 
-void CustoScene::drawCustomCharacter(SDL_Renderer* ren, Character c){
 
+
+void CustoScene::drawImgui(SDL_Renderer* ren){
+  GameManager& gM = GameManager::Instantiate();
   DrawCustomization();
-  DrawCharacter(ren, c);
-  
+  DrawCharacter(ren, gM.player_[0]);
 }
-

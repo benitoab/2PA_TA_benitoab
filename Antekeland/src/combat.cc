@@ -68,7 +68,7 @@ void Combat::initCombat(Character& current_char){
   aux_rect.y = gM.kBoardHeight;
   aux_rect.w = 200;
   aux_rect.h = 50;
-  
+  /*
   att_text_[0].init("../data/fonts/combat.otf",font_size,white,
                     current_char.char_attacks_[0].name,aux_rect);
   aux_rect.x = 200;
@@ -88,7 +88,7 @@ void Combat::initCombat(Character& current_char){
   
   att_text_[3].init("../data/fonts/combat.otf",font_size,white,
                     "el zumo de naranja lleva mucha azucar xdddddddddddddddd",aux_rect); 
-
+*/
   aux_rect.x = (int)(ui_stats_rect_.x + stats_scale_ * spacing);
   aux_rect.y = (int)(ui_stats_rect_.y + stats_scale_ * 200);
   aux_rect.w = (int)(stats_scale_ * 15*3);

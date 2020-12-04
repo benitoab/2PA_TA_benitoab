@@ -4,15 +4,12 @@
 
 MainScene::MainScene(){
   
-  //ent_list = nullptr;
+
   
 }
 
 MainScene::~MainScene(){
- // if(nullptr != ent_list){
-   // ent_list.clear();
-    //ent_list = nullptr;
-  //}
+
 }
 
 
@@ -66,6 +63,11 @@ void MainScene::init(){
   }
  
 }
+/*
+void MainScene::quit(){
+  GameManager& gM = GameManager::Instantiate();
+  gM.over_world_scene_ = 0;
+}*/
 
 void MainScene::input(SDL_Event* eve){
   
@@ -82,6 +84,8 @@ void MainScene::update(){
   gM.layer2_.update0Position();
   gM.combat_.updateStats();
 
-  
+}
+
+void MainScene::drawImgui(SDL_Renderer* ren){
   
 }

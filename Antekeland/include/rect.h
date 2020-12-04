@@ -9,7 +9,6 @@
 #ifndef __RECT_H__
 #define __RECT_H__ 1
 
-#include <SDL.h>
 #include "entity.h"
 
 class Rect : public Entity{

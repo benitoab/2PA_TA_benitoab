@@ -8,7 +8,7 @@
 #ifndef __TEXTURE_H__
 #define __TEXTURE_H__ 1
 
-#include <SDL.h>
+#include "SDL.h"
 #include <stdint.h>
 
 class Texture{

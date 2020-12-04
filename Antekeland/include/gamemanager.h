@@ -35,7 +35,7 @@ class GameManager{
     ~GameManager();
     //It has to be change of .h
    
-    void initsAttacks();
+
     //Factory
     static GameManager& Instantiate();
     
@@ -50,8 +50,8 @@ class GameManager{
     Texture* bg_texture_;
     Background bg_custo_;
     Combat combat_;
-    Attacks attacks[6];
-    uint8_t over_world_scene_ ;
+ 
+    int32_t over_world_scene_;
     Rect ui_rects_[2];
     
   private:

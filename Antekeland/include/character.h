@@ -116,7 +116,7 @@ class Character : public Entity{
   int32_t profession_;
   int32_t xp_;
   int32_t level_;
-
+  
   SkinsCustomization skin_id_;  /** @var Storages all the skins used for every character */
 
   Sprite skin_[7];              /** @var Manages the skin customization */

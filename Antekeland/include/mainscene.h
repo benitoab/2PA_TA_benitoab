@@ -13,6 +13,7 @@ class MainScene : public Scene{
   void init() override;
   void input(SDL_Event* eve) override;
   void update() override;
+  void drawImgui(SDL_Renderer* ren) override;
   
 };
 

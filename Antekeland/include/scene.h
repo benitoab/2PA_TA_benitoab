@@ -1,5 +1,6 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__ 1
+
 #include "SDL.h"
 #include <iostream> 
 #include <list> 
@@ -19,6 +20,7 @@ class Scene{
   
   virtual void input(SDL_Event* eve)=0;
   virtual void update()=0;
+  virtual void drawImgui(SDL_Renderer* ren)=0;
   
   void draw(SDL_Renderer* ren);
   
