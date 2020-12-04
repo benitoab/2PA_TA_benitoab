@@ -9,6 +9,7 @@
 #define __GAMEMANAGER_H__ 1
 
 #include "SDL.h"
+#include "database.h"
 #include "texture.h"
 #include "background.h"
 #include "board.h"
@@ -50,6 +51,7 @@ class GameManager{
     Texture* bg_texture_;
     Background bg_custo_;
     Combat combat_;
+    DataBase data_base_;
  
     int32_t over_world_scene_;
     Rect ui_rects_[2];

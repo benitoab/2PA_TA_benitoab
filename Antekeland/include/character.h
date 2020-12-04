@@ -10,6 +10,7 @@
 
 #include "entity.h"
 #include "sprite.h"
+#include "database.h"
 
 struct Attacks{
 
@@ -51,20 +52,7 @@ struct SkinsCustomization{
 
 };
 
-/** @struct Stores the stats of the characters */
-struct Character_Stats{
 
-  int32_t hp;
-  int32_t mana;
-  int32_t physical_att; 
-  int32_t magic_att;
-  int32_t armor;
-  int32_t magic_resist;
-  int32_t movement; 
-  int32_t mana_regen; 
-  int32_t crit_chance; 
-
-};
 
 enum kEnumProfession{
 

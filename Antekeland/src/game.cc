@@ -127,6 +127,24 @@ int Game::init(){
       gM.layer2_.map_[i][j].initSubSprite();
     }
   }
+  
+  char* p = "../data/database/antekeland.db";
+  gM.data_base_.init();
+  gM.data_base_.openDB(p);
+  gM.data_base_.readProfessionData();
+  
+  for(int i=0; i<7; ++i){
+    
+    printf("hp: %d\n mana: %d\n armor: %d\n crit: %d\n",
+    (gM.data_base_.profession_ + i)->hp, 
+    (gM.data_base_.profession_ + i)->mana, 
+    (gM.data_base_.profession_ + i)->armor,
+    (gM.data_base_.profession_ + i)->crit_chance);
+  }
+  
+  
+  
+  
 
   //current_scene_[0] = new Customization();
   current_scene_[1] = new MainScene();
