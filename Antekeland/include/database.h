@@ -5,6 +5,11 @@
 #include "sqlite3.h"
 
 
+const int32_t kNumSavedGames = 4;
+const int32_t kNumProfession = 10;
+const int32_t kNumAttacks = 4;
+const int32_t kNumTiles = 64*64;
+
 /** @struct Stores the stats of the characters */
 struct Character_Stats{
 
@@ -17,6 +22,17 @@ struct Character_Stats{
   int32_t movement; 
   int32_t mana_regen; 
   int32_t crit_chance; 
+};
+
+struct AttacksData{
+
+  int32_t id;
+  int32_t dmg;       ///@var damage of the attack
+  int32_t mana_cost; ///@var how many mana it costs
+  uint8_t range;     ///@var the manhatan distance you need to be to use it.
+  uint8_t type;      ///@var the type of the damage magic(0) or physical(1)
+  char* name;        ///@var the name of the attack
+
 };
 
 struct SaveLoadBoard{
@@ -40,12 +56,23 @@ struct GameData{
   int32_t id_char_4;
 };
 
+struct CharacterData{
+  int32_t id;
+  /*Tenemos que ver lo que poner*/
+};
 
-int callbackProfesion(void *proffdata, int argc,
+int callbackProfesion(void *profdata, int argc,
                        char **argv, char **azcolname);
-                       
-//int callbackAttacks(void *attdata, int argc,
-                    //char **argv, char **azcolname);
+      
+
+int callback(void *profdata, int argc,
+                       char **argv, char **azcolname);
+      
+int callbackBoard(void *boardinfo, int argc,
+                  char **argv, char **azcolname);      
+      
+int callbackAttacks(void *attdata, int argc,
+                    char **argv, char **azcolname);
 
 
 
@@ -60,14 +87,23 @@ class DataBase{
   void closeDB();
   
   void init();
+  void freeData();
   
   void ReadGameData(const char* path);
-  //void readProfessionData(const char* path);
+  
   void readProfessionData();
+  void readGameData();
+  void readCharacterData();
+  void readAttacksData();
+  void readBoardData();
   
   
   //Atributes
   Character_Stats* profession_;
+  GameData* games_;
+  CharacterData* char_data_;
+  AttacksData* att_data_;
+  SaveLoadBoard* board_data_;
   
   sqlite3* db_;
   

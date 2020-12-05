@@ -12,16 +12,7 @@
 #include "sprite.h"
 #include "database.h"
 
-struct Attacks{
 
-  int32_t id;
-  int32_t dmg;       ///@var damage of the attack
-  int32_t mana_cost; ///@var how many mana it costs
-  uint8_t range;     ///@var the manhatan distance you need to be to use it.
-  uint8_t type;      ///@var the type of the damage magic(0) or physical(1)
-  char* name;        ///@var the name of the attack
-
-};
 
 struct SkinsCustomization{
 
@@ -91,7 +82,7 @@ class Character : public Entity{
   char name_[32] = "";
   char name2_[32] = "";
   
-  Attacks char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
+  AttacksData char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
   public:
   
   RBM::Vec2 velocity;//¿?

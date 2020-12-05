@@ -132,6 +132,7 @@ int Game::init(){
   gM.data_base_.init();
   gM.data_base_.openDB(p);
   gM.data_base_.readProfessionData();
+  gM.data_base_.closeDB();
   
   for(int i=0; i<7; ++i){
     
