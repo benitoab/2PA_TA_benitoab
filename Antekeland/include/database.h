@@ -3,11 +3,17 @@
 
 #include <stdint.h>
 #include "sqlite3.h"
-
+extern "C" {
+#include "../ADT/adt_memory_node.h"
+#include "../ADT/adt_vector.h"
+#include "abgs_platform_types.h"
+#include "abgs_memory_manager.h"
+}
 
 const int32_t kNumSavedGames = 4;
 const int32_t kNumProfession = 10;
 const int32_t kNumAttacks = 4;
+const int32_t kNumCharacter = 4;
 const int32_t kNumTiles = 64*64;
 
 /** @struct Stores the stats of the characters */
@@ -37,9 +43,9 @@ struct AttacksData{
 
 struct SaveLoadBoard{
   int32_t id_world;
-  int32_t logic_state;
-  int32_t logic_type;
-  int32_t units_state;
+  int32_t logic_enabled;
+  int32_t logic_enter;
+  int32_t units_enabled;
   int32_t layer1_state;
   int32_t layer1_type;
   int32_t layer2_state;
@@ -48,8 +54,7 @@ struct SaveLoadBoard{
 
 
 struct GameData{
-  int32_t previous_board;
-  int32_t id_board;
+  int32_t id_game;
   int32_t id_char_1;
   int32_t id_char_2;
   int32_t id_char_3;
@@ -64,15 +69,15 @@ struct CharacterData{
 int callbackProfesion(void *profdata, int argc,
                        char **argv, char **azcolname);
       
+int callbackAttacks(void *attdata, int argc,
+                    char **argv, char **azcolname);
 
-int callback(void *profdata, int argc,
-                       char **argv, char **azcolname);
+int callbackGame(void *gamedata, int argc,
+                 char **argv, char **azcolname);
       
 int callbackBoard(void *boardinfo, int argc,
                   char **argv, char **azcolname);      
       
-int callbackAttacks(void *attdata, int argc,
-                    char **argv, char **azcolname);
 
 
 
@@ -96,10 +101,30 @@ class DataBase{
   void readCharacterData();
   void readAttacksData();
   void readBoardData();
+  void readLastGame();
+  
+  void saveBoardData();
+  void saveNewCharacter();
+  void saveGameData();
+  
+  void loadData();
+  
+  void loadCharacter();
+  void loadBoard();
+  
+  
+  void printProfession();
   
   
   //Atributes
+  Vector* prof_vector_;
+  Vector* games_vector_;
+  Vector* char_vector_;
+  Vector* att_vector_;
+  Vector* board_vector_;
+  
   Character_Stats* profession_;
+  Character_Stats* p_[kNumProfession];
   GameData* games_;
   CharacterData* char_data_;
   AttacksData* att_data_;
