@@ -18,6 +18,7 @@
 #include "customization.h"
 #include "mainscene.h"
 #include "custoscene.h"
+#include "combatscene.h"
 
 #include "imgui.h"
 #include "imgui_sdl.h"
@@ -97,13 +98,15 @@ int Game::init(){
   newFont = io.Fonts->AddFontFromFileTTF("../data/fonts/BreathFire.ttf", 16.0f);  
   io.Fonts->Build();
   
-  ImGuiSDL::Initialize(ren_, gM.kWindowWidth, gM.kWindowHeight);
-	 
+  ImGuiSDL::Initialize(ren_, gM.kWindowWidth, gM.kWindowHeight);	 
 
   srand((unsigned int)time(NULL));
   
   gM.map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren_);
   gM.bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren_);
+  gM.ground_cave_ = Texture::CreateTexture("../data/resources/ground_cave.png", ren_);
+  gM.frozen_cave_ = Texture::CreateTexture("../data/resources/frozen_cave.png", ren_);
+
   CreateBoard();
   //DB
   //int x=0;
@@ -111,7 +114,7 @@ int Game::init(){
   char* p = "../data/database/antekeland.db";
   gM.data_base_.init();
   gM.data_base_.openDB(p); 
-  gM.data_base_.readGame();
+  // gM.data_base_.readGame();
   //gM.data_base_.readBoardData();
   gM.data_base_.readProfessionData();
   //gM.data_base_.loadBoard();
@@ -145,6 +148,9 @@ int Game::init(){
 
 
   //current_scene_[0] = new Customization();
+  current_scene_[2] = new CombatScene();
+  current_scene_[2]->init();
+
   current_scene_[1] = new MainScene();
   current_scene_[1]->init();
 
@@ -152,7 +158,7 @@ int Game::init(){
   current_scene_[0]->init();
 
   
-  current_id_scene_ = 1;
+  current_id_scene_ = 2;
 
   return 0;
 }
@@ -188,8 +194,9 @@ void Game::input(){
     if (event.type == SDL_QUIT ) {
       quit_ = true;      
     }
-    if(event.key.keysym.sym == SDLK_1){ loadScene(0);}
-    if(event.key.keysym.sym == SDLK_2){ loadScene(1);}
+    if(event.key.keysym.sym == SDLK_8){ loadScene(0);}
+    if(event.key.keysym.sym == SDLK_9){ loadScene(1);}
+    if(event.key.keysym.sym == SDLK_0){ loadScene(2);}
     // if(event.key.keysym.sym == SDLK_3){ ;}
     // if(event.key.keysym.sym == SDLK_4){ ;}
     // if(event.key.keysym.sym == SDLK_5){ ;}

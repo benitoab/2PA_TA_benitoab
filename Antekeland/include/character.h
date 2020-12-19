@@ -86,21 +86,21 @@ class Character : public Entity{
   AttacksData char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
   public:
   
-  RBM::Vec2 velocity;//¿?
-  
-  ///@var Stats base of the characters.
-  Character_Stats base_;
-  ///@var Stats that change during the combat.
-  Character_Stats current_;
-  
-  int32_t profession_;
-  int32_t xp_;
-  int32_t level_;
-  
-  SkinsCustomization skin_id_;  /** @var Storages all the skins used for every character */
+    ///@var base_ Base stats of the characters.
+    Character_Stats base_;
+    ///@var current_ Current stats that change over the combat.
+    Character_Stats current_;
+    
+    int32_t profession_;
+    int32_t xp_;
+    int32_t level_;
+    
+    SkinsCustomization skin_id_;      /** @var Storages all the skins used for every character */
 
-  Sprite skin_[7];              /** @var Manages the skin customization */
-  Sprite outfit_[10];           /** @var Manages the outfit customization */
+    Sprite skin_[7];                  /** @var Manages the skin customization */
+    Sprite outfit_[10];               /** @var Manages the outfit customization */
+
+    unsigned char turn_completed_;    /** @var turn_completed_ Identifies whether the turn has been completed by the character. 0 = uncompleted, 1 = completed */
 
 };
 

@@ -26,12 +26,9 @@ GameManager& GameManager::Instantiate(){
 GameManager::GameManager(){
   map_texture_ = nullptr;
   bg_texture_ = nullptr;
+  ground_cave_ = nullptr;
+  frozen_cave_ = nullptr;
 }
 
 GameManager::~GameManager(){  
 }
-
-
-
-
-

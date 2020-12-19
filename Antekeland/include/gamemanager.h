@@ -49,6 +49,7 @@ class GameManager{
     Character NPC_[10];
     Texture* map_texture_;
     Texture* bg_texture_;
+    Texture *ground_cave_, *frozen_cave_;
     Background bg_custo_;
     Combat combat_;
     DataBase data_base_;

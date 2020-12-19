@@ -18,7 +18,7 @@ class Sprite : public Entity{
     Sprite();
     ~Sprite();
     
-    void initSprite(const Texture& t,
+    void initSprite(Texture& t,
                     const SDL_Rect* position,
                     const SDL_Rect* snip);
     

@@ -23,11 +23,11 @@ Sprite::Sprite(){
 Sprite::~Sprite(){
 }
 
-void Sprite::initSprite(const Texture& t, 
+void Sprite::initSprite(Texture& t, 
                         const SDL_Rect* position,
                         const SDL_Rect* snip){
   
-  *texture_ = t;
+  texture_ = &t;
   dst_rect_ = *position;
   snip_rect_ = *snip;
   
