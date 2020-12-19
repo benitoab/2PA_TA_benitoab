@@ -23,7 +23,7 @@ class CombatScene : public Scene{
     unsigned char num_turns_; // [0, 3] = Characters, >3 = IA
     unsigned char current_character_;
 
-    Logic logic_board_[16][16];
+    
   
 };
 

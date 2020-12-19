@@ -45,9 +45,9 @@ Game::~Game(){
 int Game::loadScene(int n_scene){
   
   int32_t last_scene = current_id_scene_;
-  // current_scene[current_id_scene]->quit();
+  // current_scene_[current_id_scene_]->quit();
   current_id_scene_ = n_scene;
-  //current_scene[current_id_scene]->init();
+  current_scene_[current_id_scene_]->init();
   
   return last_scene;
 }
@@ -131,6 +131,7 @@ int Game::init(){
   gM.player_[0].dst_rect_.y = gM.kViewSize/2;
   gM.player_[0].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
   gM.player_[0].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
+  gM.player_[0].previous_movs_[0]= gM.player_[0].dst_rect_.y*16+ gM.player_[0].dst_rect_.x;
   gM.combat_.initCombat(gM.player_[0]);
   gM.combat_.current_char_ = &gM.player_[0];
 
