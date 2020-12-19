@@ -23,8 +23,12 @@ Character::Character(){
 
 Character::~Character(){}
 
+
+
 void Character::init(){
   
+  GameManager& gM = GameManager::Instantiate(); 
+/*
   base_.hp = 100;
   base_.mana = 100;
   base_.physical_att = 10;
@@ -32,10 +36,12 @@ void Character::init(){
   base_.armor = 10;
   base_.magic_resist = 10;
   base_.movement = 7; 
-  
+  */
+  profession_ = kEnumProfession_Warrior;
+ 
+  base_ = *(gM.data_base_.p_[profession_]);
   current_ = base_;
 
-  profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
   level_ = 1;
   
@@ -54,6 +60,36 @@ void Character::init(){
   skin_id_.hair_color = 1;
   
 }
+
+
+
+void Character::init(int prof){
+  
+  GameManager& gM = GameManager::Instantiate(); 
+  profession_ = prof;
+ 
+  base_ = *(gM.data_base_.p_[profession_]);
+  current_ = base_;
+
+  xp_ = 0;
+  level_ = 1;
+  
+  int32_t* skin_ptr = (int32_t*)&skin_id_;
+
+  for(int i = 2; i < 23; ++i){
+
+    *(skin_ptr+i) = 0;
+
+  }
+
+  skin_id_.gender = 1;
+  skin_id_.skin = 1;
+  skin_id_.hair_color = 1;
+  
+}
+
+
+
 
 void Character::levelUp(){}
 
@@ -106,7 +142,7 @@ void Character::movCharacter(SDL_Event* e){
     }
 
     
-    printf("Casilla character x:%d y:%d\n",dst_rect_.x, dst_rect_.y );
+   // printf("Casilla character x:%d y:%d\n",dst_rect_.x, dst_rect_.y );
 
     if(1 == can_move){
       
@@ -114,7 +150,7 @@ void Character::movCharacter(SDL_Event* e){
       Board::y_origin_ += h_tile * vertical_mov;
      
     }
-    printf(" x:%d y:%d\n",Board::x_origin_, Board::y_origin_ );
+    //printf(" x:%d y:%d\n",Board::x_origin_, Board::y_origin_ );
   }
   
 }

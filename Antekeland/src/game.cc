@@ -101,11 +101,25 @@ int Game::init(){
 	 
 
   srand((unsigned int)time(NULL));
-  // Se modificará
+  
   gM.map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren_);
   gM.bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren_);
-
   CreateBoard();
+  //DB
+  //int x=0;
+  //scanf("%d",&x);
+  char* p = "../data/database/antekeland.db";
+  gM.data_base_.init();
+  gM.data_base_.openDB(p); 
+  gM.data_base_.readGame();
+  //gM.data_base_.readBoardData();
+  gM.data_base_.readProfessionData();
+  //gM.data_base_.loadBoard();
+ 
+  //gM.data_base_.closeDB();
+  
+  
+  //NEW GAME
   InitLogic();
   CreateMap();
 
@@ -128,24 +142,7 @@ int Game::init(){
     }
   }
   
-  char* p = "../data/database/antekeland.db";
-  gM.data_base_.init();
-  gM.data_base_.openDB(p);
-  gM.data_base_.readProfessionData();
-  gM.data_base_.closeDB();
-  
-  for(int i=0; i<7; ++i){
-    
-    printf("hp: %d\n mana: %d\n armor: %d\n crit: %d\n",
-    (gM.data_base_.profession_ + i)->hp, 
-    (gM.data_base_.profession_ + i)->mana, 
-    (gM.data_base_.profession_ + i)->armor,
-    (gM.data_base_.profession_ + i)->crit_chance);
-  }
-  
-  
-  
-  
+
 
   //current_scene_[0] = new Customization();
   current_scene_[1] = new MainScene();
@@ -167,6 +164,7 @@ void Game::quit(){
   
   SDL_DestroyRenderer(ren_);
   SDL_DestroyWindow(win_);
+  GameManager::Instantiate().data_base_.closeDB();
   
   // Cleanup
   QuitCustomization();

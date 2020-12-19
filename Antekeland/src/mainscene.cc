@@ -72,6 +72,15 @@ void MainScene::quit(){
 void MainScene::input(SDL_Event* eve){
   
   GameManager::Instantiate().player_[0].movCharacter(eve);
+  
+  if(eve->type == SDL_KEYDOWN){
+    if(eve->key.keysym.sym == SDLK_0){
+      printf("Guardo\n");
+      //GameManager::Instantiate().data_base_.saveBoardData();
+      printf("Guardado\n");
+    }
+  }
+
 }
 
 void MainScene::update(){

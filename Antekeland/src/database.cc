@@ -91,14 +91,15 @@ int callbackBoard(void *boardinfo, int argc,
   
   SaveLoadBoard *board_info = (SaveLoadBoard*)calloc(1,sizeof(SaveLoadBoard));
 
-  board_info->id_world = atoi(argv[1]);
-  board_info->logic_enabled = atoi(argv[2]);
-  board_info->logic_enter = atoi(argv[3]);
-  board_info->units_enabled = atoi(argv[4]);
-  board_info->layer1_state = atoi(argv[5]);
-  board_info->layer1_type = atoi(argv[6]);
-  board_info->layer2_state = atoi(argv[7]);
-  board_info->layer2_type = atoi(argv[8]);
+ 
+  board_info->logic_enabled = atoi(argv[1]);
+  board_info->logic_enter = atoi(argv[2]);
+  board_info->units_enabled = atoi(argv[3]);
+  board_info->layer1_state = atoi(argv[4]);
+  board_info->layer1_type = atoi(argv[5]);
+  board_info->layer2_state = atoi(argv[6]);
+  board_info->layer2_type = atoi(argv[7]);
+  board_info->id_world = atoi(argv[8]);
   
   aux_vector->ops_->insertLast(aux_vector, 
   (void*)board_info, (uint16_t)sizeof(SaveLoadBoard));
@@ -133,14 +134,19 @@ int callbackCharacter(void *characterdata, int argc,
 
 
 DataBase::DataBase(){
+  
   profession_ = nullptr;
   games_ = nullptr;
   char_data_ = nullptr;
   att_data_ = nullptr;
   board_data_ = nullptr;
   db_ = nullptr;
+  
   prof_vector_ = NULL;
   games_vector_ = NULL;
+  char_vector_ = NULL;
+  att_vector_ = NULL;
+  board_vector_ = NULL;
 }
 
 
@@ -168,6 +174,16 @@ DataBase::~DataBase(){
   if(nullptr != board_data_){
     free(board_data_);
   }
+  
+  prof_vector_->ops_->destroy(prof_vector_);
+  
+  games_vector_->ops_->destroy(games_vector_);
+  
+  char_vector_->ops_->destroy(char_vector_);
+  
+  att_vector_->ops_->destroy(att_vector_);
+  
+  board_vector_->ops_->destroy(board_vector_);
   
 }
 
@@ -283,18 +299,6 @@ void DataBase::printProfession(){
   
 }
 
-void DataBase::loadData(){
-  
-  for(int i = 0; i<kNumProfession; ++i){
-    
-    //(profession_+i) = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
-    p_[i] = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
-  }
-  printProfession();
-  //(...)
-  
-}
-
 void DataBase::readGameData(){
   
   char *err_msg = 0;
@@ -326,9 +330,15 @@ void DataBase::readBoardData(){
   
   char *err_msg = 0;
   int rc = 0;
-
-  char *sql1 = "SELECT * FROM board";
-  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)board_data_, &err_msg);
+  //char sql1[500]; 
+  //int n = sprintf (sql1, "SELECT * FROM board"
+                  // "WHERE board.id_game == %d",0);
+                   
+  char *sql1 = "SELECT * FROM board WHERE (board.id_game==0)";
+                
+  
+  board_vector_->ops_->print(board_vector_);
+  rc = sqlite3_exec(db_,sql1, callbackBoard, (void*)board_vector_, &err_msg);
 }
 
 void DataBase::readLastGame(){
@@ -347,23 +357,29 @@ void DataBase::saveBoardData(){
   char sql1[500];
   char *err_msg = 0;
   int rc = 0;
- /* int n = sprintf (sql1, "INSERT INTO board"
+  for(int i=0; i<64; ++i){
+    for(int j = 0; j<64; ++j){
+      int n = sprintf (sql1, "INSERT INTO board"
                   "(logic_enabled,logic_enter,"
                   "units_enabled,layer1_state,"
                   "layer1_type, layer2_state,"
                   "layer2_type, id_game)"
                   "VALUES(%d,%d,%d,%d,%d,%d,%d,%d)",
-                  gM.board_[][].enabled_, 
-                  gM.board_[][].enter_,
-                  gM.units_[][].enabled_, 
-                  gM.layer1_.map_.[][].state_,
-                  gM.layer1_.map_.[][].type_,
-                  gM.layer2_.map_.[][].state_,
-                  gM.layer2_.map_.[][].type_,
-                  gM.current_game_data_.id_game ); */
-           
-   
-  rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
+                  gM.board_[i][j].enabled_, 
+                  gM.board_[i][j].enter_,
+                  gM.units_[i][j].enabled_, 
+                  gM.layer1_.map_[i][j].state_,
+                  gM.layer1_.map_[i][j].type_,
+                  gM.layer2_.map_[i][j].state_,
+                  gM.layer2_.map_[i][j].type_,
+                  0 );
+      rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
+      printf("voy por la : %d", i*64+j);
+    }          
+  }                
+
+  /*gM.current_game_data_.id_game ); */
+  //rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
 }
 
 void DataBase::saveNewCharacter(){
@@ -411,6 +427,38 @@ void DataBase::loadCharacter(){
 void DataBase::loadBoard(){
   GameManager& gM = GameManager::Instantiate();
   int c = Board::kBoardSize, r = Board::kBoardSize;
+  SaveLoadBoard* aux_board;
+
+  for(int i = 0; i< r; ++i){
+    for(int j = 0; j <c; ++j){
+      
+      aux_board = (SaveLoadBoard*) board_vector_->ops_->extractFirst(board_vector_);
+      printf("\ni: %d\n", i*64+j);
+     /* printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d\n",
+          aux_board->logic_enabled,aux_board->logic_enter,
+          aux_board->units_enabled,
+          aux_board->layer1_state,aux_board->layer1_type,
+          aux_board->layer2_state,aux_board->layer2_type);*/
+      
+      gM.board_[i][j].enabled_ = aux_board->logic_enabled;
+      gM.board_[i][j].enter_ = aux_board->logic_enter;
+      gM.units_[i][j].enabled_ = aux_board->units_enabled;
+      gM.layer1_.map_[i][j].state_ = aux_board->layer1_state;
+      gM.layer1_.map_[i][j].type_ = aux_board->layer1_type;
+      gM.layer2_.map_[i][j].state_ = aux_board->layer2_state;
+      gM.layer2_.map_[i][j].type_ = aux_board->layer2_type;
+      
+      printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d",
+      gM.board_[i][j].enabled_,gM.board_[i][j].enter_,
+      gM.units_[i][j].enabled_,
+      gM.layer1_.map_[i][j].state_,gM.layer1_.map_[i][j].type_,
+      gM.layer2_.map_[i][j].state_,gM.layer2_.map_[i][j].type_);
+      
+      
+
+    }
+  }
+  /*
   for(int i = 0; i< r; ++i){
     for(int j = 0; j <c; ++j){
       
@@ -422,7 +470,20 @@ void DataBase::loadBoard(){
       gM.layer2_.map_[i][j].state_ = (board_data_ + i * c + j)->layer2_state;
       gM.layer2_.map_[i][j].type_ = (board_data_ + i * c + j)->layer2_type;
     }
+  }*/
+}
+
+
+void DataBase::loadData(){
+  
+  for(int i = 0; i<kNumProfession; ++i){
+    
+    //(profession_+i) = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
+    p_[i] = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
   }
+  printProfession();
+  //(...)
+  
 }
 
 

@@ -70,6 +70,7 @@ class Character : public Entity{
   ~Character();
   
   void init() override;
+  void init(int prof) ;
   
   void levelUp();
   void updatePosition(); 

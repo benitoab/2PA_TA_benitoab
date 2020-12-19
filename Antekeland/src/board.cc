@@ -67,7 +67,7 @@ void Board::reset0Position(){
   GameManager& gM = GameManager::Instantiate();  
   int total_w = (map_[0][0].dst_rect_.w*(kBoardSize));
   int total_h = (map_[0][0].dst_rect_.h*(kBoardSize));
-  printf("x: %d, y: %d\n", x_origin_, y_origin_);
+  //printf("x: %d, y: %d\n", x_origin_, y_origin_);
   if(x_origin_ > gM.kBoardWidth){
     x_origin_ %= total_w;
   }

@@ -50,5 +50,4 @@ void Sprite::draw(SDL_Renderer* render){
   
   SDL_RenderCopy(render,texture_->texture_,
                  &snip_rect_, &dst_rect_);
-  
 }
