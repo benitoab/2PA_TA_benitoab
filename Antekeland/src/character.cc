@@ -2,6 +2,8 @@
 #include "gamemanager.h"
 #include "rbmmath.h"
 #include <stdio.h>
+#include <string.h>
+#include <iostream>
 
 Character::Character(){
   base_.hp = 100;
@@ -83,7 +85,7 @@ void Character::init(){
   }
   
   index_mov_=0;
-  char_id_ = 22;
+  char_id_ = 0;
 }
 
 void Character::init(int prof, unsigned char id){
@@ -117,7 +119,62 @@ void Character::init(int prof, unsigned char id){
   turn_completed_ = 0;
 }
 
+void Character::initEnemy(const int lvl, const int id){
 
+  GameManager& gM = GameManager::Instantiate();
+  SDL_Rect tmp_rect = {0, 128, 64, 64};
+
+  profession_ = kEnumProfession_Monster;
+  level_ = lvl;
+ 
+  /*base_ = *(gM.data_base_.p_[profession_]);
+  current_ = base_ * level_;*/
+
+  char_id_ = id;
+
+  index_mov_ = 0;
+
+  turn_completed_ = 0;
+
+  skin_id_.gender = 1 + (rand()%2);
+  if(skin_id_.gender == 1){
+    skin_id_.skin = 10 + (rand()%3);
+  }else{
+    skin_id_.skin = 11 + (rand()%2);
+  }
+
+  // Body Path
+  std::string tmp_dir = "../data/skins/body/male/body$.png";
+
+  // Set Gender
+  if(skin_id_.gender == 2){
+
+    tmp_dir.replace(tmp_dir.find("male"), 4, "female");
+
+  }
+
+  if(skin_id_.gender == 1){
+
+    switch(skin_id_.skin){
+
+      case 10: skin_[0].initSprite(*gM.enemy_textures_[0], &tmp_rect, &tmp_rect); break;
+      case 11: skin_[1].initSprite(*gM.enemy_textures_[1], &tmp_rect, &tmp_rect); break;
+      case 12: skin_[2].initSprite(*gM.enemy_textures_[2], &tmp_rect, &tmp_rect); break;      
+
+    }
+
+  }else{
+
+    switch(skin_id_.skin){
+
+      case 11: skin_[3].initSprite(*gM.enemy_textures_[3], &tmp_rect, &tmp_rect); break;
+      case 12: skin_[4].initSprite(*gM.enemy_textures_[4], &tmp_rect, &tmp_rect); break;
+
+    }
+
+  }
+  
+}
 
 
 void Character::levelUp(){}
@@ -192,7 +249,8 @@ bool Character::CheckBeforeMove(const int next_pos_x,
   GameManager& gM = GameManager::Instantiate();
   int m_cost = 1;
   //const int m_cost = board[next_pos].movement_cost;
-  if(gM.logic_board_[next_pos_y][next_pos_x].enabled_ == 1){
+  if(gM.logic_board_[next_pos_y][next_pos_x].enabled_ == 1 &&
+     gM.units_board_[next_pos_y][next_pos_x].enabled_ == 255){
     m_cost = 1;
   }else{
     m_cost = 1234567890;
@@ -221,6 +279,7 @@ void Character::movCharacterCombat(SDL_Event* e){
   int next_down = RBM::GetMatrixPosition(dst_rect_.y,1);
   int next_right = RBM::GetMatrixPosition(dst_rect_.x,1);
   int next_left = RBM::GetMatrixPosition(dst_rect_.x,-1);
+  GameManager& gM = GameManager::Instantiate();
   
   if(e->type == SDL_KEYDOWN){
    
@@ -229,37 +288,41 @@ void Character::movCharacterCombat(SDL_Event* e){
     // printf("pulso: %d,%d,%d,%d\n\n",next_up,next_down,next_right,next_right);
     if(e->key.keysym.sym == SDLK_UP &&
     CheckBeforeMove(dst_rect_.x, next_up)){
-      
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
       dst_rect_.y = next_up;
       previous_movs_[index_mov_] = next_up * 16 + dst_rect_.x;
       direction_ = 0;
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;
       // printf("%d\n",previous_movs_[index_mov_]);
     }
     
     if(e->key.keysym.sym == SDLK_DOWN &&
     CheckBeforeMove(dst_rect_.x, next_down)){
-      
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
       dst_rect_.y = next_down;
       previous_movs_[index_mov_] = next_down * 16 + dst_rect_.x; 
       direction_ = 1;
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;
       // printf("%d\n",previous_movs_[index_mov_]);
     }
     
     if(e->key.keysym.sym == SDLK_RIGHT &&
     CheckBeforeMove(next_right, dst_rect_.y)){
-      
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
       dst_rect_.x = next_right;
       previous_movs_[index_mov_] = dst_rect_.y * 16 + next_right; 
       direction_ = 3;
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;
       // printf("%d\n",previous_movs_[index_mov_]);
     }
     
     if(e->key.keysym.sym == SDLK_LEFT &&
     CheckBeforeMove(next_left, dst_rect_.y)){
-
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
       dst_rect_.x = next_left;
       previous_movs_[index_mov_] = dst_rect_.y * 16 + next_left;
-      direction_ = 2;      
+      direction_ = 2;    
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;      
       // printf("%d\n",previous_movs_[index_mov_]);
     } 
   }

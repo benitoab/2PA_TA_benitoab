@@ -27,7 +27,7 @@ class GameManager{
     static const int kWindowHeight = 768;
     static const int kBoardWidth = 640;
     static const int kBoardHeight = 640;    
-    static const unsigned char kViewSize = 16;
+    static const unsigned char kViewSize = 10;
     static const int kImGuiWidth = 500;
     static const int kImGuiHeight = 500;
     ImGuiWindowFlags window_flags = 0;
@@ -48,12 +48,14 @@ class GameManager{
     Logic board_[Board::kBoardSize][Board::kBoardSize];
     Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
     Logic logic_board_[16][16]; // Logical Combat map
+    Logic units_board_[16][16]; // Logical Combat map
     Character player_[5];
     Character NPC_[10];
     Texture* map_texture_;
     Texture* bg_texture_;
     Texture *ground_cave_, *frozen_cave_;
     Texture* textures_[44];
+    Texture* enemy_textures_[5];
     Background bg_custo_;
     Combat combat_;
     DataBase data_base_;

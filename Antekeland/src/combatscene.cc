@@ -2,6 +2,8 @@
 
 #include "combatscene.h"
 #include "gamemanager.h"
+#include <stdlib.h>
+
 
 CombatScene::CombatScene(){
   
@@ -30,8 +32,10 @@ void CombatScene::init(){
         ||i == 1 || j == 14|| j == 1){ 
         gM.logic_board_[i][j].enabled_ = 0;
         gM.logic_board_[i][j].enter_ = 0;
+        gM.units_board_[i][j].enabled_ = 255;        
       }else{
         gM.logic_board_[i][j].init();
+        gM.units_board_[i][j].enabled_ = 255;
       }
       
     }
@@ -101,15 +105,17 @@ void CombatScene::init(){
   int n_e = rand()%5+2,x = 0, y = 0;
   
   for(int i= 0; i < n_e; ++i){
-    gM.NPC_[i].init();
+    gM.NPC_[i].initEnemy((rand()%5)+1, i+4);
     //Give initial pos
     do{
       x = rand()%16, y = rand()%3+2;
-    }while(gM.logic_board_[y][x].enabled_ == 0);
+    }while(gM.logic_board_[y][x].enabled_ == 0
+        || gM.units_board_[y][x].enabled_ != 255);
     gM.NPC_[i].dst_rect_.x = x;
     gM.NPC_[i].dst_rect_.y = y;
     gM.NPC_[i].dst_rect_.w = 40;
     gM.NPC_[i].dst_rect_.h = 40;
+    gM.units_board_[y][x].enabled_= i+4;
     
     ent_list.push_back(&gM.NPC_[i]);
 
@@ -120,7 +126,10 @@ void CombatScene::init(){
     
     do{
       x = rand()%16, y = rand()%3+11;
-    }while(gM.logic_board_[y][x].enabled_ == 0);
+    }while(gM.logic_board_[y][x].enabled_ == 0
+        || gM.units_board_[y][x].enabled_ != 255);
+        
+    gM.units_board_[y][x].enabled_= i;
     gM.player_[i].dst_rect_.x = x;
     gM.player_[i].dst_rect_.y = y;
     gM.player_[i].dst_rect_.w = 40;
@@ -132,8 +141,9 @@ void CombatScene::init(){
 
   }
   num_turns_ = 0;
-  //total_turns_ = 4 + n_e;
-  total_turns_ = 4 ;
+  total_turns_ = 4 + n_e;
+
+  
 }
 /*
 void CombatScene::quit(){
@@ -150,9 +160,9 @@ void CombatScene::input(SDL_Event* eve){
   if(eve->key.keysym.sym == SDLK_p){
     ++num_turns_%=total_turns_;
   }
-  if(num_turns_<4){
+  //if(num_turns_<4){
     GameManager::Instantiate().player_[num_turns_].movCharacterCombat(eve);
-  }
+  //}
 
   
 }

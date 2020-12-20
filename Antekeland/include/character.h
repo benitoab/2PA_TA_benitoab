@@ -67,6 +67,7 @@ class Character : public Entity{
   
   void init() override;
   void init(int prof, unsigned char id) ;
+  void initEnemy(const int lvl, const int id);
   
   void cpyCharacter(Character& c);
   

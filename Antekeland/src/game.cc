@@ -125,12 +125,11 @@ int Game::init(){
   InitLogic();
   CreateMap();
 
-   
-  gM.player_[0].init(5, 0);  
-  gM.player_[1].init(1, 1);  
-  gM.player_[2].init(7, 2);  
-  gM.player_[3].init(2, 3);   
-  gM.player_[4].init(5, 4);   
+  gM.player_[0].init(0,0);  
+  gM.player_[1].init(0,1);  
+  gM.player_[2].init(0,2);  
+  gM.player_[3].init(0,3);   
+    
 
    
 
@@ -214,6 +213,7 @@ void Game::input(){
 
   // Load Scene from Customization
   if(gM.current_edit_ == 4){
+    gM.player_[4].init(gM.player_[0].profession_, 4); 
     gM.player_[4].cpyCharacter(gM.player_[0]);
     loadScene(1);
     gM.current_edit_ = 0;

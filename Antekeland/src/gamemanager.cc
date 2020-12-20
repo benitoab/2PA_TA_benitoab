@@ -50,5 +50,12 @@ void GameManager::init(SDL_Renderer* ren){
     /*textures_[i] = Texture::CreateTexture(
     "../data/skins/body/male/body1.png",ren);*/
   }
+  
+  enemy_textures_[0] = Texture::CreateTexture("../data/skins/body/male/body10.png", ren);   // Skeleton
+  enemy_textures_[1] = Texture::CreateTexture("../data/skins/body/male/body11.png", ren);   // Orc
+  enemy_textures_[2] = Texture::CreateTexture("../data/skins/body/male/body12.png", ren);   // Dark Ork
+  enemy_textures_[3] = Texture::CreateTexture("../data/skins/body/female/body11.png", ren); // Orc
+  enemy_textures_[4] = Texture::CreateTexture("../data/skins/body/female/body12.png", ren); // Dark Ork
+  
    
 }

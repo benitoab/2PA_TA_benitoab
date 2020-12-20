@@ -295,8 +295,24 @@ void CustomizeCharacter(Character *c){
     ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f),"AP");
 
     ImGui::NextColumn();
+    char aux_text[50];
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->hp);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->mana);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->physical_att);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->magic_att);
+    ImGui::Text(aux_text);      
     
-    ImGui::Text("Test");
+    
 
     ImGui::NextColumn();
 
@@ -312,7 +328,26 @@ void CustomizeCharacter(Character *c){
 
     ImGui::NextColumn();
     
-    ImGui::Text("Test2");  
+      sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->armor);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->magic_resist);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->movement);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f));
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->mana_regen);
+    ImGui::Text(aux_text);      
+    ImGui::Dummy(ImVec2(0.0f, 5.0f)); 
+    sprintf (aux_text, "%d", 
+           gM.data_base_.p_[c->profession_]->crit_chance);
+    ImGui::Text(aux_text);      
+   
     
     ImGui::EndColumns();
     ImGui::End();
@@ -505,7 +540,7 @@ void CustomizeCharacter(Character *c){
   if(ImGui::Button(button_text)){
 
     SDL_Rect tmp_rect = {0, 0, 64, 64};    
-    printf("HOALALA");
+   
     for(int i = 0; i < 6; ++i){
        c->skin_[i].initSprite(*(gM.textures_[11 * c->char_id_ + i]), &tmp_rect, &tmp_rect);
     }
@@ -530,6 +565,8 @@ void CustomizeCharacter(Character *c){
     c->outfit_[1].initSprite(*gM.textures_[11 * c->char_id_ + 9], &tmp_rect, &tmp_rect);
     // Cape
     c->outfit_[2].initSprite(*gM.textures_[11 * c->char_id_ + 10], &tmp_rect, &tmp_rect);
+
+    c->init(c->profession_,gM.current_edit_); 
 
     ++gM.current_edit_;
     InitCustomization();
