@@ -35,6 +35,17 @@ Texture* Texture::CreateTexture(const char* img_path,
   }
 }
 
+Texture* Texture::CreateEmptyTexture(){   
+    
+  if(total_textures_< kMaxTextures){
+    Texture* tmp_texture = new Texture();
+    return tmp_texture;
+  }
+  else{
+    return nullptr;
+  }
+}
+
 int Texture::loadTexture(const char* img_path, SDL_Renderer* r){
 
   if(nullptr == img_path){ 

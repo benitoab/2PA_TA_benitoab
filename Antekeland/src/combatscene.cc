@@ -149,7 +149,7 @@ void CombatScene::input(SDL_Event* eve){
 
 void CombatScene::update(){
   
-  
+  GameManager::Instantiate().player_[1].updateSpriteC();
   
   
 }

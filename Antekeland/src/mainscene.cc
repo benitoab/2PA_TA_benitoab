@@ -103,6 +103,8 @@ void MainScene::update(){
   gM.layer1_.update0Position();
   gM.layer2_.update0Position();
   gM.combat_.updateStats();
+  
+  gM.player_[0].updateSpriteC();
 
 }
 

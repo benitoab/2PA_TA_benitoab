@@ -26,7 +26,8 @@ class Texture{
     
     //Factory
     static Texture* CreateTexture(const char* img_path,
-                           SDL_Renderer* r);
+                                  SDL_Renderer* r);
+    static Texture* CreateEmptyTexture();
   
   //Atributes
   SDL_Texture* texture_;

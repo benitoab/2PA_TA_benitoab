@@ -69,7 +69,7 @@ class Character : public Entity{
   void init(int prof, unsigned char id) ;
   
   void levelUp();
-  void updatePosition(); 
+  void updateSpriteC(); 
   
   bool CheckBeforeMove(const int next_pos_x, 
                        const int next_pos_y);
@@ -98,6 +98,7 @@ class Character : public Entity{
     int32_t profession_;
     int32_t xp_;
     int32_t level_;
+    int32_t direction_;
     
     int32_t previous_movs_[11];
     int32_t index_mov_;

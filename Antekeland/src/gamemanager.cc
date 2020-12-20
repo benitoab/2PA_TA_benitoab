@@ -33,3 +33,22 @@ GameManager::GameManager(){
 
 GameManager::~GameManager(){  
 }
+
+
+
+void GameManager::init(SDL_Renderer* ren){
+  
+  map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren);
+  bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren);
+  ground_cave_ = Texture::CreateTexture("../data/resources/ground_cave.png", ren);
+  frozen_cave_ = Texture::CreateTexture("../data/resources/frozen_cave.png", ren);
+  
+  for(int i = 0; i<44; ++i){
+    textures_[i] = Texture::CreateEmptyTexture();
+    /*textures_[i] = Texture::CreateTexture(
+    "../data/skins/body/male/body1.png",ren);*/
+  }
+  
+  
+  
+}

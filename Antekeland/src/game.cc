@@ -102,10 +102,7 @@ int Game::init(){
 
   srand((unsigned int)time(NULL));
   
-  gM.map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren_);
-  gM.bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren_);
-  gM.ground_cave_ = Texture::CreateTexture("../data/resources/ground_cave.png", ren_);
-  gM.frozen_cave_ = Texture::CreateTexture("../data/resources/frozen_cave.png", ren_);
+  gM.init(ren_);
 
   CreateBoard();
   //DB
@@ -126,11 +123,12 @@ int Game::init(){
   InitLogic();
   CreateMap();
 
+   
   gM.player_[0].init(5, 0);  
-  gM.player_[1].init(5, 1);  
-  gM.player_[2].init(1, 2);  
-  gM.player_[3].init(7, 3);  
-  gM.player_[4].init(2, 4);   
+  gM.player_[1].init(1, 1);  
+  gM.player_[2].init(7, 2);  
+  gM.player_[3].init(2, 3);   
+  gM.player_[4].init(5, 4);   
    
 
  
@@ -208,6 +206,7 @@ void Game::input(){
   }
 
   if(gM.current_edit_ == 4){
+    
     loadScene(1);
     gM.current_edit_ = 0;
   }

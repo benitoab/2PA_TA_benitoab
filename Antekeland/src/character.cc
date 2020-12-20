@@ -90,6 +90,7 @@ void Character::init(int prof, unsigned char id){
   }
   
   index_mov_=0;
+  char_id_ = id;
 }
 
 
@@ -97,10 +98,30 @@ void Character::init(int prof, unsigned char id){
 
 void Character::levelUp(){}
 
-void Character::updatePosition(){ 
+void Character::updateSpriteC(){ 
+  SDL_Rect  snip_r = {0,0,64,64};//UP
+  switch(direction_){
+    case 1:         
+     snip_r.y = 128; //DOWN
+    break;
+    
+    case 2:
+      snip_r.y = 64; //LEFT
+    break;
+    
+    case 3:
+      snip_r.y = 192; //RIGHT
+    break;
+  }
 
+  for (int i = 0; i<7; ++i){             
+    
+    skin_[i].snip_rect_ = snip_r; 
+  }
+  for (int i = 0; i<10; ++i){ 
 
-
+    outfit_[i].snip_rect_ = snip_r; 
+  } 
 }
 
 
@@ -177,6 +198,7 @@ void Character::movCharacterCombat(SDL_Event* e){
       
       dst_rect_.y = next_up;
       previous_movs_[index_mov_] = next_up * 16 + dst_rect_.x;
+      direction_ = 0;
       // printf("%d\n",previous_movs_[index_mov_]);
     }
     
@@ -185,6 +207,7 @@ void Character::movCharacterCombat(SDL_Event* e){
       
       dst_rect_.y = next_down;
       previous_movs_[index_mov_] = next_down * 16 + dst_rect_.x; 
+      direction_ = 1;
       // printf("%d\n",previous_movs_[index_mov_]);
     }
     
@@ -193,6 +216,7 @@ void Character::movCharacterCombat(SDL_Event* e){
       
       dst_rect_.x = next_right;
       previous_movs_[index_mov_] = dst_rect_.y * 16 + next_right; 
+      direction_ = 3;
       // printf("%d\n",previous_movs_[index_mov_]);
     }
     
@@ -200,7 +224,8 @@ void Character::movCharacterCombat(SDL_Event* e){
     CheckBeforeMove(next_left, dst_rect_.y)){
 
       dst_rect_.x = next_left;
-      previous_movs_[index_mov_] = dst_rect_.y * 16 + next_left; 
+      previous_movs_[index_mov_] = dst_rect_.y * 16 + next_left;
+      direction_ = 2;      
       // printf("%d\n",previous_movs_[index_mov_]);
     } 
   }
@@ -229,12 +254,14 @@ void Character::movCharacter(SDL_Event* e){
       vertical_mov = 1;
       dst_rect_.y = RBM::GetMatrixPosition(dst_rect_.y,-1);
       can_move = 1;
+      direction_ = 0; 
     }
     else if(e->key.keysym.sym == SDLK_DOWN &&
     gM.board_[RBM::GetMatrixPosition(dst_rect_.y,1)][dst_rect_.x].enabled_ == 1){
       vertical_mov = -1;
       dst_rect_.y = RBM::GetMatrixPosition(dst_rect_.y,1);
       can_move = 1;
+      direction_ = 1;
     }
       
     else if(e->key.keysym.sym == SDLK_LEFT &&
@@ -242,14 +269,14 @@ void Character::movCharacter(SDL_Event* e){
       horizontal_mov = 1;
       dst_rect_.x = RBM::GetMatrixPosition(dst_rect_.x,-1);
       can_move = 1;
-      
+      direction_ = 2;
     }
     else if(e->key.keysym.sym == SDLK_RIGHT &&
     gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,1)].enabled_ == 1){
       horizontal_mov = -1;
       dst_rect_.x = RBM::GetMatrixPosition(dst_rect_.x,1);
       can_move = 1;
-      
+      direction_ = 3;
     }
 
     
@@ -276,8 +303,7 @@ void Character::draw(SDL_Renderer* ren){
   aux_rect.x = gM.layer1_.map_[0][0].dst_rect_.w *
                gM.kViewSize/2;
   aux_rect.y = gM.layer1_.map_[0][0].dst_rect_.h *
-               gM.kViewSize/2;
-               
+               gM.kViewSize/2; 
   }
   else{
     
@@ -294,34 +320,15 @@ void Character::draw(SDL_Renderer* ren){
       aux_rect2.y = 40 * (previous_movs_[i]/16); 
       SDL_RenderDrawRect(ren,&aux_rect2); 
     }
-  }    
-  SDL_SetRenderDrawColor(ren,0,255,0,255);
-  SDL_RenderDrawRect(ren,&aux_rect);/*
-  SDL_Rect aux_rect2;
-  SDL_SetRenderDrawColor(ren,255,0,0,1);
-  for(int i=0; i<= index_mov_; ++i){
-    aux_rect2.w = aux_rect.w; 
-    aux_rect2.h = aux_rect.h;
-    aux_rect2.x = 40 * previous_movs_[i]%16;
-   
-    aux_rect2.y = 40 * previous_movs_[i]/16;
-    printf("\nCasilla:%d",previous_movs_[i]);
-    printf("x:%d p:%d", aux_rect2.x,previous_movs_[i]%16);
-    printf("y:%d p:%d\n", aux_rect2.y,previous_movs_[i]/16);
-    SDL_RenderDrawRect(ren, &aux_rect2);
-  }*/
-  
- /*
-  
-  aux_rect.x = dst_rect_.x * gM.kWindowWidth/(gM.kViewSize) 
-              + 4 + Board::x_origin_;
-                   
-  aux_rect.y = dst_rect_.y * gM.kWindowHeight/(gM.kViewSize) 
-              + 4 + Board::y_origin_;
-                    
-  
-  // SDL_RenderDrawRect(ren,&dst_rect_);*/
-  
-  
-  
+  }     
+  for (int i = 0; i<7; ++i){
+      skin_[i].dst_rect_ = aux_rect;
+      skin_[i].draw(ren);           
+    }
+  for (int i = 0; i<10; ++i){ 
+      outfit_[i].dst_rect_ = aux_rect;
+      outfit_[i].draw(ren);
+    }  
+  //SDL_SetRenderDrawColor(ren,0,255,0,255);
+ // SDL_RenderDrawRect(ren,&aux_rect);
 }

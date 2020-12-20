@@ -32,7 +32,9 @@ class GameManager{
     static const int kImGuiHeight = 500;
     ImGuiWindowFlags window_flags = 0;
    
-    //Methods  
+    
+    //Methods 
+    void init(SDL_Renderer* ren);
     ~GameManager();
     //It has to be change of .h
    
@@ -51,6 +53,7 @@ class GameManager{
     Texture* map_texture_;
     Texture* bg_texture_;
     Texture *ground_cave_, *frozen_cave_;
+    Texture* textures_[44];
     Background bg_custo_;
     Combat combat_;
     DataBase data_base_;
