@@ -22,7 +22,24 @@ Character::Character(){
 
 Character::~Character(){}
 
-
+void Character::cpyCharacter(Character& c){
+  
+  profession_ = c.profession_;
+  base_ = c.base_;
+  current_ = c.current_;
+  xp_ = c.xp_;
+  level_ = c.level_;
+  char_id_ = c.char_id_;
+  
+  for(int i = 0; i<7; ++i){
+    skin_[i] = c.skin_[i];
+  }
+  
+  for(int i = 0; i<10; ++i){
+    outfit_[i] = c.outfit_[i];
+  }
+  
+}
 
 void Character::init(){
   
@@ -56,11 +73,12 @@ void Character::init(){
   skin_id_.gender = 1;
   skin_id_.skin = 1;
   skin_id_.hair_color = 1;
-    for(int i=0; i<11; ++i){
+  for(int i=0; i<11; ++i){
     previous_movs_[i]=-1;
   }
   
   index_mov_=0;
+  char_id_ = 22;
 }
 
 void Character::init(int prof, unsigned char id){
@@ -91,6 +109,7 @@ void Character::init(int prof, unsigned char id){
   
   index_mov_=0;
   char_id_ = id;
+  turn_completed_ = 0;
 }
 
 

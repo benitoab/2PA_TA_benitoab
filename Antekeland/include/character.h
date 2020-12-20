@@ -68,6 +68,8 @@ class Character : public Entity{
   void init() override;
   void init(int prof, unsigned char id) ;
   
+  void cpyCharacter(Character& c);
+  
   void levelUp();
   void updateSpriteC(); 
   

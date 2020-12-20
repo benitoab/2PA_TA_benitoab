@@ -130,6 +130,7 @@ int Game::init(){
   gM.player_[2].init(7, 2);  
   gM.player_[3].init(2, 3);   
   gM.player_[4].init(5, 4);   
+
    
 
  
@@ -212,12 +213,13 @@ void Game::input(){
 
   // Load Scene from Customization
   if(gM.current_edit_ == 4){
-    
+    gM.player_[4].cpyCharacter(gM.player_[0]);
     loadScene(1);
     gM.current_edit_ = 0;
   }
 
   if(gM.new_game_ == 1){
+    
     loadScene(0);
     gM.new_game_ = 0;
   }

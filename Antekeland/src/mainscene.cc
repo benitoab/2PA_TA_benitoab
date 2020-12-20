@@ -48,11 +48,11 @@ void MainScene::init(){
     }
   }
 
-  gM.player_[0].dst_rect_.x = gM.kViewSize/2;
-  gM.player_[0].dst_rect_.y = gM.kViewSize/2;
-  gM.player_[0].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
-  gM.player_[0].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
-  ent_list.push_back(&gM.player_[0]);
+  gM.player_[4].dst_rect_.x = gM.kViewSize/2;
+  gM.player_[4].dst_rect_.y = gM.kViewSize/2;
+  gM.player_[4].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
+  gM.player_[4].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
+  ent_list.push_back(&gM.player_[4]);
   
   
   
@@ -82,7 +82,7 @@ void MainScene::quit(){
 
 void MainScene::input(SDL_Event* eve){
   
-  GameManager::Instantiate().player_[0].movCharacter(eve);
+  GameManager::Instantiate().player_[4].movCharacter(eve);
   
   if(eve->type == SDL_KEYDOWN){
     if(eve->key.keysym.sym == SDLK_0){
@@ -104,7 +104,7 @@ void MainScene::update(){
   gM.layer2_.update0Position();
   gM.combat_.updateStats();
   
-  gM.player_[0].updateSpriteC();
+  gM.player_[4].updateSpriteC();
 
 }
 

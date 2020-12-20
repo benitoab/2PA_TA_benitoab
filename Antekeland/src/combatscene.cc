@@ -114,7 +114,7 @@ void CombatScene::init(){
 
   }
   
-  for(int i= 1; i < 5; ++i){
+  for(int i= 0; i < 4; ++i){
     //Give initial pos
     
     do{
@@ -142,14 +142,14 @@ void CombatScene::quit(){
 
 void CombatScene::input(SDL_Event* eve){
   
-  GameManager::Instantiate().player_[1].movCharacterCombat(eve);
+  GameManager::Instantiate().player_[0].movCharacterCombat(eve);
   
   
 }
 
 void CombatScene::update(){
   
-  GameManager::Instantiate().player_[1].updateSpriteC();
+  GameManager::Instantiate().player_[0].updateSpriteC();
   
   
 }
