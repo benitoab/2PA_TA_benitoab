@@ -517,11 +517,11 @@ void CustomizeCharacter(Character *c){
     c->skin_[6].initSprite(textures_[11 * c->char_id_ + 7], tmp_rect, tmp_rect);
 
     // Torso
-    c->skin_[0].initSprite(textures_[11 * c->char_id_ + 8], tmp_rect, tmp_rect);
+    c->outfit_[0].initSprite(textures_[11 * c->char_id_ + 8], tmp_rect, tmp_rect);
     // Legs
-    c->skin_[1].initSprite(textures_[11 * c->char_id_ + 9], tmp_rect, tmp_rect);
+    c->outfit_[1].initSprite(textures_[11 * c->char_id_ + 9], tmp_rect, tmp_rect);
     // Cape
-    c->skin_[2].initSprite(textures_[11 * c->char_id_ + 10], tmp_rect, tmp_rect);*/
+    c->outfit_[2].initSprite(textures_[11 * c->char_id_ + 10], tmp_rect, tmp_rect);*/
 
     ++gM.current_edit_;
     InitCustomization();
