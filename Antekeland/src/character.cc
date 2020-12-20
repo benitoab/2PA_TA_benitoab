@@ -216,6 +216,127 @@ int32_t Character::mhDistance(const SDL_Rect* tr_rect){
   
 }
 
+void Character::endTile(){
+  GameManager& gM = GameManager::Instantiate();
+  int end_x = 0, end_y = 0;
+  int aux_x = 0, aux_y = 0;
+  uint8_t find = 0;
+  SDL_Rect aux_rect = gM.player_[0].dst_rect_;
+  int d = this->mhDistance(&aux_rect), aux_d=0;
+  printf("\n\n\nD1:%d\n",d);
+ 
+  aux_rect = dst_rect_;
+  printf("OP:(%d,%d)", aux_rect.x,aux_rect.y);
+  for(int r = 0; r<5 && find == 0 ; ++r){
+    for(int i = 0; i<r && find == 0; ++i){
+      int j = r-i;
+      printf("\ni:%d,j:%d",i,j);
+      //Down-Right
+      aux_x = dst_rect_.x+i;
+      aux_y = dst_rect_.y+j;
+      
+      if(0 <= aux_x && aux_x < 16 &&
+         0 <= aux_y && aux_y < 16){
+           
+        if(gM.logic_board_[aux_y][aux_x].enabled_ == 1){
+          aux_rect.x = aux_x;
+          aux_rect.y = aux_y;
+          printf("\nDR:(%d,%d)\n", aux_x,aux_y);       
+          for(int c = 0; c<4 && find == 0; ++c){
+            aux_d = gM.player_[c].mhDistance(&aux_rect);
+            printf("distancia personaje %d: %d\n",c+1,aux_d);
+            if(d>gM.player_[c].mhDistance(&aux_rect)){
+              d=aux_d;
+              end_x = aux_x;
+              end_y = aux_y;
+              if(d==0){
+                find=1;
+              }
+            }
+          }
+        }
+      } 
+      
+      //Down_left
+      aux_x = dst_rect_.x-i;
+      aux_y = dst_rect_.y+j;
+      
+      if(0 <= aux_x && aux_x < 16 &&
+         0 <= aux_y && aux_y < 16){
+           
+        if(gM.logic_board_[aux_y][aux_x].enabled_ == 1){
+          aux_rect.x = aux_x;
+          aux_rect.y = aux_y;
+          printf("\nDL:(%d,%d)\n", aux_x,aux_y);
+          for(int c = 0; c<4 && find == 0; ++c){
+            aux_d = gM.player_[c].mhDistance(&aux_rect);
+            printf("distancia personaje %d: %d\n",c+1,aux_d);
+            if(d>gM.player_[c].mhDistance(&aux_rect)){
+              d=aux_d;
+              end_x = aux_x;
+              end_y = aux_y;
+              if(d==0){
+                find=1;
+              }
+            }
+          }
+        }
+      }
+      //Up-Right
+      aux_x = dst_rect_.x+i;
+      aux_y = dst_rect_.y-j;
+      
+      if(0 <= aux_x && aux_x < 16 &&
+         0 <= aux_y && aux_y < 16){
+           
+        if(gM.logic_board_[aux_y][aux_x].enabled_ == 1){
+          aux_rect.x = aux_x;
+          aux_rect.y = aux_y;
+          printf("\nUR:(%d,%d)\n", aux_x,aux_y);
+          for(int c = 0; c<4 && find == 0; ++c){
+            if(d>gM.player_[c].mhDistance(&aux_rect)){
+              aux_d = gM.player_[c].mhDistance(&aux_rect);
+              printf("distancia personaje %d: %d\n",c+1,aux_d);
+              d=aux_d;
+              end_x = aux_x;
+              end_y = aux_y;
+              if(d==0){
+                find=1;
+              }
+            }
+          }
+        }
+      }
+      //Up-Left
+      aux_x = dst_rect_.x-i;
+      aux_y = dst_rect_.y-j;
+      
+      if(0 <= aux_x && aux_x < 16 &&
+         0 <= aux_y && aux_y < 16){
+           
+        if(gM.logic_board_[aux_y][aux_x].enabled_ == 1){
+          aux_rect.x = aux_x;
+          aux_rect.y = aux_y;
+          printf("\nUL:(%d,%d)\n", aux_x,aux_y);
+          for(int c = 0; c<4 && find == 0; ++c){
+            aux_d = gM.player_[c].mhDistance(&aux_rect);
+            printf("distancia personaje %d: %d\n",c+1,aux_d);
+            if(d>gM.player_[c].mhDistance(&aux_rect)){
+              d=aux_d;
+              end_x = aux_x;
+              end_y = aux_y;
+              if(d==0){
+                find=1;
+              }
+            }
+          }
+        }
+      }      
+    }
+  }
+  printf("%d,%d", end_x, end_y);
+}
+
 bool Character::CheckPreviousMovs(const int next_pos_x, 
                                   const int next_pos_y){
   

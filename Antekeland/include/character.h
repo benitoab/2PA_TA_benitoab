@@ -73,6 +73,7 @@ class Character : public Entity{
   
   void levelUp();
   void updateSpriteC(); 
+  void endTile(); 
   
   int32_t mhDistance(const SDL_Rect* tr_rect);
   bool CheckBeforeMove(const int next_pos_x, 
