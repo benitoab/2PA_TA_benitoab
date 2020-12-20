@@ -9,7 +9,7 @@ Scene::Scene(){
 Scene::~Scene(){
   
  // if(nullptr != ent_list){
-    //ent_list.clear();
+    ent_list.clear();
     //ent_list = nullptr;
   //}
 }

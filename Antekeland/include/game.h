@@ -15,10 +15,18 @@ class Scene;
 
 class Game {
   public:   
+  
+    static const int32_t kNScenes = 5;
+  
     //Methods
     Game();    
-    ~Game();    
+    ~Game(); 
     
+    /**
+     * @brief load a new scene
+     * @param the index of the new scene to load
+     * @return the index of the previous scene
+     */
     int loadScene(int n_scene);
     
     
@@ -35,7 +43,7 @@ class Game {
     // Attributes
     SDL_Window *win_;
     SDL_Renderer *ren_;
-    Scene* current_scene_[4];
+    Scene* current_scene_[kNScenes];
     int32_t current_id_scene_;
     //int32_t previous_id_scene_;
     

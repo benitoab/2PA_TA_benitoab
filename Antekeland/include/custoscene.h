@@ -3,7 +3,7 @@
 
 #include "scene.h"
 
-class Character;
+
 
 class CustoScene : public Scene{
   
@@ -19,7 +19,7 @@ class CustoScene : public Scene{
   
   //Atributes
   
-  Character* current_c_;
+  
   
 };
 

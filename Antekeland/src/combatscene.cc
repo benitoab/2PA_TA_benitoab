@@ -5,8 +5,9 @@
 
 CombatScene::CombatScene(){
   
-
-  
+  num_turns_ = 0;
+  current_character_ = 0;
+  total_turns_ = 0;
 }
 
 CombatScene::~CombatScene(){
@@ -130,8 +131,9 @@ void CombatScene::init(){
     ent_list.push_back(&gM.player_[i]);
 
   }
-  //ent_list.push_back(&gM.player_[0]);
-  
+  num_turns_ = 0;
+  //total_turns_ = 4 + n_e;
+  total_turns_ = 4 ;
 }
 /*
 void CombatScene::quit(){
@@ -142,15 +144,26 @@ void CombatScene::quit(){
 
 void CombatScene::input(SDL_Event* eve){
   
-  GameManager::Instantiate().player_[0].movCharacterCombat(eve);
-  
+  if(eve->type == SDL_KEYDOWN){ 
+   
+  } 
+  if(eve->key.keysym.sym == SDLK_p){
+    ++num_turns_%=total_turns_;
+  }
+  if(num_turns_<4){
+    GameManager::Instantiate().player_[num_turns_].movCharacterCombat(eve);
+  }
+
   
 }
 
 void CombatScene::update(){
+  GameManager& gM = GameManager::Instantiate();
   
-  GameManager::Instantiate().player_[0].updateSpriteC();
+  gM.player_[num_turns_].updateSpriteC();
+  //int a = gM.player_[0].mhDistance(&gM.player_[1].dst_rect_);
   
+  //printf("distance:%d\n",a);
   
 }
 

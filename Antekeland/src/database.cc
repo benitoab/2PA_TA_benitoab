@@ -185,6 +185,11 @@ DataBase::~DataBase(){
   
   board_vector_->ops_->destroy(board_vector_);
   
+  if(nullptr != db_){
+    
+    sqlite3_close(db_);
+  }
+  
 }
 
 void DataBase::init(){

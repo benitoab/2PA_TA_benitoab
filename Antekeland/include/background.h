@@ -2,8 +2,6 @@
 #define __BACKGROUND_H__ 1
 
 #include <stdint.h>
-
-
 #include "entity.h"
 
 class Texture;

@@ -21,9 +21,9 @@ class CombatScene : public Scene{
   //Atributes
 
     Sprite cave_[2];
-    unsigned char num_turns_; // [0, 3] = Characters, >3 = IA
+    int16_t num_turns_; // [0, 3] = Characters, >3 = IA
     unsigned char current_character_;
-
+    unsigned char total_turns_;
     
   
 };

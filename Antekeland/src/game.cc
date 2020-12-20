@@ -27,14 +27,15 @@
 Game::Game(){
   win_ = nullptr;
   ren_ = nullptr;
-  current_scene_[0] = nullptr;
-  current_scene_[1] = nullptr;
-  current_scene_[2] = nullptr;
-  current_scene_[3] = nullptr;
+  for(int i = 0; i < Game::kNScenes; ++i){
+     current_scene_[i] = nullptr;
+  }
+
   //previous_scene_ = nullptr;
   quit_ = 0;
   current_time_ = 0;
   last_time_ = 0;
+  current_id_scene_=0;
 }
 
 Game::~Game(){

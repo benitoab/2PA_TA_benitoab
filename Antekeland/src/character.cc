@@ -12,6 +12,9 @@ Character::Character(){
   base_.magic_resist = 10;
   base_.movement = 7; 
   
+  name_[0]='\0';
+  name2_[0]='\0';
+  
   current_ = base_;
   profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
@@ -20,7 +23,9 @@ Character::Character(){
   
 }
 
-Character::~Character(){}
+Character::~Character(){
+  
+}
 
 void Character::cpyCharacter(Character& c){
   
@@ -142,7 +147,17 @@ void Character::updateSpriteC(){
     outfit_[i].snip_rect_ = snip_r; 
   } 
 }
-
+int32_t Character::mhDistance(const SDL_Rect* tr_rect){
+  
+  int x = dst_rect_.x - tr_rect->x;
+  int y = dst_rect_.y - tr_rect->y;
+  
+  if(x<0){ x *=-1;}
+  if(y<0){ y *=-1;}
+  
+  return x+y;
+  
+}
 
 bool Character::CheckPreviousMovs(const int next_pos_x, 
                                   const int next_pos_y){

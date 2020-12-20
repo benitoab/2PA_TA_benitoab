@@ -28,6 +28,7 @@ GameManager::GameManager(){
   bg_texture_ = nullptr;
   ground_cave_ = nullptr;
   frozen_cave_ = nullptr;
+  over_world_scene_ = 0;
   current_edit_ = 0;
   new_game_ = 0;
 }
@@ -49,7 +50,5 @@ void GameManager::init(SDL_Renderer* ren){
     /*textures_[i] = Texture::CreateTexture(
     "../data/skins/body/male/body1.png",ren);*/
   }
-  
-  
-  
+   
 }
