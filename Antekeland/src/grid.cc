@@ -445,6 +445,10 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
 
   }
 
+  if(state == 2){
+    gM.board_[row][col].enabled_ = 1;
+  }
+
   // Normal Path
   if(state == 0){
 
@@ -568,10 +572,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][col].type_ = 16;
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 17;
 
-          // Logic
-          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;  // 12
+          // Logic          
           gM.board_[row][col].enabled_ = 0;                            // 13
-          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;  // 14
           gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;  // 16
 
         break;
@@ -606,9 +608,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].type_ = 32;
 
           // Logic
-          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;  // 27
           gM.board_[row][col].enabled_ = 0;                            // 28
-          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;  // 29
           gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;  // 31
 
         break;
@@ -962,15 +962,15 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
           aux_layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
           // Logic
-          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-          layer[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
-          layer[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
-          layer[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-          layer[row][col].enabled_ = 0;
-          layer[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
-          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
-          layer[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
-          layer[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, -1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          gM.board_[row][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[row][col].enabled_ = 1;
+          gM.board_[row][CheckSingleNeighbour(col, +1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, -1)].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][col].enabled_ = 0;
+          gM.board_[CheckSingleNeighbour(row, +1)][CheckSingleNeighbour(col, +1)].enabled_ = 0;
 
         break;
 
@@ -999,6 +999,8 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       
       layer[row][col].type_ = 13;
       layer[row][col].enabled_ = 1;
+
+      gM.board_[row][col].enabled_ = 1;
       
     }
 

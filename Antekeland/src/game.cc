@@ -211,6 +211,7 @@ void Game::input(){
 
   if(gM.current_edit_ == 4){
     loadScene(1);
+    gM.current_edit_ = 0;
   }
   
 }
