@@ -17,7 +17,7 @@ MainScene::~MainScene(){
 void MainScene::init(){
 
   GameManager& gM = GameManager::Instantiate();
-  SDL_Color black = {102,0,0,50};
+  SDL_Color black = {0,0,0,50};
   
   gM.combat_.initCombat(gM.player_[0]);
   gM.combat_.current_char_ = &gM.player_[0];
@@ -65,12 +65,25 @@ void MainScene::init(){
   }
   ent_list.push_back (&gM.ui_rects_[0]);
   ent_list.push_back (&gM.ui_rects_[1]);
-  for(int i= 0; i<8; ++i){
+  /*for(int i= 0; i<8; ++i){
     ent_list.push_back(&gM.combat_.stats_text_[i]);
   }
   for(int i = 0; i<6; ++i){
     ent_list.push_back(&gM.combat_.stats_rect_[i]);
-  }
+  }*/
+
+  // Menu Buttons
+  SDL_Color text_color = {255,255,255,255};
+  SDL_Rect dst_rect = {500, 500, 180, 80};
+  mainscene_button_[0].dst_rect_ = {500, 500, 200, 100};
+  mainscene_button_[0].fill_color_ = {255, 255, 255, 255};
+  char* font_path = "../data/fonts/BreathFire.ttf";
+  int font_size = 25;
+
+  mainscene_text_[0].init(font_path, (uint16_t)font_size, text_color, "Save Game", dst_rect);
+
+  ent_list.push_back(&mainscene_button_[0]);
+  ent_list.push_back(&mainscene_text_[0]);
  
 }
 

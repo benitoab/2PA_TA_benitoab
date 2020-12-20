@@ -143,6 +143,33 @@ void CombatScene::init(){
   num_turns_ = 0;
   total_turns_ = 4 + n_e;
 
+  SDL_Color black = {102,0,0,50};
+  
+  gM.combat_.initCombat(gM.player_[0]);
+  gM.combat_.current_char_ = &gM.player_[0];
+
+  gM.ui_rects_[0].dst_rect_.x = gM.kBoardWidth;
+  gM.ui_rects_[0].dst_rect_.y = 0;
+  gM.ui_rects_[0].dst_rect_.w = gM.kWindowWidth - gM.kBoardWidth;
+  gM.ui_rects_[0].dst_rect_.h = gM.kWindowHeight;
+  
+  gM.ui_rects_[1].dst_rect_.x = 0;
+  gM.ui_rects_[1].dst_rect_.y = gM.kBoardHeight;
+  gM.ui_rects_[1].dst_rect_.w = gM.kWindowWidth;
+  gM.ui_rects_[1].dst_rect_.h = gM.kWindowHeight - gM.kBoardHeight;
+  
+  gM.ui_rects_[0].fill_color_ = black;
+  gM.ui_rects_[1].fill_color_ = black;
+
+  ent_list.push_back (&gM.ui_rects_[0]);
+  ent_list.push_back (&gM.ui_rects_[1]);
+  for(int i= 0; i<8; ++i){
+    ent_list.push_back(&gM.combat_.stats_text_[i]);
+  }
+  for(int i = 0; i<6; ++i){
+    ent_list.push_back(&gM.combat_.stats_rect_[i]);
+  }
+
   
 }
 /*
@@ -153,16 +180,20 @@ void CombatScene::quit(){
 
 
 void CombatScene::input(SDL_Event* eve){
+
+  GameManager& gM = GameManager::Instantiate();
   
   if(eve->type == SDL_KEYDOWN){ 
    
   } 
   if(eve->key.keysym.sym == SDLK_p){
     ++num_turns_%=total_turns_;
+    gM.combat_.initCombat(gM.player_[num_turns_]);
+    gM.combat_.current_char_ = &gM.player_[num_turns_];
   }
-  //if(num_turns_<4){
-    GameManager::Instantiate().player_[num_turns_].movCharacterCombat(eve);
-  //}
+  if(num_turns_<4){
+    gM.player_[num_turns_].movCharacterCombat(eve);
+  }
 
   
 }
@@ -171,6 +202,7 @@ void CombatScene::update(){
   GameManager& gM = GameManager::Instantiate();
   
   gM.player_[num_turns_].updateSpriteC();
+  gM.combat_.updateStats();
   //int a = gM.player_[0].mhDistance(&gM.player_[1].dst_rect_);
   
   //printf("distance:%d\n",a);

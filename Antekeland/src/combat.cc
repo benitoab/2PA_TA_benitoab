@@ -106,7 +106,7 @@ void Combat::initCombat(Character& current_char){
                       
                                            
   aux_rect.y += (int)(stats_scale_ * spacing);  
-  n = sprintf (aux_text, "Physical dmg: %d", 
+  n = sprintf (aux_text, "AD: %d", 
             current_char.current_.physical_att);
             
   aux_rect.w = (int)(stats_scale_ * 15*n);
@@ -116,7 +116,7 @@ void Combat::initCombat(Character& current_char){
 
 
   aux_rect.y += (int)(stats_scale_ * spacing);  
-  n = sprintf (aux_text, "Magic dmg: %d", 
+  n = sprintf (aux_text, "AP: %d", 
             current_char.current_.magic_att);
             
   aux_rect.w = (int)(stats_scale_ * 15*n);
@@ -135,7 +135,7 @@ void Combat::initCombat(Character& current_char){
      
      
   aux_rect.y += (int)(stats_scale_ * spacing);  
-  n = sprintf (aux_text, "Magic resist: %d", 
+  n = sprintf (aux_text, "Magic Res.: %d", 
             current_char.current_.magic_resist);          
   aux_rect.w = (int)(stats_scale_ * 15*n);
   stats_text_[5].init(font,
