@@ -16,6 +16,7 @@ class CombatScene : public Scene{
     void input(SDL_Event* eve) override;
     void update() override;
     void drawImgui(SDL_Renderer* ren) override;
+    //void quit()override;
   
   //Atributes
 

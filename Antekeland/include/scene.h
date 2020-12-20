@@ -22,6 +22,7 @@ class Scene{
   virtual void update()=0;
   virtual void drawImgui(SDL_Renderer* ren)=0;
   
+  virtual void quit();
   void draw(SDL_Renderer* ren);
   
   //Atributes

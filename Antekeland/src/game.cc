@@ -45,7 +45,7 @@ Game::~Game(){
 int Game::loadScene(int n_scene){
   
   int32_t last_scene = current_id_scene_;
-  // current_scene_[current_id_scene_]->quit();
+  current_scene_[current_id_scene_]->quit();
   current_id_scene_ = n_scene;
   current_scene_[current_id_scene_]->init();
   
@@ -116,10 +116,10 @@ int Game::init(){
   gM.data_base_.openDB(p); 
   // gM.data_base_.readGame();
   //gM.data_base_.readBoardData();
-  gM.data_base_.readProfessionData();
+ gM.data_base_.readProfessionData();
   //gM.data_base_.loadBoard();
  
-  //gM.data_base_.closeDB();
+  gM.data_base_.closeDB();
   
   
   //NEW GAME
@@ -127,15 +127,13 @@ int Game::init(){
   CreateMap();
 
   gM.player_[0].init(5, 0);  
-  gM.player_[1].init(1, 1);  
-  gM.player_[2].init(7, 2);  
-  gM.player_[3].init(2, 3);   
+  gM.player_[1].init(5, 1);  
+  gM.player_[2].init(1, 2);  
+  gM.player_[3].init(7, 3);  
+  gM.player_[4].init(2, 4);   
+   
 
-  gM.combat_.initCombat(gM.player_[0]);
-  gM.combat_.current_char_ = &gM.player_[0];
-
-
-
+ 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){
       gM.layer1_.map_[i][j].initSubSprite();
