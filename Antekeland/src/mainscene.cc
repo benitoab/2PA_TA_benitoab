@@ -34,6 +34,9 @@ void MainScene::init(){
   gM.ui_rects_[0].fill_color_ = black;
   gM.ui_rects_[1].fill_color_ = black;
   
+
+  
+  
   // introduce all entities to draw
   
   for(int i = 0; i< Board::kBoardSize; ++i){
@@ -42,8 +45,12 @@ void MainScene::init(){
     }
   }
 
-
+  gM.player_[0].dst_rect_.x = gM.kViewSize/2;
+  gM.player_[0].dst_rect_.y = gM.kViewSize/2;
+  gM.player_[0].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
+  gM.player_[0].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
   ent_list.push_back(&gM.player_[0]);
+  
   
   
 

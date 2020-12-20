@@ -129,18 +129,12 @@ int Game::init(){
   gM.player_[0].init(5, 0);  
   gM.player_[1].init(1, 1);  
   gM.player_[2].init(7, 2);  
-  gM.player_[3].init(2, 3);  
-  gM.player_[0].dst_rect_.x = gM.kViewSize/2;
-  gM.player_[0].dst_rect_.y = gM.kViewSize/2;
-  gM.player_[0].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
-  gM.player_[0].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
-  gM.player_[0].previous_movs_[0]= gM.player_[0].dst_rect_.y*16+ gM.player_[0].dst_rect_.x;
+  gM.player_[3].init(2, 3);   
+
   gM.combat_.initCombat(gM.player_[0]);
   gM.combat_.current_char_ = &gM.player_[0];
 
-  RBM::Transform2 aux_tr = {{0.0f,0.0f},0.0f,{0.0f,0.0f}};
-  RBM::Vec2 aux_v2 = {0.5f,0.0f};
-  gM.bg_custo_.init(aux_tr,1,0,*gM.bg_texture_, &aux_v2);
+
 
   for(int i = 0; i < Board::kBoardSize; ++i){
     for(int j = 0; j < Board::kBoardSize; ++j){

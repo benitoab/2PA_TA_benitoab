@@ -12,7 +12,13 @@ CustoScene::~CustoScene(){
 
 void CustoScene::init(){
   GameManager& gM = GameManager::Instantiate();
+  
+  //BG 
+  RBM::Transform2 aux_tr = {{0.0f,0.0f},0.0f,{0.0f,0.0f}};
+  RBM::Vec2 aux_v2 = {0.5f,0.0f};
+  gM.bg_custo_.init(aux_tr,1,0,*gM.bg_texture_, &aux_v2);
   ent_list.push_back(&gM.bg_custo_);
+  
   InitCustomization();
   
 }
