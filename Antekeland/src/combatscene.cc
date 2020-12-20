@@ -25,15 +25,18 @@ void CombatScene::init(){
   // Init Logic Cave map
   for(int i = 0; i < 16; ++i){
     for(int j = 0; j < 16; ++j){
-      if(i == 0 || i == 15 || j == 0 || j == 15){
+      if(i == 0 || i == 15 || j == 0 || j == 15
+        ||i == 1 || j == 14|| j == 1){
+          printf("%d,%d",i,j);
         gM.logic_board_[i][j].enabled_ = 0;
         gM.logic_board_[i][j].enter_ = 0;
+      }else{
+        gM.logic_board_[i][j].init();
       }
-      gM.logic_board_[i][j].init();
       
     }
   }
-
+  
   if(rand()%10 < 5){
     gM.logic_board_[2][2].enabled_ = 0;
     gM.logic_board_[2][13].enabled_ = 0;
@@ -93,6 +96,29 @@ void CombatScene::init(){
     ent_list.push_back(&cave_[1]);
   }
 
+  //Init  Enemies
+  
+  int n_e = rand()%5+2,x = 0, y = 0;
+  
+  for(int i= 0; i < n_e; ++i){
+    gM.NPC_[i].init();
+    //Give initial pos
+    do{
+      x = rand()%16, y = rand()%3+2;
+    }while(gM.logic_board_[y][x].enabled_ == 0);
+    gM.NPC_[i].dst_rect_.x = x;
+    gM.NPC_[i].dst_rect_.y = y;
+    gM.NPC_[i].dst_rect_.w = 40;
+    gM.NPC_[i].dst_rect_.h = 40;
+    
+    ent_list.push_back(&gM.NPC_[i]);
+
+  }
+  
+  
+ 
+  
+
   ent_list.push_back(&gM.player_[0]);
   
 }
@@ -100,9 +126,13 @@ void CombatScene::init(){
 void CombatScene::input(SDL_Event* eve){
   
   GameManager::Instantiate().player_[0].movCharacterCombat(eve);
+  
+  
 }
 
 void CombatScene::update(){
+  
+  
   
   
 }

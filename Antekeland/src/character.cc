@@ -273,7 +273,6 @@ void Character::draw(SDL_Renderer* ren){
   
   SDL_Rect aux_rect;
   aux_rect = dst_rect_;
-  printf("%d\n",gM.over_world_scene_);
   if(gM.over_world_scene_==1){
   aux_rect.x = gM.layer1_.map_[0][0].dst_rect_.w *
                gM.kViewSize/2;
@@ -283,8 +282,7 @@ void Character::draw(SDL_Renderer* ren){
   }
   else{
     aux_rect.x = aux_rect.w *dst_rect_.x;             
-    aux_rect.y = aux_rect.h*dst_rect_.y;
-    printf("HOLAAAA");
+    aux_rect.y = aux_rect.h *dst_rect_.y; 
   }    
   
   SDL_RenderDrawRect(ren,&aux_rect);/*
