@@ -26,8 +26,7 @@ void CombatScene::init(){
   for(int i = 0; i < 16; ++i){
     for(int j = 0; j < 16; ++j){
       if(i == 0 || i == 15 || j == 0 || j == 15
-        ||i == 1 || j == 14|| j == 1){
-          printf("%d,%d",i,j);
+        ||i == 1 || j == 14|| j == 1){ 
         gM.logic_board_[i][j].enabled_ = 0;
         gM.logic_board_[i][j].enter_ = 0;
       }else{
