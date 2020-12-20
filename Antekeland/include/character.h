@@ -12,8 +12,6 @@
 #include "sprite.h"
 #include "database.h"
 
-
-
 struct SkinsCustomization{
 
   int32_t gender;         /** @var Defines whether it's male (1) or female (2) */
@@ -43,8 +41,6 @@ struct SkinsCustomization{
 
 };
 
-
-
 enum kEnumProfession{
 
   kEnumProfession_Warrior = 0,
@@ -70,7 +66,7 @@ class Character : public Entity{
   ~Character();
   
   void init() override;
-  void init(int prof) ;
+  void init(int prof, unsigned char id) ;
   
   void levelUp();
   void updatePosition(); 
@@ -90,6 +86,8 @@ class Character : public Entity{
     Character_Stats base_;
     ///@var current_ Current stats that change over the combat.
     Character_Stats current_;
+
+    unsigned char char_id_;    
     
     int32_t profession_;
     int32_t xp_;

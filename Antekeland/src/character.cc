@@ -3,8 +3,6 @@
 #include "rbmmath.h"
 #include <stdio.h>
 
-
-
 Character::Character(){
   base_.hp = 100;
   base_.mana = 100;
@@ -18,6 +16,7 @@ Character::Character(){
   profession_ = kEnumProfession_Shepherd;
   xp_ = 0;
   level_ = 1;
+  char_id_ = 0;
   
 }
 
@@ -44,8 +43,7 @@ void Character::init(){
 
   xp_ = 0;
   level_ = 1;
-  
-  
+  char_id_ = 0;
 
   int32_t* skin_ptr = (int32_t*)&skin_id_;
 
@@ -61,9 +59,7 @@ void Character::init(){
   
 }
 
-
-
-void Character::init(int prof){
+void Character::init(int prof, unsigned char id){
   
   GameManager& gM = GameManager::Instantiate(); 
   profession_ = prof;

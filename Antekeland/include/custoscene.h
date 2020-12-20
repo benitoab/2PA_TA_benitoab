@@ -3,7 +3,6 @@
 
 #include "scene.h"
 
-
 class Character;
 
 class CustoScene : public Scene{

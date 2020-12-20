@@ -17,8 +17,6 @@
 #include "customization.h"
 #include "gamemanager.h"
 
-
-
 /** @brief Process mouse events for the ImGuiSDL binding.
  *
  * @param Pointer to an SDL_Event captured this frame.
@@ -77,8 +75,6 @@ void ImGuiSDLProcessEvent(SDL_Event* e) {
 void InitCustomization(){
 
  //GameManager& gM = GameManager::Instantiate();
-
-
   
   for(int i = 0; i < 13; ++i){
 
@@ -94,8 +90,12 @@ void InitCustomization(){
 /** @brief Loads a new image into the image-array */
 void SetImage(SDL_Surface** img, char* dir, unsigned char* id, int32_t skin_id, SDL_Texture** texture, SDL_Renderer* ren){
 
+  if(*img != nullptr){ SDL_FreeSurface(*img); }
+
   *img = IMG_Load(dir);
   *id = skin_id;
+
+  if(*texture != nullptr){ SDL_DestroyTexture(*texture); }
   *texture = SDL_CreateTextureFromSurface(ren, *img);
   
 }
@@ -128,13 +128,12 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   tmp_dir.replace(tmp_dir.find("$"), 1, std::to_string(c.skin_id_.skin)); 
   char* skin_dir = (char*)malloc(tmp_dir.length());
   strcpy(skin_dir, tmp_dir.c_str());  
-  
   if(c.skin_id_.skin != id_[1]){
-    SetImage(&images_[0], skin_dir, &id_[1], c.skin_id_.skin, &textures_[0], ren);    
+    SetImage(&images_[11 * c.char_id_ + 0], skin_dir, &id_[1], c.skin_id_.skin, &textures_[11 * c.char_id_ + 0], ren);    
   }
 
   if(c.skin_id_.gender != id_[0]){
-    SetImage(&images_[0], skin_dir, &id_[1], c.skin_id_.skin, &textures_[0], ren);
+    SetImage(&images_[11 * c.char_id_ + 0], skin_dir, &id_[1], c.skin_id_.skin, &textures_[11 * c.char_id_ + 0], ren);
     id_[0] = c.skin_id_.gender;
   }
 
@@ -145,19 +144,19 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* haircolor_dir = (char*)malloc(tmp_hair_color.length());
   strcpy(haircolor_dir, tmp_hair_color.c_str());
   if(c.skin_id_.hair_color != id_[3]){
-    SetImage(&images_[1], haircolor_dir, &id_[3], c.skin_id_.hair_color, &textures_[1], ren);
+    SetImage(&images_[11 * c.char_id_ + 1], haircolor_dir, &id_[3], c.skin_id_.hair_color, &textures_[11 * c.char_id_ + 1], ren);
   }
   if(c.skin_id_.hair != id_[2]){
-    SetImage(&images_[1], haircolor_dir, &id_[2], c.skin_id_.hair, &textures_[1], ren);
-  }  
+    SetImage(&images_[11 * c.char_id_ + 1], haircolor_dir, &id_[2], c.skin_id_.hair, &textures_[11 * c.char_id_ + 1], ren);
+  }
 
   // Set Eyes Color
   std::string tmp_eyes = "../data/skins/body/male/eyes/$.png";
   tmp_eyes.replace(tmp_eyes.find("$"), 1, std::to_string(c.skin_id_.eyes));
   char* eyes_dir = (char*)malloc(tmp_eyes.length());
   strcpy(eyes_dir, tmp_eyes.c_str());
-  if(c.skin_id_.eyes != id_[4]){
-    SetImage(&images_[2], eyes_dir, &id_[4], c.skin_id_.eyes, &textures_[2], ren);
+  if(c.skin_id_.eyes != id_[4]){    
+    SetImage(&images_[11 * c.char_id_ + 2], eyes_dir, &id_[4], c.skin_id_.eyes, &textures_[11 * c.char_id_ + 2], ren);
   } 
 
   // Set Nose
@@ -167,17 +166,17 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* nose_dir = (char*)malloc(tmp_nose.length());
   strcpy(nose_dir, tmp_nose.c_str());
   if(c.skin_id_.nose != id_[5]){
-    SetImage(&images_[3], nose_dir, &id_[5], c.skin_id_.nose, &textures_[3], ren);
+    SetImage(&images_[11 * c.char_id_ + 3], nose_dir, &id_[5], c.skin_id_.nose, &textures_[11 * c.char_id_ + 3], ren);
   } 
 
-  // Set Nose
+  // Set Ears
   std::string tmp_ears = "../data/skins/body/male/ears/$-%.png";
   tmp_ears.replace(tmp_ears.find("$"), 1, std::to_string(c.skin_id_.skin));
   tmp_ears.replace(tmp_ears.find("%"), 1, std::to_string(c.skin_id_.ears));
   char* ears_dir = (char*)malloc(tmp_ears.length());
   strcpy(ears_dir, tmp_ears.c_str());
   if(c.skin_id_.ears != id_[6]){
-    SetImage(&images_[4], ears_dir, &id_[6], c.skin_id_.ears, &textures_[4], ren);
+    SetImage(&images_[11 * c.char_id_ + 4], ears_dir, &id_[6], c.skin_id_.ears, &textures_[11 * c.char_id_ + 4], ren);
   } 
 
   // Set Beard
@@ -186,7 +185,7 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* beard_dir = (char*)malloc(tmp_beard.length());
   strcpy(beard_dir, tmp_beard.c_str());
   if(c.skin_id_.beard != id_[7]){
-    SetImage(&images_[5], beard_dir, &id_[7], c.skin_id_.beard, &textures_[5], ren);
+    SetImage(&images_[11 * c.char_id_ + 5], beard_dir, &id_[7], c.skin_id_.beard, &textures_[11 * c.char_id_ + 5], ren);
   }
 
   // Set Mustache
@@ -195,7 +194,7 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* mustache_dir = (char*)malloc(tmp_mustache.length());
   strcpy(mustache_dir, tmp_mustache.c_str());
   if(c.skin_id_.mustache != id_[8]){
-    SetImage(&images_[6], mustache_dir, &id_[8], c.skin_id_.mustache, &textures_[6], ren);
+    SetImage(&images_[11 * c.char_id_ + 6], mustache_dir, &id_[8], c.skin_id_.mustache, &textures_[11 * c.char_id_ + 6], ren);
   }
 
   // Set Mustache Color
@@ -205,7 +204,7 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* mcolor_dir = (char*)malloc(tmp_mustachecolor.length());
   strcpy(mcolor_dir, tmp_mustachecolor.c_str());
   if(c.skin_id_.mustache_color != id_[9]){
-    SetImage(&images_[7], mcolor_dir, &id_[9], c.skin_id_.mustache_color, &textures_[7], ren);
+    SetImage(&images_[11 * c.char_id_ + 7], mcolor_dir, &id_[9], c.skin_id_.mustache_color, &textures_[11 * c.char_id_ + 7], ren);
   }
 
   // Set Torso
@@ -213,8 +212,8 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   tmp_torso.replace(tmp_torso.find("$"), 1, std::to_string(c.skin_id_.torso));
   char* torso_dir = (char*)malloc(tmp_torso.length());
   strcpy(torso_dir, tmp_torso.c_str());
-  if(c.skin_id_.torso != id_[10]){
-    SetImage(&images_[8], torso_dir, &id_[10], c.skin_id_.torso, &textures_[8], ren);
+  if(c.skin_id_.torso != id_[11]){
+    SetImage(&images_[11 * c.char_id_ + 8], torso_dir, &id_[11], c.skin_id_.torso, &textures_[11 * c.char_id_ + 8], ren);
   }
 
   // Set Legs
@@ -224,7 +223,7 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* legs_dir = (char*)malloc(tmp_legs.length());
   strcpy(legs_dir, tmp_legs.c_str());
   if(c.skin_id_.legs != id_[11]){
-    SetImage(&images_[9], legs_dir, &id_[11], c.skin_id_.legs, &textures_[9], ren);
+    SetImage(&images_[11 * c.char_id_ + 9], legs_dir, &id_[11], c.skin_id_.legs, &textures_[11 * c.char_id_ + 9], ren);
   }
 
   // Set Cape
@@ -233,21 +232,22 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   char* cape_dir = (char*)malloc(tmp_cape.length());
   strcpy(cape_dir, tmp_cape.c_str());
   if(c.skin_id_.cape != id_[12]){
-    SetImage(&images_[10], cape_dir, &id_[12], c.skin_id_.cape, &textures_[10], ren);
+    SetImage(&images_[11 * c.char_id_ + 10], cape_dir, &id_[12], c.skin_id_.cape, &textures_[11 * c.char_id_ + 10], ren);
   }
   
   // Four Views
   for(int i = 0; i < 11; ++i){
-    SDL_RenderCopy(ren, textures_[i], &fsrc_rect, &fdest_rect);
-    SDL_RenderCopy(ren, textures_[i], &bsrc_rect, &bdest_rect);
-    SDL_RenderCopy(ren, textures_[i], &lsrc_rect, &ldest_rect);
-    SDL_RenderCopy(ren, textures_[i], &rsrc_rect, &rdest_rect);
+    SDL_RenderCopy(ren, textures_[11 * c.char_id_ + i], &fsrc_rect, &fdest_rect);
+    SDL_RenderCopy(ren, textures_[11 * c.char_id_ + i], &bsrc_rect, &bdest_rect);
+    SDL_RenderCopy(ren, textures_[11 * c.char_id_ + i], &lsrc_rect, &ldest_rect);
+    SDL_RenderCopy(ren, textures_[11 * c.char_id_ + i], &rsrc_rect, &rdest_rect);
   }
 }
 
 void CustomizeCharacter(Character *c){
 
   GameManager& gM = GameManager::Instantiate();
+  char* button_text = "Next Character"; 
   
   const char* profession[] = {"Warrior", "Archer", "Sorceress", "Berserker", "Valkyrie", "Dark Knight",
                               "Healer", "Guardian", "Hashashin", "Mage"};
@@ -487,8 +487,47 @@ void CustomizeCharacter(Character *c){
     c->skin_id_.legs = rand()%11;
 
   } 
+    
+  if(gM.current_edit_ == 3){
+    button_text = "Continue";
+    ImGui::Indent(40.0f);
+  }else{
+    ImGui::Indent(20.0f);
+  }
+  if(ImGui::Button(button_text)){
 
-  ImGui::EndColumns();
+    SDL_Rect tmp_rect = {0, 0, 64, 64};    
+
+    for(int i = 0; i < 6; ++i){
+      // c->skin_[i].initSprite(*(textures_[11 * c->char_id_ + i]), tmp_rect, tmp_rect);
+    }
+    // Gender + Skin
+    /*c->skin_[0].initSprite(textures_[11 * c->char_id_ + 0], tmp_rect, tmp_rect);
+    // Hair + Color
+    c->skin_[1].initSprite(textures_[11 * c->char_id_ + 1], tmp_rect, tmp_rect);
+    // Eyes
+    c->skin_[2].initSprite(textures_[11 * c->char_id_ + 2], tmp_rect, tmp_rect);
+    // Nose
+    c->skin_[3].initSprite(textures_[11 * c->char_id_ + 3], tmp_rect, tmp_rect);
+    // Ears
+    c->skin_[4].initSprite(textures_[11 * c->char_id_ + 4], tmp_rect, tmp_rect);
+    // Beard
+    c->skin_[5].initSprite(textures_[11 * c->char_id_ + 5], tmp_rect, tmp_rect);
+    // Mustache + Color
+    c->skin_[6].initSprite(textures_[11 * c->char_id_ + 7], tmp_rect, tmp_rect);
+
+    // Torso
+    c->skin_[0].initSprite(textures_[11 * c->char_id_ + 8], tmp_rect, tmp_rect);
+    // Legs
+    c->skin_[1].initSprite(textures_[11 * c->char_id_ + 9], tmp_rect, tmp_rect);
+    // Cape
+    c->skin_[2].initSprite(textures_[11 * c->char_id_ + 10], tmp_rect, tmp_rect);*/
+
+    ++gM.current_edit_;
+    InitCustomization();
+  }
+
+  ImGui::EndColumns();  
 
   ImGui::End();
 

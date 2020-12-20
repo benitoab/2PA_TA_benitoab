@@ -11,13 +11,14 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "gamemanager.h"
+#include "texture.h"
 #include "imgui_internal.h"
 #include <string>
 
 static ImFont* newFont;
 static unsigned char id_[13];
-static SDL_Surface* images_[11];
-static SDL_Texture* textures_[11];
+static SDL_Surface* images_[41];
+static SDL_Texture* textures_[41];
 
 void ImGuiSDLProcessEvent(SDL_Event* e);
 void InitCustomization();

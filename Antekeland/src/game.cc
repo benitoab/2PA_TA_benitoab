@@ -126,7 +126,10 @@ int Game::init(){
   InitLogic();
   CreateMap();
 
-  gM.player_[0].init();
+  gM.player_[0].init(5, 0);  
+  gM.player_[1].init(1, 1);  
+  gM.player_[2].init(7, 2);  
+  gM.player_[3].init(2, 3);  
   gM.player_[0].dst_rect_.x = gM.kViewSize/2;
   gM.player_[0].dst_rect_.y = gM.kViewSize/2;
   gM.player_[0].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
@@ -158,7 +161,7 @@ int Game::init(){
   current_scene_[0]->init();
 
   
-  current_id_scene_ = 2;
+  current_id_scene_ = 0;
 
   return 0;
 }
@@ -209,6 +212,10 @@ void Game::input(){
       quit_ = true;
     }
     // Add the rest of input events here: keyboard, gamepad, etc...
+  }
+
+  if(gM.current_edit_ == 4){
+    loadScene(1);
   }
   
 }
