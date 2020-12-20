@@ -70,7 +70,13 @@ class Character : public Entity{
   
   void levelUp();
   void updatePosition(); 
+  
+  bool CheckBeforeMove(const int next_pos_x, 
+                       const int next_pos_y);
+  bool CheckPreviousMovs(const int next_pos_x, 
+                         const int next_pos_y);                     
   void movCharacter(SDL_Event* e);
+  void movCharacterCombat(SDL_Event* e);
   
   uint8_t cell();
   
@@ -92,6 +98,9 @@ class Character : public Entity{
     int32_t profession_;
     int32_t xp_;
     int32_t level_;
+    
+    int32_t previous_movs_[11];
+    int32_t index_mov_;
     
     SkinsCustomization skin_id_;      /** @var Storages all the skins used for every character */
 
