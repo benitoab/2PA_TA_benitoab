@@ -23,14 +23,12 @@ void CustoScene::update(){
   
   GameManager& gM = GameManager::Instantiate();
   gM.bg_custo_.update(1);
-  CustomizeCharacter(&gM.player_[0]);
+  CustomizeCharacter(&gM.player_[gM.current_edit_]);
   
 }
-
-
 
 void CustoScene::drawImgui(SDL_Renderer* ren){
   GameManager& gM = GameManager::Instantiate();
   DrawCustomization();
-  DrawCharacter(ren, gM.player_[0]);
+  DrawCharacter(ren, gM.player_[gM.current_edit_]);
 }

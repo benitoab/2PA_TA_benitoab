@@ -54,6 +54,7 @@ class GameManager{
     Background bg_custo_;
     Combat combat_;
     DataBase data_base_;
+    unsigned char current_edit_;
  
     int32_t over_world_scene_;
     Rect ui_rects_[2];

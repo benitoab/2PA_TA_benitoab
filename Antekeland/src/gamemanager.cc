@@ -28,6 +28,7 @@ GameManager::GameManager(){
   bg_texture_ = nullptr;
   ground_cave_ = nullptr;
   frozen_cave_ = nullptr;
+  current_edit_ = 0;
 }
 
 GameManager::~GameManager(){  
