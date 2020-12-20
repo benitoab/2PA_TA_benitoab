@@ -217,6 +217,7 @@ void Game::input(){
     gM.player_[4].cpyCharacter(gM.player_[0]);
     loadScene(1);
     gM.current_edit_ = 0;
+    SDL_SetWindowSize(win_, 1024, 640);
   }
 
   if(gM.new_game_ == 1){

@@ -54,9 +54,9 @@ void Combat::initCombat(Character& current_char){
   int font_size = 25;
   char* font = "../data/fonts/combat.otf";
   char aux_text[50];
-  stats_scale_ = 1;
+  stats_scale_ = 0.9;
   ui_stats_rect_.x = gM.kBoardWidth;
-  ui_stats_rect_.y = 0;
+  ui_stats_rect_.y = -100;
   ui_stats_rect_.w = (int)(stats_scale_ * 
                   (gM.kWindowWidth - gM.kBoardWidth));
   ui_stats_rect_.h = (int)(stats_scale_ * 
@@ -165,7 +165,7 @@ void Combat::initCombat(Character& current_char){
   //HP Grey Rect
   grey_rect.x =(int)(stats_text_[0].dst_rect_.x + stats_scale_*60);
   grey_rect.y =(int)(stats_text_[0].dst_rect_.y+7 * stats_scale_);
-  grey_rect.w =(int)(150 * stats_scale_);
+  grey_rect.w =(int)(200 * stats_scale_);
   grey_rect.h =(int)(15 * stats_scale_);
   
   stats_rect_[0].dst_rect_ = grey_rect;
@@ -175,6 +175,7 @@ void Combat::initCombat(Character& current_char){
   
   //Mana Grey Rect
   grey_rect.y = (int)(stats_text_[1].dst_rect_.y+7 * stats_scale_);
+  grey_rect.w =(int)(150 * stats_scale_);
   grey_rect.x += (int)(20 * stats_scale_);
   
   stats_rect_[1].dst_rect_ = grey_rect;

@@ -143,7 +143,7 @@ void CombatScene::init(){
   num_turns_ = 0;
   total_turns_ = 4 + n_e;
 
-  SDL_Color black = {102,0,0,50};
+  SDL_Color black = {0,0,0,255};
   
   gM.combat_.initCombat(gM.player_[0]);
   gM.combat_.current_char_ = &gM.player_[0];

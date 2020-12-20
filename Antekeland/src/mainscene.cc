@@ -73,17 +73,38 @@ void MainScene::init(){
   }*/
 
   // Menu Buttons
-  SDL_Color text_color = {255,255,255,255};
-  SDL_Rect dst_rect = {500, 500, 180, 80};
-  mainscene_button_[0].dst_rect_ = {500, 500, 200, 100};
-  mainscene_button_[0].fill_color_ = {255, 255, 255, 255};
+  SDL_Color button_color = {163, 143, 138, 60};
+  SDL_Color text_color = {0, 0, 0, 255};
   char* font_path = "../data/fonts/BreathFire.ttf";
   int font_size = 25;
+    // Save Game
+  mainscene_button_[0].dst_rect_ = {720, 150, 200, 60};
+  mainscene_button_[0].fill_color_ = button_color;
+  
+    // Inventory
+  mainscene_button_[1].dst_rect_ = {720, 300, 200, 60};
+  mainscene_button_[1].fill_color_ = button_color;
 
+    // Quit Game
+  mainscene_button_[2].dst_rect_ = {720, 450, 200, 60};
+  mainscene_button_[2].fill_color_ = button_color;
+  
+  SDL_Rect dst_rect = {730, 160, 180, 40};
   mainscene_text_[0].init(font_path, (uint16_t)font_size, text_color, "Save Game", dst_rect);
+  
+  dst_rect = {730, 310, 180, 40};
+  mainscene_text_[1].init(font_path, (uint16_t)font_size, text_color, "Inventory", dst_rect);
+  
+  dst_rect = {730, 460, 180, 40};
+  mainscene_text_[2].init(font_path, (uint16_t)font_size, text_color, "Quit Game", dst_rect);
 
   ent_list.push_back(&mainscene_button_[0]);
-  ent_list.push_back(&mainscene_text_[0]);
+  ent_list.push_back(&mainscene_button_[1]);
+  ent_list.push_back(&mainscene_button_[2]);
+
+  ent_list.push_back(&mainscene_text_[0]);  
+  ent_list.push_back(&mainscene_text_[1]);  
+  ent_list.push_back(&mainscene_text_[2]);
  
 }
 
@@ -96,6 +117,60 @@ void MainScene::quit(){
 void MainScene::input(SDL_Event* eve){
   
   GameManager::Instantiate().player_[4].movCharacter(eve);
+  SDL_Point mouse_position = {eve->button.x, eve->button.y};
+  SDL_Rect button_dst = {720, 150, 200, 60};
+  SDL_Color text_color_white = {255,255,255,255};
+  SDL_Color text_color_black = {0,0,0,255};
+
+  // Save Game
+  if(SDL_PointInRect(&mouse_position, &button_dst)){
+
+    mainscene_text_[0].changeColor(text_color_black);
+    
+    if(eve->type == SDL_MOUSEBUTTONDOWN &&
+     eve->button.button == SDL_BUTTON_LEFT){
+
+      /* Do stuff */
+
+    }
+      
+  }else{
+    mainscene_text_[0].changeColor(text_color_white);
+  }
+   
+  // Inventory
+  button_dst = {730, 310, 180, 40};
+  if(SDL_PointInRect(&mouse_position, &button_dst)){
+
+    mainscene_text_[1].changeColor(text_color_black);
+    
+    if(eve->type == SDL_MOUSEBUTTONDOWN &&
+     eve->button.button == SDL_BUTTON_LEFT){
+
+      /* Do stuff */
+
+    }
+      
+  }else{
+    mainscene_text_[1].changeColor(text_color_white);
+  }
+  
+  // Quit Game
+  button_dst = {730, 460, 180, 40};
+  if(SDL_PointInRect(&mouse_position, &button_dst)){
+
+    mainscene_text_[2].changeColor(text_color_black);
+    
+    if(eve->type == SDL_MOUSEBUTTONDOWN &&
+     eve->button.button == SDL_BUTTON_LEFT){
+
+      /* Do stuff */
+
+    }
+      
+  }else{
+    mainscene_text_[2].changeColor(text_color_white);
+  }
   
   if(eve->type == SDL_KEYDOWN){
     if(eve->key.keysym.sym == SDLK_0){
