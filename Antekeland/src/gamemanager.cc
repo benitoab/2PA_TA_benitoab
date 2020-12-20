@@ -29,6 +29,7 @@ GameManager::GameManager(){
   ground_cave_ = nullptr;
   frozen_cave_ = nullptr;
   current_edit_ = 0;
+  new_game_ = 0;
 }
 
 GameManager::~GameManager(){  

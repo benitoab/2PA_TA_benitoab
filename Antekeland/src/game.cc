@@ -16,6 +16,7 @@
 #include "gamemanager.h"
 #include "grid.h"
 #include "customization.h"
+#include "menuscene.h"
 #include "mainscene.h"
 #include "custoscene.h"
 #include "combatscene.h"
@@ -142,6 +143,9 @@ int Game::init(){
 
 
   //current_scene_[0] = new Customization();
+  current_scene_[3] = new MenuScene();
+  current_scene_[3]->init();
+
   current_scene_[2] = new CombatScene();
   current_scene_[2]->init();
 
@@ -191,6 +195,7 @@ void Game::input(){
     if(event.key.keysym.sym == SDLK_8){ loadScene(0);}
     if(event.key.keysym.sym == SDLK_9){ loadScene(1);}
     if(event.key.keysym.sym == SDLK_0){ loadScene(2);}
+    if(event.key.keysym.sym == SDLK_7){ loadScene(3);}
     // if(event.key.keysym.sym == SDLK_3){ ;}
     // if(event.key.keysym.sym == SDLK_4){ ;}
     // if(event.key.keysym.sym == SDLK_5){ ;}
@@ -205,10 +210,16 @@ void Game::input(){
     // Add the rest of input events here: keyboard, gamepad, etc...
   }
 
+  // Load Scene from Customization
   if(gM.current_edit_ == 4){
     
     loadScene(1);
     gM.current_edit_ = 0;
+  }
+
+  if(gM.new_game_ == 1){
+    loadScene(0);
+    gM.new_game_ = 0;
   }
   
 }
@@ -230,11 +241,6 @@ void Game::draw(){
 
   current_scene_[current_id_scene_]->draw(ren_);
   current_scene_[current_id_scene_]->drawImgui(ren_);
-  
-
-
-  
-
 
   //Update the screen
   SDL_RenderPresent(ren_);
