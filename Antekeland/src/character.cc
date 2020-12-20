@@ -169,12 +169,15 @@ void Character::movCharacterCombat(SDL_Event* e){
   
   if(e->type == SDL_KEYDOWN){
    
+   
+    // printf("pulso: %d,%d\n",dst_rect_.x, dst_rect_.y);
+    // printf("pulso: %d,%d,%d,%d\n\n",next_up,next_down,next_right,next_right);
     if(e->key.keysym.sym == SDLK_UP &&
     CheckBeforeMove(dst_rect_.x, next_up)){
       
       dst_rect_.y = next_up;
       previous_movs_[index_mov_] = next_up * 16 + dst_rect_.x;
-      printf("%d\n",previous_movs_[index_mov_]);
+      // printf("%d\n",previous_movs_[index_mov_]);
     }
     
     if(e->key.keysym.sym == SDLK_DOWN &&
@@ -182,7 +185,7 @@ void Character::movCharacterCombat(SDL_Event* e){
       
       dst_rect_.y = next_down;
       previous_movs_[index_mov_] = next_down * 16 + dst_rect_.x; 
-      printf("%d\n",previous_movs_[index_mov_]);
+      // printf("%d\n",previous_movs_[index_mov_]);
     }
     
     if(e->key.keysym.sym == SDLK_RIGHT &&
@@ -190,7 +193,7 @@ void Character::movCharacterCombat(SDL_Event* e){
       
       dst_rect_.x = next_right;
       previous_movs_[index_mov_] = dst_rect_.y * 16 + next_right; 
-      printf("%d\n",previous_movs_[index_mov_]);
+      // printf("%d\n",previous_movs_[index_mov_]);
     }
     
     if(e->key.keysym.sym == SDLK_LEFT &&
@@ -198,7 +201,7 @@ void Character::movCharacterCombat(SDL_Event* e){
 
       dst_rect_.x = next_left;
       previous_movs_[index_mov_] = dst_rect_.y * 16 + next_left; 
-      printf("%d\n",previous_movs_[index_mov_]);
+      // printf("%d\n",previous_movs_[index_mov_]);
     } 
   }
 }
@@ -265,7 +268,7 @@ void Character::movCharacter(SDL_Event* e){
 
 void Character::draw(SDL_Renderer* ren){
   GameManager& gM = GameManager::Instantiate();
-  SDL_SetRenderDrawColor(ren,0,255,0,255);
+  //SDL_SetRenderDrawColor(ren,0,255,0,255);
   
   SDL_Rect aux_rect;
   aux_rect = dst_rect_;
@@ -277,10 +280,22 @@ void Character::draw(SDL_Renderer* ren){
                
   }
   else{
+    
     aux_rect.x = aux_rect.w *dst_rect_.x;             
     aux_rect.y = aux_rect.h *dst_rect_.y; 
+    
+    SDL_Rect aux_rect2;
+    SDL_SetRenderDrawColor(ren,255,0,0,1);
+
+    for(int i=0; i<= index_mov_; ++i){
+      aux_rect2.w = 40; 
+      aux_rect2.h = 40;
+      aux_rect2.x = 40 * (previous_movs_[i]%16);
+      aux_rect2.y = 40 * (previous_movs_[i]/16); 
+      SDL_RenderDrawRect(ren,&aux_rect2); 
+    }
   }    
-  
+  SDL_SetRenderDrawColor(ren,0,255,0,255);
   SDL_RenderDrawRect(ren,&aux_rect);/*
   SDL_Rect aux_rect2;
   SDL_SetRenderDrawColor(ren,255,0,0,1);

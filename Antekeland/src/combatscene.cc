@@ -114,27 +114,35 @@ void CombatScene::init(){
 
   }
   
-  for(int i= 0; i < 1; ++i){
+  for(int i= 1; i < 5; ++i){
     //Give initial pos
+    
     do{
       x = rand()%16, y = rand()%3+11;
     }while(gM.logic_board_[y][x].enabled_ == 0);
-    gM.NPC_[i].dst_rect_.x = 10;
-    gM.NPC_[i].dst_rect_.y = 10;
-    gM.NPC_[i].dst_rect_.w = 40;
-    gM.NPC_[i].dst_rect_.h = 40;
-    gM.player_[i].previous_movs_[i]= gM.player_[i].dst_rect_.y*16+ gM.player_[i].dst_rect_.x;
+    gM.player_[i].dst_rect_.x = x;
+    gM.player_[i].dst_rect_.y = y;
+    gM.player_[i].dst_rect_.w = 40;
+    gM.player_[i].dst_rect_.h = 40;
+    gM.player_[i].index_mov_ = 0;
+    gM.player_[i].previous_movs_[gM.player_[i].index_mov_]= gM.player_[i].dst_rect_.y*16+ gM.player_[i].dst_rect_.x;
     gM.player_[i].current_.movement = gM.player_[i].base_.movement;
-    ent_list.push_back(&gM.player_[0]);
+    ent_list.push_back(&gM.player_[i]);
 
   }
   //ent_list.push_back(&gM.player_[0]);
   
 }
+/*
+void CombatScene::quit(){
+  
+  ent_list.clear();
+}*/
+
 
 void CombatScene::input(SDL_Event* eve){
   
-  GameManager::Instantiate().player_[0].movCharacterCombat(eve);
+  GameManager::Instantiate().player_[1].movCharacterCombat(eve);
   
   
 }

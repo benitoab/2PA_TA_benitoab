@@ -15,6 +15,7 @@ class MainScene : public Scene{
   void update() override;
   void drawImgui(SDL_Renderer* ren) override;
   
+  void quit()override;
 };
 
 

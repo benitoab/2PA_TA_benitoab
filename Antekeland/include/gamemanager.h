@@ -46,7 +46,7 @@ class GameManager{
     Logic board_[Board::kBoardSize][Board::kBoardSize];
     Logic units_[Board::kBoardSize][Board::kBoardSize]; // Logical map
     Logic logic_board_[16][16]; // Logical Combat map
-    Character player_[4];
+    Character player_[5];
     Character NPC_[10];
     Texture* map_texture_;
     Texture* bg_texture_;

@@ -19,6 +19,9 @@ void MainScene::init(){
   GameManager& gM = GameManager::Instantiate();
   SDL_Color black = {102,0,0,50};
   
+  gM.combat_.initCombat(gM.player_[0]);
+  gM.combat_.current_char_ = &gM.player_[0];
+  
   gM.over_world_scene_ = 1;
  
   gM.ui_rects_[0].dst_rect_.x = gM.kBoardWidth;
@@ -70,11 +73,12 @@ void MainScene::init(){
   }
  
 }
-/*
+
 void MainScene::quit(){
   GameManager& gM = GameManager::Instantiate();
   gM.over_world_scene_ = 0;
-}*/
+  Scene::quit();
+}
 
 void MainScene::input(SDL_Event* eve){
   

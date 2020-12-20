@@ -21,3 +21,6 @@ void Scene::draw(SDL_Renderer* ren){
   }
   
 }
+void Scene::quit(){
+    ent_list.clear();  
+}
