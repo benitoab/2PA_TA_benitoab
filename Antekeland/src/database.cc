@@ -141,8 +141,6 @@ DataBase::DataBase(){
   
   games_ = nullptr;
   char_data_ = nullptr;
-  att_data_ = nullptr;
-  board_data_ = nullptr;
   db_ = nullptr;
   
   prof_vector_ = NULL;
@@ -166,14 +164,7 @@ DataBase::~DataBase(){
   if(nullptr != char_data_){
     free(char_data_);
   }
-  
-  if(nullptr != att_data_){
-    free(att_data_);
-  }
-  
-  if(nullptr != board_data_){
-    free(board_data_);
-  }
+ 
   
   prof_vector_->ops_->destroy(prof_vector_);
   
@@ -202,31 +193,11 @@ void DataBase::init(){
   
   games_ = (GameData*) calloc(kNumSavedGames, sizeof(GameData));
   char_data_ = (CharacterData*) calloc(kNumCharacter, sizeof(CharacterData));
-  att_data_ = (AttacksData*) calloc(kNumAttacks, sizeof(AttacksData));
-  board_data_ = (SaveLoadBoard*) calloc(kNumTiles, sizeof(SaveLoadBoard));
  
- prof_vector_->ops_->print(prof_vector_);
+  prof_vector_->ops_->print(prof_vector_);
 }
 
-void DataBase::freeData(){
 
-  if(nullptr != games_){
-    free(games_);
-  }
-  
-  if(nullptr != char_data_){
-    free(char_data_);
-  }
-  
-  if(nullptr != att_data_){
-    free(att_data_);
-  }
-  
-  if(nullptr != board_data_){
-    free(board_data_);
-  }
-
-}
 
 int DataBase::openDB(const char* path){
   

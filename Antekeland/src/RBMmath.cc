@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 // Vec2
-
+/*
 RBM::Vec2 RBM::AddVec2(const RBM::Vec2* v1, 
                        const RBM::Vec2* v2){
   return {v1->x + v2->x, v1->y + v2->y};
@@ -85,7 +85,7 @@ RBM::Mat3 RBM::M3Product(RBM::Mat3 m1, RBM::Mat3 m2){
  
 	return mr;
 }
-
+*/
 //Ohters
 
 unsigned char RBM::GetMatrixPosition(unsigned char pos,
@@ -98,12 +98,12 @@ unsigned char RBM::GetMatrixPosition(unsigned char pos,
   return resul;
 
 }
-
+/*
 int RBM::Abs(int v){
   
   if(v< 0){
     v *=-1;
   }
   return v;
-}
+}*/
 

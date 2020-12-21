@@ -1,9 +1,13 @@
 /**
- * Antekeland 2077
- * Author: Javier Benito Abolafio & Ricardo Beltrán Muriel
- * Mail: benitoab@esat-alumni.com & beltranmu@esat-alumni.com
- * University Development @ESAT
- */
+  * @file main.cc
+  * @brief Main file of the game.
+  * @details This is the core file. It gathers all classes of the game to make it possible.
+  * @author Ricardo Beltrán Muriel <beltranmu@esat-alumni.com> 
+  * @version alfa 1.0
+  * @date Ded-2020
+  * @copyright ESAT
+  */
+ 
 
 #ifndef __CHARACTER_H__
 #define __CHARACTER_H__ 1 

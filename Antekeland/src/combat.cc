@@ -11,7 +11,7 @@ Combat::Combat(){
 }
 
 Combat::~Combat(){}
-
+/*
 void Combat::drawMark(SDL_Renderer* ren){
   
   GameManager& gM = GameManager::Instantiate();
@@ -44,7 +44,7 @@ void Combat::drawMark(SDL_Renderer* ren){
   SDL_RenderFillRects(ren,mark_rect,4);
   
 }
-
+*/
 
 void Combat::initCombat(Character& current_char){
   
@@ -221,7 +221,7 @@ void Combat::initCombat(Character& current_char){
                       
 
 }
-
+/*
 void Combat::drawAttacks(SDL_Renderer* ren){
   
   att_text_[0].draw(ren);
@@ -231,7 +231,7 @@ void Combat::drawAttacks(SDL_Renderer* ren){
   
   
 }
-
+*/
 void Combat::updateStats(){
   //HP
   

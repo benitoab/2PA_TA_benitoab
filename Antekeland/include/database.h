@@ -1,3 +1,16 @@
+/**
+  * @file main.cc
+  * @brief Main file of the game.
+  * @details This is the core file. It gathers all classes of the game to make it possible.
+  * @author Ricardo Beltrán Muriel <beltranmu@esat-alumni.com>
+  * @version alfa 1.0
+  * @date Ded-2020
+  * @copyright ESAT
+  */
+ 
+
+
+
 #ifndef __DATABASE_H__
 #define __DATABASE_H__ 1
 
@@ -10,11 +23,11 @@ extern "C" {
 #include "abgs_memory_manager.h"
 }
 
-const int32_t kNumSavedGames = 4;
-const int32_t kNumProfession = 11;
-const int32_t kNumAttacks = 16;
-const int32_t kNumCharacter = 4;
-const int32_t kNumTiles = 64*64;
+const int32_t kNumSavedGames = 4;  ///@var max num of saved games that we read
+const int32_t kNumProfession = 11; ///@var num of saved proffesion in DB
+const int32_t kNumAttacks = 16;    ///@var num of saved attacks in the DB
+const int32_t kNumCharacter = 4;   ///@var max num of saved characters that we read
+const int32_t kNumTiles = 64*64;   ///@var max num of saved tiles that we read
 
 /** @struct Stores the stats of the characters */
 struct Character_Stats{
@@ -56,33 +69,41 @@ struct SaveLoadBoard{
 
 /** @struct Stores information of a game*/
 struct GameData{
-  int32_t id_game;
-  int32_t id_char_1;
-  int32_t id_char_2;
-  int32_t id_char_3;
-  int32_t id_char_4;
+  int32_t id_game;    ///@var id of the game 
+  int32_t id_char_1;  ///@var id of the character 1
+  int32_t id_char_2;  ///@var id of the character 2
+  int32_t id_char_3;  ///@var id of the character 3
+  int32_t id_char_4;  ///@var id of the character 4
 };
 
 struct CharacterData{
   int32_t id;
   /*Tenemos que ver lo que poner*/
 };
-
+/** 
+ *@brief Callback to read stats of each class
+ */
 int callbackProfesion(void *profdata, int argc,
                        char **argv, char **azcolname);
       
+/** 
+ *@brief Callback to read stats of each attack
+ */      
 int callbackAttacks(void *attdata, int argc,
                     char **argv, char **azcolname);
 
+/** 
+ *@brief Callback to read the information of saved games
+ */
 int callbackGame(void *gamedata, int argc,
                  char **argv, char **azcolname);
-      
+   
+/** 
+ *@brief Callback to read the information of the board
+ */
 int callbackBoard(void *boardinfo, int argc,
                   char **argv, char **azcolname);      
-      
-
-
-
+     
 class DataBase{
   
   public:
@@ -90,50 +111,86 @@ class DataBase{
   DataBase();
   ~DataBase();
   
+  /** 
+   *@brief open the data base
+   *@param const char* path, the parth where is the DB
+   *@return return 0 if all goes ok 1 if not.
+  */
   int openDB(const char* path);
+  /** 
+   *@brief close the data base
+  */
   void closeDB();
-  
+  /** 
+   *@brief init all variables to work with DB
+  */
   void init();
-  void freeData();
   
-  void ReadGameData(const char* path);
   
+  /** 
+   *@brief read the information of each class and save it
+  */
   void readProfessionData();
+  /** 
+   *@brief read the information of each game and save it
+  */
   void readGameData();
+  /** 
+   *@brief read the information of each character and save it
+  */
   void readCharacterData();
+  /** 
+   *@brief read the information of each attack and save it
+  */
   void readAttacksData();
+  /** 
+   *@brief read the information of a board and save it
+  */
   void readBoardData();
+  /** 
+   *@brief read the information of the last game saved and save it
+  */
   void readLastGame();
-  
+  /** 
+   *@brief save the information of the current board
+  */
   void saveBoardData();
+  /** 
+   *@brief save all 4 character information in the game
+  */
   void saveCharacter();
   /*void saveGameData();*/
   
+  /** 
+   *@brief load the information of attacks and professions
+  */
   void loadData();
-  
+  /** 
+   *@brief load the information of the character
+  */
   void loadCharacter();
+  /** 
+   *@brief load the information  of the board
+  */
   void loadBoard();
-  
-  
+
   void printProfession();
   
   
   //Atributes
-  Vector* prof_vector_;
-  Vector* games_vector_;
-  Vector* char_vector_;
-  Vector* att_vector_;
-  Vector* board_vector_;
+  Vector* prof_vector_;  ///@var vector that is use to save professions info
+  Vector* games_vector_; ///@var vector that is use to save games info
+  Vector* char_vector_;  ///@var vector that is use to save characters info
+  Vector* att_vector_;   ///@var vector that is use to save attacks info
+  Vector* board_vector_; ///@var vector that is use to save board info
   
 
-  AttacksData* attacks_[kNumAttacks]; 
-  Character_Stats* p_[kNumProfession];
-  GameData* games_;
-  CharacterData* char_data_;
-  AttacksData* att_data_;
-  SaveLoadBoard* board_data_;
+  AttacksData* attacks_[kNumAttacks];    ///@var used to saved the att information 
+  Character_Stats* p_[kNumProfession];   ///@var used to saved the profession information 
+  GameData* games_;                      ///@var used to saved the game information 
+  CharacterData* char_data_;             ///@var used to saved the character information 
   
-  sqlite3* db_;
+  sqlite3* db_;   ///@var cotains the database
   
   
 };

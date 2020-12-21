@@ -31,7 +31,7 @@ void Rect::init(){
   
 }
 
-
+/*
 void Rect::init(RBM::Transform2* tr){
   //dst_rect_ = {0,0,1,1};
   Entity::init(2,1,tr,{0,0,1,1});
@@ -42,10 +42,10 @@ void Rect::init(RBM::Transform2* tr){
   centered_ = 0;
   speed_ = 0;
   speed_rot_ = 0.0f;
-}
+}*/
 
 
-
+/*
 void Rect::init(SDL_Rect* r,
                 int32_t t, int8_t e, uint8_t c,
                 RBM::Transform2* tr,
@@ -62,8 +62,8 @@ void Rect::init(SDL_Rect* r,
   speed_ = speed;
   speed_rot_ = speedr;
   
-}
-
+}*/
+/*
 void Rect::horizontalMovement(int w){
   
   transform_.position.x -= speed_;
@@ -81,7 +81,7 @@ void Rect::changeColor(){
 void Rect::rotate(){
   transform_.rotation += speed_rot_;
 }
-
+*/
 void Rect::draw(SDL_Renderer* ren){
   
   SDL_SetRenderDrawColor(ren,
@@ -93,7 +93,7 @@ void Rect::draw(SDL_Renderer* ren){
   SDL_RenderFillRect(ren, &dst_rect_);                       
 //  SDL_RenderDrawRect(ren, &dst_rect_);
 }
-
+/*
 void Rect::drawT(SDL_Renderer* renderer){
   
   if(enabled_){
@@ -163,4 +163,4 @@ void Rect::drawT(SDL_Renderer* renderer){
     //dst_rect_.x = (int)point_to_draw[0].x;
     //dst_rect_.y = (int)point_to_draw[0].y;
   }
-}
+}*/

@@ -1,9 +1,3 @@
-/**
- * Antekeland 2020
- * Author: Javier Benito Abolafio
- * Mail: benitoab@esat-alumni.com
- * University Development @ESAT
- */
 
 #define _CRT_SECURE_NO_WARNINGS
 

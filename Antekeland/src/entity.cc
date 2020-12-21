@@ -48,7 +48,7 @@ void Entity::init(){
   transform_.scale = {1.0f, 1.0f};
   dst_rect_ = {0,0,1,1};
 }
-
+/*
 void Entity::init(const int32_t t, const int8_t e, 
                   const RBM::Transform2* tr, 
                   const SDL_Rect r){
@@ -62,7 +62,7 @@ void Entity::init(const int32_t t, const int8_t e,
   transform_.scale = tr->scale;
   dst_rect_ = r;
 }
-
+*/
 // Setters Getters
 
 void Entity::set_position(RBM::Vec2 v){

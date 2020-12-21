@@ -1,3 +1,15 @@
+/**
+  * @file main.cc
+  * @brief Main file of the game.
+  * @details This is the core file. It gathers all classes of the game to make it possible.
+  * @author Javier Benito Abolafio <benitoab@esat-alumni.com>
+  * @version alfa 1.0
+  * @date Ded-2020
+  * @copyright ESAT
+  */
+ 
+
+
 #ifndef __COMBATSCENE_H__
 #define __COMBATSCENE_H__ 1
 
@@ -13,23 +25,39 @@ class CombatScene : public Scene{
   
     CombatScene();
     virtual ~CombatScene();
-    
+    /**
+    * @brief init the scene
+    */ 
     void init() override;
+    /**
+     *@brief Contains the input of each scene
+     *@param SDL_Event* eve. Event of SDL
+    */
     void input(SDL_Event* eve) override;
+    
+    /**
+     *@brief Contains the update fuctions of each scene
+    */ 
     void update() override;
+    
+    /**
+     *@brief use to draw extra informatio that is not child of entity (Imgui).
+     *@param SDL_Rendeder* ren, SDL rendeder
+    */
+    
     void drawImgui(SDL_Renderer* ren) override;
     //void quit()override;
   
   //Atributes
 
-    Rect combat_button_[4];
-    Label actions_text_[4];
-    unsigned char attacking_;   // 0 = not attacking; 1 = attacking.
+    Rect combat_button_[4];     ///@var the rect of the four buttons for the ui
+    Label actions_text_[4];     ///@var the text of the four buttons for the ui
+    unsigned char attacking_;   ///@var 0 = not attacking; 1 = attacking.
 
-    Sprite cave_[2];
-    int16_t num_turns_; // [0, 3] = Characters, >3 = IA
-    unsigned char current_character_;
-    unsigned char total_turns_;
+    Sprite cave_[2];            ///@var the sprites of the two combat boards
+    int16_t num_turns_;         ///@var [0, 3] = Characters, >3 = IA
+    unsigned char current_character_; ///@var is the id of the character that is moving
+    unsigned char total_turns_;     ///@var how many turn has on round number of character + number of enemies
     
   
 };

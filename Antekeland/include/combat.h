@@ -1,10 +1,13 @@
 /**
- * Antekeland 2020
- * Author: Ricardo Beltrán Muriel
- * Mail: beltranmu@esat-alumni.com
- * University Development @ESAT
- */
-
+  * @file main.cc
+  * @brief Main file of the game.
+  * @details This is the core file. It gathers all classes of the game to make it possible.
+  * @author Ricardo Beltrán Muriel <beltranmu@esat-alumni.com> 
+  * @version alfa 1.0
+  * @date Ded-2020
+  * @copyright ESAT
+  */
+ 
 #ifndef __COMBAT_H__  
 #define __COMBAT_H__ 1
 #define _CRT_SECURE_NO_WARNINGS
@@ -21,25 +24,32 @@ class Combat {
   public:
     Combat();
     ~Combat();
-    
+    /**
+     * @brief init the combat with a character
+     * @param the current character that is playing
+    */ 
     void initCombat(Character& current_char);
-    //DrawUI  
-    //void drawCombatUI(SDL_Renderer* ren);
-    void drawMark(SDL_Renderer* ren);
-    void drawAttacks(SDL_Renderer* ren);
+
+    /**
+     * @brief init the combat with a character
+     * @param the current character that is playing
+    */     
+    //void drawMark(SDL_Renderer* ren);
+   //void drawAttacks(SDL_Renderer* ren);
+    /**
+     * @brief update the stats of the current character
+    */ 
     void updateStats();
   
     //Atributes
-    Character* current_char_;
+    Character* current_char_; ///@var the current char that is playing
     
-    Label stats_title_[2];
-    Label att_text_[4];
-    Label stats_text_[10];
-    Rect stats_rect_[6];
+    Label stats_title_[2];    ///@var the text of the title of the UI
+    Label stats_text_[10];    ///@var the text of statsof the UI
+    Rect stats_rect_[6];      ///@var rects used to do the UI
     
-    SDL_Rect ui_stats_rect_;
-    SDL_Rect attacks_rect_;
-    float stats_scale_; ///@var scale of the box where the stats are shown
+    SDL_Rect ui_stats_rect_; ///@var big rect that containt the UI
+    float stats_scale_;    ///@var scale of the box where the stats are shown
     
     /// @var It represent the character's turn. 0 the first one, 2 the thrid,...
     int32_t turn_;

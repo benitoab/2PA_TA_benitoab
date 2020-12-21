@@ -2,9 +2,9 @@
   * @file main.cc
   * @brief Main file of the game.
   * @details This is the core file. It gathers all classes of the game to make it possible.
-  * @author Ricardo Beltrán Muriel <beltranmu@esat-alumni.com>
-  * @version 1.0
-  * @date Nov-2020
+  * @author Ricardo Beltrán Muriel <beltranmu@esat-alumni.com> 
+  * @version alfa 1.0
+  * @date Ded-2020
   * @copyright ESAT
   */
  
