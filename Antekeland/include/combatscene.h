@@ -4,6 +4,8 @@
 #include "scene.h"
 #include "sprite.h"
 #include "logic.h"
+#include "rect.h"
+#include "label.h"
 
 class CombatScene : public Scene{
   
@@ -19,6 +21,10 @@ class CombatScene : public Scene{
     //void quit()override;
   
   //Atributes
+
+    Rect combat_button_[4];
+    Label actions_text_[4];
+    unsigned char attacking_;   // 0 = not attacking; 1 = attacking.
 
     Sprite cave_[2];
     int16_t num_turns_; // [0, 3] = Characters, >3 = IA

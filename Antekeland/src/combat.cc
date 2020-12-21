@@ -55,7 +55,7 @@ void Combat::initCombat(Character& current_char){
   char* font = "../data/fonts/combat.otf";
   char aux_text[50];
   stats_scale_ = 0.9;
-  ui_stats_rect_.x = gM.kBoardWidth;
+  ui_stats_rect_.x = gM.kBoardWidth + 35;
   ui_stats_rect_.y = -100;
   ui_stats_rect_.w = (int)(stats_scale_ * 
                   (gM.kWindowWidth - gM.kBoardWidth));
@@ -88,12 +88,30 @@ void Combat::initCombat(Character& current_char){
   
   att_text_[3].init("../data/fonts/combat.otf",font_size,white,
                     "el zumo de naranja lleva mucha azucar xdddddddddddddddd",aux_rect); 
-*/
+*/  
+  SDL_Rect title_rect = {685, 10, 300, 50};
+  SDL_Color title_color = {255,255,0,255};
+  stats_title_[0].init(font, (uint16_t)(stats_scale_ *font_size), title_color,"CHARACTER STATS", title_rect);
+  
+  SDL_Rect actions_rect = {760, 430, 150, 50};
+  stats_title_[1].init(font, (uint16_t)(stats_scale_ *font_size), title_color,"ACTIONS", actions_rect);
+
   aux_rect.x = (int)(ui_stats_rect_.x + stats_scale_ * spacing);
   aux_rect.y = (int)(ui_stats_rect_.y + stats_scale_ * 200);
   aux_rect.w = (int)(stats_scale_ * 15*3);
   aux_rect.h = (int)(stats_scale_ * font_size);
- 
+
+  SDL_Rect char_rect;
+  char_rect.x = aux_rect.x;
+  char_rect.y = aux_rect.y-10;
+  char_rect.w = 100;
+  char_rect.h = aux_rect.h + 10;
+
+  stats_text_[8].init(font,
+                     (uint16_t)(stats_scale_ *font_size),
+                      white,"Character:", char_rect);
+                      
+  aux_rect.y += (int)(stats_scale_ * spacing);
   stats_text_[0].init(font,
                      (uint16_t)(stats_scale_ *font_size),
                       white,"HP:", aux_rect);
@@ -192,7 +210,8 @@ void Combat::initCombat(Character& current_char){
   stats_rect_[2].dst_rect_ = grey_rect;
   stats_rect_[5].dst_rect_ = grey_rect;
   stats_rect_[2].fill_color_ = grey;
-  stats_rect_[5].fill_color_ = {209,151,219,200};
+  stats_rect_[5].fill_color_ = {255,255,0,255};
+  // stats_rect_[5].fill_color_ = {209,151,219,200};
   
 
 

@@ -32,6 +32,7 @@ class Combat {
     //Atributes
     Character* current_char_;
     
+    Label stats_title_[2];
     Label att_text_[4];
     Label stats_text_[10];
     Rect stats_rect_[6];

@@ -132,7 +132,6 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   }
 
   // Set Body  
-  printf("id_c:%d\n", c.char_id_);
   tmp_dir.replace(tmp_dir.find("$"), 1, std::to_string(c.skin_id_.skin)); 
   char* skin_dir = (char*)malloc(tmp_dir.length());
   strcpy(skin_dir, tmp_dir.c_str());  

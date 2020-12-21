@@ -82,6 +82,7 @@ class Character : public Entity{
                          const int next_pos_y);                     
   void movCharacter(SDL_Event* e);
   void movCharacterCombat(SDL_Event* e);
+  void takeDamage(Character c, const uint8_t range);
   
   uint8_t cell();
   

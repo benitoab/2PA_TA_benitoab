@@ -18,6 +18,8 @@ CombatScene::~CombatScene(){
 
 void CombatScene::init(){
 
+  attacking_ = 0;
+
   GameManager& gM = GameManager::Instantiate();
   gM.over_world_scene_=0;
   SDL_Rect r1 = {0, 0, 640, 640};
@@ -42,59 +44,10 @@ void CombatScene::init(){
   }
   
   if(rand()%10 < 5){
-    gM.logic_board_[2][2].enabled_ = 0;
-    gM.logic_board_[2][13].enabled_ = 0;
-    gM.logic_board_[3][10].enabled_ = 0;
-    gM.logic_board_[4][4].enabled_ = 0;
-    gM.logic_board_[4][5].enabled_ = 0;
-    gM.logic_board_[4][10].enabled_ = 0;
-    gM.logic_board_[4][11].enabled_ = 0;
-    gM.logic_board_[4][11].enter_ = 3;
-    gM.logic_board_[5][4].enabled_ = 0;
-    gM.logic_board_[5][10].enabled_ = 0;
-    gM.logic_board_[5][11].enabled_ = 0;
-    gM.logic_board_[5][12].enabled_ = 0;
-    gM.logic_board_[7][7].enabled_ = 0;
-    gM.logic_board_[7][8].enabled_ = 0;
-    gM.logic_board_[8][7].enabled_ = 0;
-    gM.logic_board_[9][5].enabled_ = 0;
-    gM.logic_board_[10][5].enabled_ = 0;
-    gM.logic_board_[10][11].enabled_ = 0;
-    gM.logic_board_[10][12].enabled_ = 0;
-    gM.logic_board_[10][13].enabled_ = 0;
-    gM.logic_board_[11][3].enabled_ = 0;
-    gM.logic_board_[11][4].enabled_ = 0;
-    gM.logic_board_[11][5].enabled_ = 0;
-    gM.logic_board_[13][9].enabled_ = 0;
     gM.logic_board_[13][12].enabled_ = 1;
     gM.logic_board_[13][12].enter_ = 1;
-    gM.logic_board_[14][9].enabled_ = 0;
     ent_list.push_back(&cave_[0]);
   }else{
-    gM.logic_board_[2][13].enabled_ = 0;
-    gM.logic_board_[2][13].enter_ = 3;
-    gM.logic_board_[4][3].enabled_ = 0;
-    gM.logic_board_[4][4].enabled_ = 0;
-    gM.logic_board_[4][5].enabled_ = 0;
-    gM.logic_board_[5][3].enabled_ = 0;
-    gM.logic_board_[5][4].enabled_ = 0;
-    gM.logic_board_[5][5].enabled_ = 0;
-    gM.logic_board_[6][3].enabled_ = 0;
-    gM.logic_board_[6][4].enabled_ = 0;
-    gM.logic_board_[6][5].enabled_ = 0;
-    gM.logic_board_[8][9].enabled_ = 0;
-    gM.logic_board_[8][10].enabled_ = 0;
-    gM.logic_board_[8][11].enabled_ = 0;
-    gM.logic_board_[9][5].enabled_ = 0;
-    gM.logic_board_[9][6].enabled_ = 0;
-    gM.logic_board_[10][5].enabled_ = 0;
-    gM.logic_board_[10][6].enabled_ = 0;
-    gM.logic_board_[9][9].enabled_ = 0;
-    gM.logic_board_[9][10].enabled_ = 0;
-    gM.logic_board_[9][11].enabled_ = 0;
-    gM.logic_board_[10][9].enabled_ = 0;
-    gM.logic_board_[10][10].enabled_ = 0;
-    gM.logic_board_[10][11].enabled_ = 0;
     gM.logic_board_[10][3].enabled_ = 1;
     gM.logic_board_[10][3].enter_ = 1;
     ent_list.push_back(&cave_[1]);
@@ -163,14 +116,45 @@ void CombatScene::init(){
 
   ent_list.push_back (&gM.ui_rects_[0]);
   ent_list.push_back (&gM.ui_rects_[1]);
-  for(int i= 0; i<8; ++i){
+  for(int i= 0; i<9; ++i){
     ent_list.push_back(&gM.combat_.stats_text_[i]);
   }
   for(int i = 0; i<6; ++i){
     ent_list.push_back(&gM.combat_.stats_rect_[i]);
   }
+  for(int i = 0; i < 2; ++i){
+    ent_list.push_back(&gM.combat_.stats_title_[i]);
+  }
 
+  // Combat Buttons
+  SDL_Color button_color = {121, 121, 121, 60};
+  SDL_Color text_color = {0, 0, 0, 255};
+  char* font_path = "../data/fonts/BreathFire.ttf";
+  int font_size = 25;
   
+    // Attack
+  combat_button_[0].dst_rect_ = {760, 495, 150, 50};
+  combat_button_[0].fill_color_ = button_color;
+  
+    // End Turn
+  combat_button_[1].dst_rect_ = {760, 565, 150, 50};
+  combat_button_[1].fill_color_ = button_color;
+
+  for(int i = 0; i < 3; ++i){
+    ent_list.push_back(&combat_button_[i]);
+  }
+
+  button_color = {255, 255, 255, 60};
+  SDL_Rect action_dst = {785, 500, 100, 40};
+  actions_text_[0].init(font_path, 25, button_color,"Attack", action_dst);
+
+  action_dst = {785, 570, 100, 40};
+  actions_text_[1].init(font_path, 25, button_color,"End Turn", action_dst);
+
+  for(int i = 0; i < 2; ++i){
+    ent_list.push_back(&actions_text_[i]);
+  }
+
 }
 /*
 void CombatScene::quit(){
@@ -182,6 +166,198 @@ void CombatScene::quit(){
 void CombatScene::input(SDL_Event* eve){
 
   GameManager& gM = GameManager::Instantiate();
+
+  SDL_Point mouse_position = {eve->button.x, eve->button.y};
+  SDL_Rect button_dst = {760, 495, 150, 50};
+  SDL_Color text_color_red = {255,0,0,255};
+  SDL_Color text_color_grey = {255,255,255,60};
+  SDL_Color button_color = {121, 121, 121, 60};
+
+  // Attack Game
+  if(!attacking_){
+    if(SDL_PointInRect(&mouse_position, &button_dst)){
+
+      actions_text_[0].changeColor(text_color_red);
+      // SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Prueba", "Hola", NULL);
+      
+      if(eve->type == SDL_MOUSEBUTTONDOWN &&
+         eve->button.button == SDL_BUTTON_LEFT){
+        
+        char* font_path = "../data/fonts/BreathFire.ttf";
+        attacking_ = 1;
+        actions_text_[0].changeColor(text_color_grey);
+        /* Do stuff */
+        
+        // Buttons
+        combat_button_[0].dst_rect_ = {700, 495, 125, 50};
+        combat_button_[1].dst_rect_ = {700, 565, 125, 50};
+        combat_button_[2].dst_rect_ = {845, 495, 125, 50};
+        combat_button_[3].dst_rect_ = {845, 565, 125, 50};
+
+        // Text
+        SDL_Rect tmp_rect = {705, 500, 120, 40};
+        actions_text_[0].changeColor(text_color_grey);
+
+        actions_text_[0].changeText("Default");
+        actions_text_[0].setPosition(&tmp_rect);
+
+        tmp_rect = {705, 570, 120, 40};
+        actions_text_[1].changeText("Default");
+        actions_text_[1].setPosition(&tmp_rect);
+
+        /*tmp_rect = {850, 500, 120, 40};
+        actions_text_[2].changeText("Default");
+        actions_text_[2].setPosition(&tmp_rect);*/
+        // actions_text_[1].changeText("Prueba");
+        // actions_text_[2].changeText("Prueba");
+        // actions_text_[0].changeText(gM.player_[num_turns_].char_attacks_[0].name);
+        /*actions_text_[1].init(font_path, 15, text_color_grey, "Return",
+                              {860, 570, 100, 40});
+        actions_text_[2].init(font_path, 15, text_color_grey, "Return",
+                              {860, 570, 100, 40});*/
+        actions_text_[2].init(font_path, 25, text_color_grey, "Default",
+                              {850, 500, 120, 40});
+        actions_text_[3].init(font_path, 25, text_color_grey, "Return",
+                              {860, 570, 100, 40});
+
+        combat_button_[2].fill_color_ = button_color;
+        combat_button_[3].fill_color_ = button_color;
+        ent_list.push_back(&combat_button_[2]);
+        ent_list.push_back(&combat_button_[3]);
+        ent_list.push_back(&actions_text_[2]);
+        ent_list.push_back(&actions_text_[3]);
+
+      }
+        
+    }else{
+      actions_text_[0].changeColor(text_color_grey);
+    }
+
+    // End Turn
+    button_dst = {785, 570, 100, 40};
+    if(SDL_PointInRect(&mouse_position, &button_dst)){
+
+      actions_text_[1].changeColor(text_color_red);
+      
+      if(eve->type == SDL_MOUSEBUTTONDOWN &&
+       eve->button.button == SDL_BUTTON_LEFT){
+
+        gM.player_[num_turns_].turn_completed_ = 1;
+        ++num_turns_;
+
+      }
+        
+    }else{
+      actions_text_[1].changeColor(text_color_grey);
+    }
+
+  }else{
+    
+    // Up-Left Attack
+    SDL_Rect tmp_button[3];
+    tmp_button[0] = {700, 495, 125, 50};
+    tmp_button[1] = {700, 565, 125, 50};
+    tmp_button[2] = {845, 495, 125, 50};
+
+    for(int i = 0; i < 3; ++i){
+      if(SDL_PointInRect(&mouse_position, &tmp_button[i])){
+
+        actions_text_[i].changeColor(text_color_red);
+        // SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Prueba", "Hola", NULL);
+
+        // Atack
+        if(eve->type == SDL_MOUSEBUTTONDOWN &&
+           eve->button.button == SDL_BUTTON_LEFT &&
+           gM.player_[num_turns_].current_.mana >= gM.player_[num_turns_].char_attacks_[i].mana_cost){
+
+            combat_button_[0].dst_rect_ = {760, 495, 150, 50};
+            combat_button_[1].dst_rect_ = {760, 565, 150, 50};
+
+            combat_button_[2].dst_rect_ = {7600, 495, 150, 50};
+            combat_button_[3].dst_rect_ = {7600, 565, 150, 50};
+
+            SDL_Rect tmp_dst = {10000, 10000, 0,0};
+            actions_text_[2].setPosition(&tmp_dst);
+            actions_text_[3].setPosition(&tmp_dst);
+
+            tmp_dst = {785, 500, 100, 40};
+            actions_text_[0].changeText("Attack");
+            actions_text_[0].setPosition(&tmp_dst);
+
+            tmp_dst = {785, 570, 100, 40};
+            actions_text_[1].changeText("End Turn");
+            actions_text_[1].setPosition(&tmp_dst);
+            attacking_ = 0;
+        }
+
+      }else{
+
+        actions_text_[i].changeColor(text_color_grey);
+
+      }
+
+    }
+
+    // Down-Left Attack
+    /*button_dst = {700, 565, 125, 50};
+    if(SDL_PointInRect(&mouse_position, &button_dst)){
+    
+      actions_text_[1].changeColor(text_color_red);
+
+    }else{
+
+      actions_text_[1].changeColor(text_color_grey);
+
+    }
+
+    // Up-Right Attack
+    button_dst = {845, 495, 125, 50};
+    if(SDL_PointInRect(&mouse_position, &button_dst)){
+    
+      actions_text_[2].changeColor(text_color_red);
+
+    }else{
+
+      actions_text_[2].changeColor(text_color_grey);
+
+    }*/
+
+    // Return
+    button_dst = {845, 565, 125, 50};
+    if(SDL_PointInRect(&mouse_position, &button_dst)){
+    
+      actions_text_[3].changeColor(text_color_red);
+
+      if(eve->type == SDL_MOUSEBUTTONDOWN &&
+         eve->button.button == SDL_BUTTON_LEFT){
+
+          combat_button_[0].dst_rect_ = {760, 495, 150, 50};
+          combat_button_[1].dst_rect_ = {760, 565, 150, 50};
+
+          combat_button_[2].dst_rect_ = {7600, 495, 150, 50};
+          combat_button_[3].dst_rect_ = {7600, 565, 150, 50};
+
+          SDL_Rect tmp_dst = {10000, 10000, 0,0};
+          actions_text_[2].setPosition(&tmp_dst);
+          actions_text_[3].setPosition(&tmp_dst);
+
+          tmp_dst = {785, 500, 100, 40};
+          actions_text_[0].changeText("Attack");
+          actions_text_[0].setPosition(&tmp_dst);
+
+          tmp_dst = {785, 570, 100, 40};
+          actions_text_[1].changeText("End Turn");
+          actions_text_[1].setPosition(&tmp_dst);
+          attacking_ = 0;
+      }
+
+    }else{
+
+      actions_text_[3].changeColor(text_color_grey);
+
+    }
+
+  }
   
   if(eve->type == SDL_KEYDOWN){ 
    
@@ -194,7 +370,6 @@ void CombatScene::input(SDL_Event* eve){
   if(num_turns_<4){
     gM.player_[num_turns_].movCharacterCombat(eve);
   }
-
   
 }
 
@@ -211,4 +386,16 @@ void CombatScene::update(){
 
 void CombatScene::drawImgui(SDL_Renderer* ren){
   
+  // Character Stats Frame
+  SDL_Rect stats_frame = {685, 60, 300, 370};
+
+  SDL_SetRenderDrawColor(ren, 255,255,0,255);
+  SDL_RenderDrawRect(ren, &stats_frame);
+
+  // Actions Frame
+  SDL_Rect actions_frame = {685, 480, 300, 150};
+
+  SDL_SetRenderDrawColor(ren, 255,255,0,255);
+  SDL_RenderDrawRect(ren, &actions_frame);
+
 }

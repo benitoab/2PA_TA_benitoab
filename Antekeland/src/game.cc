@@ -220,10 +220,14 @@ void Game::input(){
     SDL_SetWindowSize(win_, 1024, 640);
   }
 
-  if(gM.new_game_ == 1){
-    
+  if(gM.new_game_ == 1){    
     loadScene(0);
     gM.new_game_ = 0;
+  }
+
+  if(gM.enter_cave_ == 1){
+    loadScene(2);
+    gM.enter_cave_ = 0;
   }
   
 }

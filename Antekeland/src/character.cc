@@ -393,6 +393,26 @@ bool Character::CheckBeforeMove(const int next_pos_x,
 
 }
 
+void Character::takeDamage(Character c, const uint8_t range){
+
+  float dmg_multiplier = 0;
+
+  // Melé
+  if(current_.hp > 0){
+    if(range == 1){
+
+      dmg_multiplier = 100/(100+base_.armor);
+      current_.hp -= dmg_multiplier * c.current_.physical_att;
+
+    }else{  // Spell
+
+      dmg_multiplier = 100/(100+base_.magic_resist);
+      current_.hp -= dmg_multiplier * c.current_.magic_att;
+
+    }
+  }
+
+}
 
 void Character::movCharacterCombat(SDL_Event* e){
   
@@ -472,22 +492,36 @@ void Character::movCharacter(SDL_Event* e){
       vertical_mov = 1;
       dst_rect_.y = RBM::GetMatrixPosition(dst_rect_.y,-1);
       can_move = 1;
-      direction_ = 0; 
-    }
-    else if(e->key.keysym.sym == SDLK_DOWN &&
+      direction_ = 0;
+    }else if(e->key.keysym.sym == SDLK_UP &&
+             gM.board_[RBM::GetMatrixPosition(dst_rect_.y,-1)][dst_rect_.x].enter_ == 1){
+               direction_ = 0;
+               gM.enter_cave_ = 1;
+
+    }else if(e->key.keysym.sym == SDLK_DOWN &&
     gM.board_[RBM::GetMatrixPosition(dst_rect_.y,1)][dst_rect_.x].enabled_ == 1){
       vertical_mov = -1;
       dst_rect_.y = RBM::GetMatrixPosition(dst_rect_.y,1);
       can_move = 1;
       direction_ = 1;
-    }
+    }else if(e->key.keysym.sym == SDLK_DOWN &&
+             gM.board_[RBM::GetMatrixPosition(dst_rect_.y,1)][dst_rect_.x].enter_ == 1){
       
-    else if(e->key.keysym.sym == SDLK_LEFT &&
-    gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,-1)].enabled_ == 1){
+      direction_ = 1;
+      gM.enter_cave_ = 1;
+
+    }else if(e->key.keysym.sym == SDLK_LEFT &&
+             gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,-1)].enabled_ == 1){
       horizontal_mov = 1;
       dst_rect_.x = RBM::GetMatrixPosition(dst_rect_.x,-1);
       can_move = 1;
       direction_ = 2;
+    }else if(e->key.keysym.sym == SDLK_LEFT &&
+             gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,-1)].enter_ == 1){
+      
+      direction_ = 2;
+      gM.enter_cave_ = 1;
+
     }
     else if(e->key.keysym.sym == SDLK_RIGHT &&
     gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,1)].enabled_ == 1){
@@ -495,6 +529,13 @@ void Character::movCharacter(SDL_Event* e){
       dst_rect_.x = RBM::GetMatrixPosition(dst_rect_.x,1);
       can_move = 1;
       direction_ = 3;
+    }
+    else if(e->key.keysym.sym == SDLK_RIGHT &&
+             gM.board_[dst_rect_.y][RBM::GetMatrixPosition(dst_rect_.x,1)].enter_ == 1){
+      
+      direction_ = 3;
+      gM.enter_cave_ = 1;
+
     }
 
     

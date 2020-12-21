@@ -55,11 +55,13 @@ class GameManager{
     Texture* bg_texture_;
     Texture *ground_cave_, *frozen_cave_;
     Texture* textures_[44];
-    Texture* enemy_textures_[5];
+    Texture* enemy_textures_[5];    // 0 - 4 enemy skins
     Background bg_custo_;
     Combat combat_;
     DataBase data_base_;
-    unsigned char current_edit_;
+    unsigned char current_edit_;    // Current character in edition
+    unsigned char enter_cave_;      // 1 = Enter cave
+    unsigned char exit_cave_;       // 1 = Exit cave
 
       // Menu Scene
     Rect menu_scene_[3];

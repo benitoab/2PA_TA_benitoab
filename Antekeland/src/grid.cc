@@ -817,7 +817,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
     aux_layer[row][col].enabled_ = 0;
     aux_layer[row][col].type_ = 1+rand()%5;
 
-    if(aux_layer[row][col].type_ == 4){ gM.board_[row][col].enter_ = 1; }      // Sand stairs
+    if(aux_layer[row][col].type_ == 4){ gM.board_[row][col].enter_ = 1; gM.board_[row][col].enabled_ = 0;}      // Sand stairs
     if(aux_layer[row][col].type_ != 0 && aux_layer[row][col].type_ != 4){   // Sand obstacles
       gM.board_[row][col].enabled_ = 0;
     }
@@ -1013,6 +1013,7 @@ void ChangeTileType(Tile layer[Board::kBoardSize][Board::kBoardSize],
       aux_layer[row][col].enabled_ = 0;
 
       // Logic
+      gM.board_[row][col].enabled_ = 0;
       gM.board_[row][col].enter_ = 1;
         
     }  
