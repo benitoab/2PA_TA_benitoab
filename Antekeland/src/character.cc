@@ -23,6 +23,11 @@ Character::Character(){
   level_ = 1;
   char_id_ = 0;
   
+  end_tile_mov_.x = 0;
+  end_tile_mov_.y = 0;
+  cont_mov_ = 0;
+  generate_mov_ = 1;
+  
 }
 
 Character::~Character(){
@@ -86,6 +91,9 @@ void Character::init(){
   
   index_mov_=0;
   char_id_ = 0;
+  
+  end_tile_mov_.x = 0;
+  end_tile_mov_.y = 0;
 }
 
 void Character::init(int prof, unsigned char id){
@@ -117,6 +125,9 @@ void Character::init(int prof, unsigned char id){
   index_mov_=0;
   char_id_ = id;
   turn_completed_ = 0;
+  
+  end_tile_mov_.x = 0;
+  end_tile_mov_.y = 0;
 }
 
 void Character::initEnemy(const int lvl, const int id){
@@ -173,7 +184,11 @@ void Character::initEnemy(const int lvl, const int id){
     }
 
   }
-  
+  end_tile_mov_.x = 0;
+  end_tile_mov_.y = 0;
+  cont_mov_ = 0;
+  generate_mov_ = 1;
+  current_.movement = 5;
 }
 
 
@@ -216,6 +231,8 @@ int32_t Character::mhDistance(const SDL_Rect* tr_rect){
   
 }
 
+
+
 void Character::endTile(){
   GameManager& gM = GameManager::Instantiate();
   int end_x = 0, end_y = 0;
@@ -227,7 +244,7 @@ void Character::endTile(){
  
   aux_rect = dst_rect_;
   printf("OP:(%d,%d)", aux_rect.x,aux_rect.y);
-  for(int r = 0; r<5 && find == 0 ; ++r){
+  for(int r = 0; r<=5 && find == 0 ; ++r){
     for(int i = 0; i<r && find == 0; ++i){
       int j = r-i;
       printf("\ni:%d,j:%d",i,j);
@@ -335,7 +352,114 @@ void Character::endTile(){
     }
   }
   printf("%d,%d", end_x, end_y);
+  
+  end_tile_mov_.x = end_x - dst_rect_.x;
+  //if(end_tile_mov_.x<0){end_tile_mov_.x*=-1;}
+  end_tile_mov_.y = end_y - dst_rect_.y;
+  //if(end_tile_mov_.y<0){end_tile_mov_.y*=-1;}
+  printf("ME quedan: x:%d, y:%d", end_tile_mov_.x, end_tile_mov_.y);
+  
 }
+
+void Character::iaMov(){
+  
+  int next_up = RBM::GetMatrixPosition(dst_rect_.y,-1);
+  int next_down = RBM::GetMatrixPosition(dst_rect_.y,1);
+  int next_right = RBM::GetMatrixPosition(dst_rect_.x,1);
+  int next_left = RBM::GetMatrixPosition(dst_rect_.x,-1);
+  GameManager& gM = GameManager::Instantiate();
+  uint8_t mov = 0;
+  
+  if(cont_mov_>=60){
+    
+     if(end_tile_mov_.y < 0 && mov == 0 &&
+        CheckBeforeMove(dst_rect_.x, next_up)){
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
+      dst_rect_.y = next_up;
+      //previous_movs_[index_mov_] = next_up * 16 + dst_rect_.x;
+      direction_ = 0;
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;
+      printf("ARIBBA\n");
+      mov = 1;
+    }
+    
+    if(end_tile_mov_.y > 0 && mov == 0 &&
+       CheckBeforeMove(dst_rect_.x, next_down)){
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
+      dst_rect_.y = next_down;
+      //previous_movs_[index_mov_] = next_down * 16 + dst_rect_.x; 
+      direction_ = 1;
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;
+      printf("ABAJO\n");
+      mov = 1;
+      // printf("%d\n",previous_movs_[index_mov_]);
+    }
+    
+    if(end_tile_mov_.x >0 && mov == 0 &&
+       CheckBeforeMove(next_right, dst_rect_.y)){
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
+      dst_rect_.x = next_right;
+     // previous_movs_[index_mov_] = dst_rect_.y * 16 + next_right; 
+      direction_ = 3;
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;
+      printf("DERECHA\n");
+      mov = 1;
+      // printf("%d\n",previous_movs_[index_mov_]);
+    }
+    
+    if(end_tile_mov_.x < 0 && mov == 0 &&
+    CheckBeforeMove(next_left, dst_rect_.y)){
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
+      dst_rect_.x = next_left;
+     // previous_movs_[index_mov_] = dst_rect_.y * 16 + next_left;
+      direction_ = 2;    
+      gM.units_board_[dst_rect_.y][dst_rect_.x].enabled_ = char_id_;  
+      printf("IZQUIERDA\n");
+      mov = 1;    
+      // printf("%d\n",previous_movs_[index_mov_]);
+    } 
+    
+    cont_mov_= 0;
+    printf("ME quedan: x:%d, y:%d", end_tile_mov_.x, end_tile_mov_.y);
+  }
+  
+  ++cont_mov_;
+  
+  if(end_tile_mov_.x == 0 && end_tile_mov_.y == 0){
+    printf("PASO DE TURNO\n");
+    cont_mov_ = 0;
+    end_tile_mov_.x = 0 ;
+    end_tile_mov_.y = 0;
+  }
+}
+
+void Character::iaBehaviour(){
+  
+  if(generate_mov_ == 1){
+    endTile();
+    generate_mov_ = 0;
+    printf("HOLAAAAA\n");
+  }
+  else{
+    iaMov();
+  }
+}
+
+void Character::reset(){
+  current_.movement = base_.movement;
+  current_.mana += base_.mana_regen;
+  
+  if(current_.mana > base_.mana){
+      current_.mana = base_.mana;
+  }
+  
+  generate_mov_ = 1;
+  turn_completed_ = 0;
+  previous_movs_[0] = dst_rect_.x +  dst_rect_.y * 16;
+  index_mov_ = 0;
+}
+
+
 
 bool Character::CheckPreviousMovs(const int next_pos_x, 
                                   const int next_pos_y){
@@ -369,6 +493,11 @@ bool Character::CheckBeforeMove(const int next_pos_x,
   
   GameManager& gM = GameManager::Instantiate();
   int m_cost = 1;
+  if(end_tile_mov_.y>0){ --end_tile_mov_.y;}
+  if(end_tile_mov_.y<0){ ++end_tile_mov_.y;}
+  if(end_tile_mov_.x>0){ --end_tile_mov_.x;}
+  if(end_tile_mov_.x<0){ ++end_tile_mov_.x;}
+  
   //const int m_cost = board[next_pos].movement_cost;
   if(gM.logic_board_[next_pos_y][next_pos_x].enabled_ == 1 &&
      gM.units_board_[next_pos_y][next_pos_x].enabled_ == 255){
