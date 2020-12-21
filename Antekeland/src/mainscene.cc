@@ -1,5 +1,6 @@
 #include "mainscene.h"
 #include "gamemanager.h"
+#include "grid.h"
 
 
 MainScene::MainScene(){
@@ -47,6 +48,17 @@ void MainScene::init(){
       ent_list.push_back(&gM.layer1_.map_[i][j]); 
     }
   }
+  
+  
+   
+    
+    int x =0, y =0;
+    do{
+      x = rand()%Board::kBoardSize, y = rand()%Board::kBoardSize;
+    }while(gM.layer1_.map_[y][x].type_ !=0 
+        || gM.layer1_.map_[y][x].state_ !=0);
+    gM.first_time_overworld_ = 0;    
+ 
 
   gM.player_[4].dst_rect_.x = gM.kViewSize/2;
   gM.player_[4].dst_rect_.y = gM.kViewSize/2;
@@ -129,9 +141,11 @@ void MainScene::input(SDL_Event* eve){
     
     if(eve->type == SDL_MOUSEBUTTONDOWN &&
      eve->button.button == SDL_BUTTON_LEFT){
-
-      /* Do stuff */
-
+      printf("SAVING...\n");
+      GameManager::Instantiate().data_base_.saveCharacter();
+      GameManager::Instantiate().data_base_.saveGameData();
+      //GameManager::Instantiate().data_base_.saveBoardData();
+      printf("SAVED\n");
     }
       
   }else{
@@ -171,15 +185,7 @@ void MainScene::input(SDL_Event* eve){
   }else{
     mainscene_text_[2].changeColor(text_color_white);
   }
-  
-  if(eve->type == SDL_KEYDOWN){
-    if(eve->key.keysym.sym == SDLK_0){
-      printf("Guardo\n");
-      //GameManager::Instantiate().data_base_.saveBoardData();
-      printf("Guardado\n");
-    }
-  }
-
+ 
 }
 
 void MainScene::update(){
@@ -193,6 +199,37 @@ void MainScene::update(){
   gM.combat_.updateStats();
   
   gM.player_[4].updateSpriteC();
+  /*printf("\n\n\n\n");
+  
+  printf("%d\n",gM.player_[0].char_id_);
+  printf("%d\n",gM.player_[0].xp_);
+  printf("%d\n",gM.player_[0].level_);
+  printf("%d\n\n",gM.player_[0].profession_);
+              
+  printf("%d\n",gM.player_[0].skin_id_.gender);
+  printf("%d\n",gM.player_[0].skin_id_.skin);
+  printf("%d\n",gM.player_[0].skin_id_.hair);
+  printf("%d\n",gM.player_[0].skin_id_.hair_color);
+  printf("%d\n",gM.player_[0].skin_id_.eyes);
+  printf("%d\n",gM.player_[0].skin_id_.ears);
+  printf("%d\n",gM.player_[0].skin_id_.nose);
+  printf("%d\n",gM.player_[0].skin_id_.beard);
+  printf("%d\n",gM.player_[0].skin_id_.mustache);
+  printf("%d\n",gM.player_[0].skin_id_.mustache_color);
+  printf("%d\n",gM.player_[0].skin_id_.torso);
+  printf("%d\n",gM.player_[0].skin_id_.cape);
+  printf("%d\n",gM.player_[0].skin_id_.legs);
+  printf("%d\n",gM.player_[0].skin_id_.head);
+  printf("%d\n",gM.player_[0].skin_id_.neck);
+  printf("%d\n",gM.player_[0].skin_id_.belt);
+  printf("%d\n",gM.player_[0].skin_id_.armor);
+  printf("%d\n",gM.player_[0].skin_id_.back);
+  printf("%d\n",gM.player_[0].skin_id_.bracelets);
+  printf("%d\n",gM.player_[0].skin_id_.bracers);
+  printf("%d\n",gM.player_[0].skin_id_.gloves);
+  printf("%d\n",gM.player_[0].skin_id_.pants);
+  printf("%d\n",gM.player_[0].skin_id_.feet);*/
+
 
 }
 

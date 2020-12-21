@@ -76,11 +76,11 @@ int callbackGame(void *gamedata, int argc,
   
   GameData *game_info = (GameData*)calloc(1,sizeof(GameData));
  
-  game_info->id_game = atoi(argv[0]);
   game_info->id_char_1 = atoi(argv[1]);
   game_info->id_char_2 = atoi(argv[2]);
   game_info->id_char_3 = atoi(argv[3]);
   game_info->id_char_4 = atoi(argv[4]);
+  game_info->board_seed = atoi(argv[5]);
   
   aux_vector->ops_->insertLast(aux_vector, 
   (void*)game_info, (uint16_t)sizeof(GameData));
@@ -120,14 +120,35 @@ int callbackCharacter(void *characterdata, int argc,
   
   CharacterData *char_info = (CharacterData*)calloc(1,sizeof(CharacterData));
 
-  char_info->id = atoi(argv[0]);/*
-  char_info->logic_enabled = atoi(argv[1]);
-  char_info->logic_enter = atoi(argv[2]);
-  char_info->units_enabled = atoi(argv[3]);
-  char_info->layer1_state = atoi(argv[4]);
-  char_info->layer1_type = atoi(argv[5]);
-  char_info->layer2_state = atoi(argv[6]);
-  char_info->layer2_type = atoi(argv[7]);*/
+  char_info->id_character = atoi(argv[1]);
+  char_info->xp = atoi(argv[2]);
+  char_info->lvl= atoi(argv[3]);
+  char_info->profession = atoi(argv[4]);
+  char_info->custo_data.gender = atoi(argv[5]);
+  char_info->custo_data.skin = atoi(argv[6]);
+  char_info->custo_data.hair = atoi(argv[7]);
+  char_info->custo_data.hair_color = atoi(argv[8]);
+  char_info->custo_data.eyes = atoi(argv[9]);
+  char_info->custo_data.ears = atoi(argv[10]);
+  char_info->custo_data.nose = atoi(argv[11]);
+  char_info->custo_data.beard = atoi(argv[12]);
+  char_info->custo_data.mustache = atoi(argv[13]);
+  char_info->custo_data.mustache_color = atoi(argv[14]);
+  char_info->custo_data.torso = atoi(argv[15]);
+  char_info->custo_data.cape = atoi(argv[16]);
+  char_info->custo_data.legs = atoi(argv[17]);
+  char_info->custo_data.head = atoi(argv[18]);
+  char_info->custo_data.neck = atoi(argv[19]);
+  char_info->custo_data.belt = atoi(argv[20]);
+  char_info->custo_data.armor = atoi(argv[21]);
+  char_info->custo_data.back = atoi(argv[22]);
+  char_info->custo_data.bracelets = atoi(argv[23]);
+  char_info->custo_data.bracers = atoi(argv[24]);
+  char_info->custo_data.gloves = atoi(argv[25]);
+  char_info->custo_data.pants = atoi(argv[26]);
+  char_info->custo_data.feet = atoi(argv[27]);
+
+
   
   aux_vector->ops_->insertLast(aux_vector, 
   (void*)char_info, (uint16_t)sizeof(CharacterData));   
@@ -285,7 +306,7 @@ void DataBase::readCharacterData(){
   int rc = 0;
 
   char *sql1 = "SELECT * FROM character";
-  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)char_data_, &err_msg);
+  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)char_vector_, &err_msg);
 }
 
 void DataBase::readAttacksData(){
@@ -359,100 +380,199 @@ void DataBase::saveBoardData(){
 
 void DataBase::saveCharacter(){
   
+  GameManager& gM = GameManager::Instantiate();
   char sql1[500];
   int rc = 0;
   char *err_msg = 0;
   char *sql2 = "DELETE FROM character";
-  rc = sqlite3_exec(db_,sql2, NULL, 0, &err_msg);/*
+  rc = sqlite3_exec(db_,sql2, NULL, 0, &err_msg);
   for(int i =0; i<4; ++i){
-    int n = sprintf (sql1, "INSERT INTO character" Los campo que tenga nuestro character
-            "(id_charracter1,id_charracter2,"
-            "id_charracter3,id_charracter4)"
-            "VALUES(%d,%d,%d,%d)",
-            introducir los id de los nuevos personajes); 
-           
+    /*int n = sprintf(sql1, "INSERT INTO character"    
+      "(id_char)VALUES(%d)", gM.player_[i].char_id_);*/
    
-    rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
-    
-  }*/
+    int n = sprintf (sql1, "INSERT INTO character" 
+                  "(id,id_char, xp, lvl, profession,"
+                  "gender, skin, hair,"
+                  "hair_color, eyes, ears,"
+                  "nose, beard, mustache,"
+                  "mustache_color, torso,"
+                  "cape, legs,head,neck, belt,"
+                  "armor, back, bracelets, bracers," 
+                  "gloves,pants, feet)"
+                  "VALUES(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"
+                  "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)",
+                  i,
+                  gM.player_[i].char_id_,
+                  
+                  gM.player_[i].xp_,
+                  gM.player_[i].level_,
+                  
+                  gM.player_[i].profession_,
+                  gM.player_[i].skin_id_.gender,
+                  
+                  gM.player_[i].skin_id_.skin,
+                  gM.player_[i].skin_id_.hair,
+                  
+                  gM.player_[i].skin_id_.hair_color,
+                  gM.player_[i].skin_id_.eyes,
+                  
+                  gM.player_[i].skin_id_.ears,
+                  gM.player_[i].skin_id_.nose,
+                  
+                  gM.player_[i].skin_id_.beard,
+                  gM.player_[i].skin_id_.mustache,
+                  
+                  gM.player_[i].skin_id_.mustache_color,
+                  gM.player_[i].skin_id_.torso,
+                  
+                  gM.player_[i].skin_id_.cape,
+                  gM.player_[i].skin_id_.legs,
+                  
+                  gM.player_[i].skin_id_.head,
+                  gM.player_[i].skin_id_.neck,
+                  
+                  gM.player_[i].skin_id_.belt, 
+                  gM.player_[i].skin_id_.armor,
+                  
+                  gM.player_[i].skin_id_.back,   
+                  gM.player_[i].skin_id_.bracelets,
+                  
+                  gM.player_[i].skin_id_.bracers,
+                  gM.player_[i].skin_id_.gloves,
+                  
+                  gM.player_[i].skin_id_.pants,
+                  gM.player_[i].skin_id_.feet); 
 
+    rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);  
+  }
 }
-/*
+
 void DataBase::saveGameData(){
   
+  GameManager& gM = GameManager::Instantiate();
   char sql1[500];
   int rc = 0;
   char *err_msg = 0;
+  char *sql2 = "DELETE FROM games";
+  rc = sqlite3_exec(db_,sql2, NULL, 0, &err_msg);
   int n = sprintf (sql1, "INSERT INTO games"
-            "(id_charracter1,id_charracter2,"
-            "id_charracter3,id_charracter4)"
-            "VALUES(%d,%d,%d,%d)",
-            introducir los id de los nuevos personajes); 
+            "(id_character1,id_character2,"
+            "id_character3,id_character4,"
+            "seed_board)"
+            "VALUES(%d,%d,%d,%d,%d)",
+            gM.player_[0].char_id_,
+            gM.player_[1].char_id_,
+            gM.player_[2].char_id_,
+            gM.player_[3].char_id_,
+            gM.board_seed_); 
            
    
   rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
  
-}*/
+}
 
 
 void DataBase::loadCharacter(){
   GameManager& gM = GameManager::Instantiate();
   CharacterData* aux_char;
-  for(int i = 0; i< 4; ++i){
+  for(int i = 0; i< 1; ++i){
     aux_char = (CharacterData*) char_vector_->ops_->extractFirst(char_vector_);
-    //gM.player_[i].
+    if(nullptr != aux_char){
+      aux_char->id_character;
+      aux_char->xp ;
+      aux_char->lvl;
+      aux_char->profession;
+      aux_char->custo_data.gender;
+      aux_char->custo_data.skin;
+      aux_char->custo_data.hair; 
+      aux_char->custo_data.hair_color;
+      aux_char->custo_data.eyes;
+      aux_char->custo_data.ears;
+      aux_char->custo_data.nose;
+      aux_char->custo_data.beard ;
+      aux_char->custo_data.mustache ;
+      aux_char->custo_data.mustache_color ;
+      aux_char->custo_data.torso ;
+      aux_char->custo_data.cape ;
+      aux_char->custo_data.legs ;
+      aux_char->custo_data.head; 
+      aux_char->custo_data.neck ;
+      aux_char->custo_data.belt ;
+      aux_char->custo_data.armor ;
+      aux_char->custo_data.back ;
+      aux_char->custo_data.bracelets ;
+      aux_char->custo_data.bracers ;
+      aux_char->custo_data.gloves ;
+      aux_char->custo_data.pants ;
+      aux_char->custo_data.feet; 
+    }
   }
 }
 
-void DataBase::loadBoard(){
+// void DataBase::loadBoard(){
+  // GameManager& gM = GameManager::Instantiate();
+  // int c = Board::kBoardSize, r = Board::kBoardSize;
+  // SaveLoadBoard* aux_board;
+
+  // for(int i = 0; i< r; ++i){
+    // for(int j = 0; j <c; ++j){
+      
+      // aux_board = (SaveLoadBoard*) board_vector_->ops_->extractFirst(board_vector_);
+      // printf("\ni: %d\n", i*64+j);
+     // /*printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d\n",
+          // aux_board->logic_enabled,aux_board->logic_enter,
+          // aux_board->units_enabled,
+          // aux_board->layer1_state,aux_board->layer1_type,
+          // aux_board->layer2_state,aux_board->layer2_type);*/
+      
+      // gM.board_[i][j].enabled_ = aux_board->logic_enabled;
+      // gM.board_[i][j].enter_ = aux_board->logic_enter;
+      // gM.units_[i][j].enabled_ = aux_board->units_enabled;
+      // gM.layer1_.map_[i][j].state_ = aux_board->layer1_state;
+      // gM.layer1_.map_[i][j].type_ = aux_board->layer1_type;
+      // gM.layer2_.map_[i][j].state_ = aux_board->layer2_state;
+      // gM.layer2_.map_[i][j].type_ = aux_board->layer2_type;
+      
+      // /*printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d",
+      // gM.board_[i][j].enabled_,gM.board_[i][j].enter_,
+      // gM.units_[i][j].enabled_,
+      // gM.layer1_.map_[i][j].state_,gM.layer1_.map_[i][j].type_,
+      // gM.layer2_.map_[i][j].state_,gM.layer2_.map_[i][j].type_);*/
+      
+      
+
+    // }
+  // }
+  // /*
+  // for(int i = 0; i< r; ++i){
+    // for(int j = 0; j <c; ++j){
+      
+      // gM.board_[i][j].enabled_ = (board_data_ + i * c + j)->logic_enabled;
+      // gM.board_[i][j].enter_ = (board_data_ + i * c + j)->logic_enter;
+      // gM.units_[i][j].enabled_ = (board_data_ + i * c + j)->units_enabled;
+      // gM.layer1_.map_[i][j].state_ = (board_data_ + i * c + j)->layer1_state;
+      // gM.layer1_.map_[i][j].type_ = (board_data_ + i * c + j)->layer1_type;
+      // gM.layer2_.map_[i][j].state_ = (board_data_ + i * c + j)->layer2_state;
+      // gM.layer2_.map_[i][j].type_ = (board_data_ + i * c + j)->layer2_type;
+    // }
+  // }*/
+// }
+
+
+void DataBase::loadGameData(){
   GameManager& gM = GameManager::Instantiate();
-  int c = Board::kBoardSize, r = Board::kBoardSize;
-  SaveLoadBoard* aux_board;
-
-  for(int i = 0; i< r; ++i){
-    for(int j = 0; j <c; ++j){
-      
-      aux_board = (SaveLoadBoard*) board_vector_->ops_->extractFirst(board_vector_);
-      //printf("\ni: %d\n", i*64+j);
-     /*printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d\n",
-          aux_board->logic_enabled,aux_board->logic_enter,
-          aux_board->units_enabled,
-          aux_board->layer1_state,aux_board->layer1_type,
-          aux_board->layer2_state,aux_board->layer2_type);*/
-      
-      gM.board_[i][j].enabled_ = aux_board->logic_enabled;
-      gM.board_[i][j].enter_ = aux_board->logic_enter;
-      gM.units_[i][j].enabled_ = aux_board->units_enabled;
-      gM.layer1_.map_[i][j].state_ = aux_board->layer1_state;
-      gM.layer1_.map_[i][j].type_ = aux_board->layer1_type;
-      gM.layer2_.map_[i][j].state_ = aux_board->layer2_state;
-      gM.layer2_.map_[i][j].type_ = aux_board->layer2_type;
-      
-      /*printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d",
-      gM.board_[i][j].enabled_,gM.board_[i][j].enter_,
-      gM.units_[i][j].enabled_,
-      gM.layer1_.map_[i][j].state_,gM.layer1_.map_[i][j].type_,
-      gM.layer2_.map_[i][j].state_,gM.layer2_.map_[i][j].type_);*/
-      
-      
-
+  GameData* aux_game;
+  for(int i = 0; i< 1; ++i){
+    games_ = (GameData*) games_vector_->ops_->extractFirst(games_vector_);
+    //printf("%d",games_->board_seed);
+    if(nullptr ==games_){
+      games_->id_char_1 = 0;
+      games_->id_char_2 = 1;
+      games_->id_char_3 = 2;
+      games_->id_char_4 = 3;
     }
   }
-  /*
-  for(int i = 0; i< r; ++i){
-    for(int j = 0; j <c; ++j){
-      
-      gM.board_[i][j].enabled_ = (board_data_ + i * c + j)->logic_enabled;
-      gM.board_[i][j].enter_ = (board_data_ + i * c + j)->logic_enter;
-      gM.units_[i][j].enabled_ = (board_data_ + i * c + j)->units_enabled;
-      gM.layer1_.map_[i][j].state_ = (board_data_ + i * c + j)->layer1_state;
-      gM.layer1_.map_[i][j].type_ = (board_data_ + i * c + j)->layer1_type;
-      gM.layer2_.map_[i][j].state_ = (board_data_ + i * c + j)->layer2_state;
-      gM.layer2_.map_[i][j].type_ = (board_data_ + i * c + j)->layer2_type;
-    }
-  }*/
 }
-
 
 void DataBase::loadData(){
   

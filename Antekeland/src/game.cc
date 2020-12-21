@@ -101,47 +101,46 @@ int Game::init(){
   io.Fonts->Build();
   
   ImGuiSDL::Initialize(ren_, gM.kWindowWidth, gM.kWindowHeight);	 
-
-  srand((unsigned int)time(NULL));
+  
+  time_t t = 1608586990;//time(NULL);
+  
   
   gM.init(ren_);
-
-  CreateBoard();
+  //CreateBoard();
+  
   //DB
-  //int x=0;
-  //scanf("%d",&x);
   char* p = "../data/database/antekeland.db";
   gM.data_base_.init();
   gM.data_base_.openDB(p); 
   // gM.data_base_.readGame();
   //gM.data_base_.readBoardData();
- gM.data_base_.readProfessionData();
- gM.data_base_.readAttacksData();
- gM.data_base_.loadData();
+  gM.data_base_.readProfessionData();
+  gM.data_base_.readAttacksData();
+  gM.data_base_.loadData();
+
   //gM.data_base_.loadBoard();
  
-  gM.data_base_.closeDB();
+  //gM.data_base_.closeDB();
   
   
   //NEW GAME
-  InitLogic();
-  CreateMap();
+  //InitLogic();
+  //CreateMap();
 
-  gM.player_[0].init(0,0);  
+  /*gM.player_[0].init(0,0);  
   gM.player_[1].init(0,1);  
   gM.player_[2].init(0,2);  
-  gM.player_[3].init(0,3);   
-    
+  gM.player_[3].init(0,3); */  
+  
+  gM.player_[0].init();  
+  gM.player_[1].init();  
+  gM.player_[2].init();  
+  gM.player_[3].init();  
 
    
 
  
-  for(int i = 0; i < Board::kBoardSize; ++i){
-    for(int j = 0; j < Board::kBoardSize; ++j){
-      gM.layer1_.map_[i][j].initSubSprite();
-      gM.layer2_.map_[i][j].initSubSprite();
-    }
-  }
+
   
 
 
@@ -150,16 +149,16 @@ int Game::init(){
   current_scene_[3]->init();
 
   current_scene_[2] = new CombatScene();
-  current_scene_[2]->init();
+  //current_scene_[2]->init();
 
   current_scene_[1] = new MainScene();
-  current_scene_[1]->init();
+ // current_scene_[1]->init();
 
   current_scene_[0] = new CustoScene();
   current_scene_[0]->init();
 
   
-  current_id_scene_ = 0;
+  current_id_scene_ = 3;
 
   return 0;
 }
@@ -230,6 +229,12 @@ void Game::input(){
   if(gM.enter_cave_ == 1){
     loadScene(2);
     gM.enter_cave_ = 0;
+  }
+  //load game 
+  if(gM.new_game_ == 2){
+    loadScene(1);
+    gM.new_game_ = 0;
+    SDL_SetWindowSize(win_, 1024, 640);
   }
   
 }

@@ -31,6 +31,8 @@ GameManager::GameManager(){
   over_world_scene_ = 0;
   current_edit_ = 0;
   new_game_ = 0;
+  board_seed_ = 0;
+  first_time_overworld_ = 0;
 }
 
 GameManager::~GameManager(){  
@@ -40,6 +42,7 @@ GameManager::~GameManager(){
 
 void GameManager::init(SDL_Renderer* ren){
   
+  first_time_overworld_ = 1;
   map_texture_ = Texture::CreateTexture("../data/resources/tileset.png", ren);
   bg_texture_ = Texture::CreateTexture("../data/resources/bgc.png", ren);
   ground_cave_ = Texture::CreateTexture("../data/resources/ground_cave.png", ren);

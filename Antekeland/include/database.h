@@ -4,13 +4,10 @@
   * @details This is the core file. It gathers all classes of the game to make it possible.
   * @author Ricardo Beltrán Muriel <beltranmu@esat-alumni.com>
   * @version alfa 1.0
-  * @date Ded-2020
+  * @date Dec-2020
   * @copyright ESAT
   */
  
-
-
-
 #ifndef __DATABASE_H__
 #define __DATABASE_H__ 1
 
@@ -29,6 +26,35 @@ const int32_t kNumAttacks = 16;    ///@var num of saved attacks in the DB
 const int32_t kNumCharacter = 4;   ///@var max num of saved characters that we read
 const int32_t kNumTiles = 64*64;   ///@var max num of saved tiles that we read
 
+/** @struct Stores the information of the customization of the character */
+struct SkinsCustomization{
+
+  int32_t gender;         /** @var Defines whether it's male (1) or female (2) */
+  int32_t skin;           /** @var ID of the skin */
+  int32_t hair;           /** @var ID of the hair */
+  int32_t hair_color;     /** @var ID of the hair color */
+  int32_t eyes;           /** @var ID of the eyes */
+  int32_t ears;           /** @var ID of the ears */
+  int32_t nose;           /** @var ID of the nose */  
+  int32_t beard;          /** @var ID of the beard */
+  int32_t mustache;       /** @var ID of the mustache */
+  int32_t mustache_color; /** @var ID of the mustache */
+  int32_t torso;          /** @var ID of the torso */
+  int32_t cape;           /** @var ID of the cape */
+  int32_t legs;          /** @var ID of the legs */
+
+  int32_t head;           /** @var ID of the helmet/hat */
+  int32_t neck;           /** @var ID of the necklace */
+  int32_t belt;           /** @var ID of the belt */
+  int32_t armor;          /** @var ID of the armor/shirt/dress */
+  int32_t back;           /** @var ID of the back */
+  int32_t bracelets;      /** @var ID of the bracelets */
+  int32_t bracers;        /** @var ID of the bracers */
+  int32_t gloves;         /** @var ID of the gloves */
+  int32_t pants;          /** @var ID of the pants */
+  int32_t feet;           /** @var ID of the boots/shoes */
+};
+
 /** @struct Stores the stats of the characters */
 struct Character_Stats{
 
@@ -42,6 +68,7 @@ struct Character_Stats{
   int32_t mana_regen; 
   int32_t crit_chance; 
 };
+
 /** @struct Stores the stats of attacks */
 struct AttacksData{
 
@@ -69,16 +96,20 @@ struct SaveLoadBoard{
 
 /** @struct Stores information of a game*/
 struct GameData{
-  int32_t id_game;    ///@var id of the game 
+  int32_t board_seed; ///@var seed of the board 
   int32_t id_char_1;  ///@var id of the character 1
   int32_t id_char_2;  ///@var id of the character 2
   int32_t id_char_3;  ///@var id of the character 3
   int32_t id_char_4;  ///@var id of the character 4
 };
-
+/** @struct Store the information necesary to save/read a character*/
 struct CharacterData{
-  int32_t id;
-  /*Tenemos que ver lo que poner*/
+  int32_t id_character;          ///@var id of the character
+  int32_t xp;                    ///@var current xp of the character
+  int32_t lvl;                   ///@var current lvl of the character
+  int32_t profession;            ///@var profession of the character
+  SkinsCustomization custo_data;  ///@var customization data of the character
+  
 };
 /** 
  *@brief Callback to read stats of each class
@@ -159,7 +190,11 @@ class DataBase{
    *@brief save all 4 character information in the game
   */
   void saveCharacter();
-  /*void saveGameData();*/
+  
+  /** 
+   *@brief Save the data of a game characters id and board_seed
+  */  
+  void saveGameData();
   
   /** 
    *@brief load the information of attacks and professions
@@ -170,9 +205,9 @@ class DataBase{
   */
   void loadCharacter();
   /** 
-   *@brief load the information  of the board
+   *@brief load the information  of the game character, board,..
   */
-  void loadBoard();
+  void loadGameData();
 
   void printProfession();
   

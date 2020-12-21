@@ -213,8 +213,8 @@ void DrawCharacter(SDL_Renderer* ren, Character c){
   tmp_torso.replace(tmp_torso.find("$"), 1, std::to_string(c.skin_id_.torso));
   char* torso_dir = (char*)malloc(tmp_torso.length());
   strcpy(torso_dir, tmp_torso.c_str());
-  if(c.skin_id_.torso != id_[11]){
-    SetImage(&images_[11 * c.char_id_ + 8], torso_dir, &id_[11], c.skin_id_.torso, &gM.textures_[11 * c.char_id_ + 8]->texture_, ren);
+  if(c.skin_id_.torso != id_[10]){
+    SetImage(&images_[11 * c.char_id_ + 8], torso_dir, &id_[10], c.skin_id_.torso, &gM.textures_[11 * c.char_id_ + 8]->texture_, ren);
   }
 
   // Set Legs
@@ -537,6 +537,27 @@ void CustomizeCharacter(Character *c){
     for(int i = 0; i < 6; ++i){
        c->skin_[i].initSprite(*(gM.textures_[11 * c->char_id_ + i]), &tmp_rect, &tmp_rect);
     }
+    for(int i = 0; i<13; ++i){
+      
+      printf("N:%d v:%d\n",i,id_[i]);
+    }
+    
+    //printf("\n\n");
+    
+    c->skin_id_.gender = id_[0];
+    c->skin_id_.skin = id_[1];
+    c->skin_id_.hair = id_[2];
+    c->skin_id_.hair_color = id_[3];
+    c->skin_id_.eyes = id_[4];
+    c->skin_id_.ears = id_[5];
+    c->skin_id_.nose = id_[6];
+    c->skin_id_.beard = id_[7];
+    c->skin_id_.mustache = id_[8];
+    c->skin_id_.mustache_color = id_[9];
+    c->skin_id_.torso = id_[10];
+    c->skin_id_.cape = id_[11];
+    c->skin_id_.legs = id_[12];
+    
     // Gender + Skin
     // c->skin_[0].initSprite(textures_[11 * c->char_id_ + 0], tmp_rect, tmp_rect);
     // Hair + Color
@@ -558,7 +579,7 @@ void CustomizeCharacter(Character *c){
     c->outfit_[1].initSprite(*gM.textures_[11 * c->char_id_ + 9], &tmp_rect, &tmp_rect);
     // Cape
     c->outfit_[2].initSprite(*gM.textures_[11 * c->char_id_ + 10], &tmp_rect, &tmp_rect);
-
+    printf("%d",gM.current_edit_);
     c->init(c->profession_,gM.current_edit_); 
 
     ++gM.current_edit_;

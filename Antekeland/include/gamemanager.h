@@ -33,7 +33,7 @@ class GameManager{
     static const int kWindowHeight = 768; ///@var height of the windows
     static const int kBoardWidth = 640;   ///@var width of the board
     static const int kBoardHeight = 640;  ///@var height of the board     
-    static const unsigned char kViewSize = 10; ///@var how amny tile you see in the overwolrd scene
+    static const unsigned char kViewSize = 16; ///@var how amny tile you see in the overwolrd scene
     static const int kImGuiWidth = 500;   ///@var width of the ImGui window
     static const int kImGuiHeight = 500;  ///@var height of the ImGui window
     ImGuiWindowFlags window_flags = 0;    ///@var Imguoi flags
@@ -78,10 +78,12 @@ class GameManager{
 
       // Menu Scene
     Rect menu_scene_[3];          ///@var rects of the menu scene
-    unsigned char new_game_;      ///@var if it is a new game 1 or not 0
+    unsigned char new_game_;      ///@var if it is a new game 1 or not 0, loaded game 2
 
-    int32_t over_world_scene_;    ///@var if you are in the overworld scene 1 or not 0
-    Rect ui_rects_[2];            ///@ver rect for the background of the UI
+    int32_t over_world_scene_;     ///@var if you are in the overworld scene 1 or not 0
+    time_t board_seed_;            ///@var the board of the random map
+    uint8_t first_time_overworld_; ///@var the board of the random map
+    Rect ui_rects_[2];             ///@ver rect for the background of the UI
     
   private:
     //Methods

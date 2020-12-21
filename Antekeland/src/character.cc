@@ -54,17 +54,113 @@ void Character::cpyCharacter(Character& c){
 }
 
 void Character::init(){
+   GameManager& gM = GameManager::Instantiate(); 
+  profession_ = 0;
   
+  
+  switch(profession_){
+    
+    case 0:
+      char_attacks_[0] = *gM.data_base_.attacks_[5];
+      char_attacks_[1] = *gM.data_base_.attacks_[0];
+      char_attacks_[2] = *gM.data_base_.attacks_[7];
+    break;
+    
+    case 1:
+      char_attacks_[0] = *gM.data_base_.attacks_[14];
+      char_attacks_[1] = *gM.data_base_.attacks_[0];
+      char_attacks_[2] = *gM.data_base_.attacks_[15];
+    break;
+    
+    case 2:
+      char_attacks_[0] = *gM.data_base_.attacks_[8];
+      char_attacks_[1] = *gM.data_base_.attacks_[3];
+      char_attacks_[2] = *gM.data_base_.attacks_[12];
+    break;
+    
+    case 3:
+      char_attacks_[0] = *gM.data_base_.attacks_[11];
+      char_attacks_[1] = *gM.data_base_.attacks_[4];
+      char_attacks_[2] = *gM.data_base_.attacks_[5];
+    break;
+    
+    case 4:
+      char_attacks_[0] = *gM.data_base_.attacks_[11];
+      char_attacks_[1] = *gM.data_base_.attacks_[13];
+      char_attacks_[2] = *gM.data_base_.attacks_[4];
+    break;
+    
+    case 5:
+      char_attacks_[0] = *gM.data_base_.attacks_[13];
+      char_attacks_[1] = *gM.data_base_.attacks_[11];
+      char_attacks_[2] = *gM.data_base_.attacks_[7];
+    break;
+    
+    case 6:
+      char_attacks_[0] = *gM.data_base_.attacks_[8];
+      char_attacks_[1] = *gM.data_base_.attacks_[9];
+      char_attacks_[2] = *gM.data_base_.attacks_[10];
+    break;
+    
+    case 7:
+      char_attacks_[0]= *gM.data_base_.attacks_[6];
+      char_attacks_[1]= *gM.data_base_.attacks_[0];
+      char_attacks_[2]= *gM.data_base_.attacks_[7];
+    break;
+    
+    case 8:
+      char_attacks_[0]= *gM.data_base_.attacks_[13];
+      char_attacks_[1]= *gM.data_base_.attacks_[1];
+      char_attacks_[2]= *gM.data_base_.attacks_[5];
+    break;
+    
+    case 9:
+      char_attacks_[0]= *gM.data_base_.attacks_[1];
+      char_attacks_[1]= *gM.data_base_.attacks_[2];
+      char_attacks_[2]= *gM.data_base_.attacks_[3];
+    break;
+    /*
+    case 10:
+      char_attacks_[0]= gM.data_base_.attacks_[1];
+      char_attacks_[1]= gM.data_base_.attacks_[4];
+      char_attacks_[2]= gM.data_base_.attacks_[11];
+    break;*/
+  
+  }
+ 
+  base_ = *(gM.data_base_.p_[profession_]);
+  current_ = base_;
+
+  xp_ = 0;
+  level_ = 1;
+  
+  
+  int32_t* skin_ptr = (int32_t*)&skin_id_;
+  
+  for(int i = 2; i < 23; ++i){
+
+    *(skin_ptr+i) = 0;
+
+  }
+  
+  skin_id_.gender = 1;
+  skin_id_.skin = 1;
+  skin_id_.hair_color = 1;
+  for(int i=0; i<11; ++i){
+    previous_movs_[i]=-1;
+  }
+  
+  index_mov_=0;
+  char_id_ = 0;
+  turn_completed_ = 0;
+  
+  end_tile_mov_.x = 0;
+  end_tile_mov_.y = 0;
+
+  player_attacking_ = 0;
+  attack_chosen_ = 0;/*
   GameManager& gM = GameManager::Instantiate(); 
-/*
-  base_.hp = 100;
-  base_.mana = 100;
-  base_.physical_att = 10;
-  base_.magic_att = 10;
-  base_.armor = 10;
-  base_.magic_resist = 10;
-  base_.movement = 7; 
-  */
+
   profession_ = kEnumProfession_Warrior;
  
   base_ = *(gM.data_base_.p_[profession_]);
@@ -96,7 +192,7 @@ void Character::init(){
   end_tile_mov_.y = 0;
 
   player_attacking_ = 0;
-  attack_chosen_ = 0;
+  attack_chosen_ = 0;*/
 }
 
 void Character::init(int prof, unsigned char id){
@@ -181,8 +277,9 @@ void Character::init(int prof, unsigned char id){
   xp_ = 0;
   level_ = 1;
   
+  /*
   int32_t* skin_ptr = (int32_t*)&skin_id_;
-
+  
   for(int i = 2; i < 23; ++i){
 
     *(skin_ptr+i) = 0;
@@ -191,7 +288,7 @@ void Character::init(int prof, unsigned char id){
   
   skin_id_.gender = 1;
   skin_id_.skin = 1;
-  skin_id_.hair_color = 1;
+  skin_id_.hair_color = 1;*/
   for(int i=0; i<11; ++i){
     previous_movs_[i]=-1;
   }

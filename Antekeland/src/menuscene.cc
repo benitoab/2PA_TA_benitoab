@@ -1,6 +1,8 @@
 #include "menuscene.h"
 #include "gamemanager.h"
 #include "game.h"
+#include "grid.h"
+#include <time.h>
 
 MenuScene::MenuScene(){
 
@@ -82,7 +84,20 @@ void MenuScene::input(SDL_Event* eve){
      eve->button.button == SDL_BUTTON_LEFT){
 
       gM.new_game_ = 1;
-
+        
+      gM.board_seed_ = time(NULL);
+      srand((unsigned int)gM.board_seed_);
+      printf("t: %d", gM.board_seed_);
+      CreateBoard();
+        
+      InitLogic();
+      CreateMap();
+      for(int i = 0; i < Board::kBoardSize; ++i){
+        for(int j = 0; j < Board::kBoardSize; ++j){
+        gM.layer1_.map_[i][j].initSubSprite();
+        gM.layer2_.map_[i][j].initSubSprite();
+        }
+      }
     }
       
   }else{
@@ -98,8 +113,30 @@ void MenuScene::input(SDL_Event* eve){
     if(eve->type == SDL_MOUSEBUTTONDOWN &&
      eve->button.button == SDL_BUTTON_LEFT){
 
-      /* Do stuff */
-
+      gM.new_game_ = 2;
+      gM.data_base_.readGameData();
+      gM.data_base_.readCharacterData();
+      gM.data_base_.loadCharacter();
+      gM.data_base_.loadGameData();
+      if(gM.data_base_.games_!= nullptr){
+        gM.board_seed_ = gM.data_base_.games_->board_seed;
+      }
+      else{
+         gM.board_seed_ = time(NULL);
+      }
+      
+      srand((unsigned int)gM.board_seed_);
+      printf("t: %d", gM.board_seed_);
+      CreateBoard();
+      InitLogic();
+      CreateMap();
+      for(int i = 0; i < Board::kBoardSize; ++i){
+        for(int j = 0; j < Board::kBoardSize; ++j){
+          gM.layer1_.map_[i][j].initSubSprite();
+          gM.layer2_.map_[i][j].initSubSprite();
+        }
+      }
+      
     }
       
   }else{
