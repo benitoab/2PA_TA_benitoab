@@ -267,7 +267,7 @@ void Character::initEnemy(const int lvl, const int id){
 }
 
 
-void Character::levelUp(){}
+
 
 void Character::updateSpriteC(){ 
   SDL_Rect  snip_r = {0,0,64,64};//UP
