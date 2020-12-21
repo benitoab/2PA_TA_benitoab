@@ -44,19 +44,16 @@ struct SkinsCustomization{
 enum kEnumProfession{
 
   kEnumProfession_Warrior = 0,
+  kEnumProfession_Archer ,
   kEnumProfession_Sorceress ,
   kEnumProfession_Berserker ,
   kEnumProfession_Valkyrie ,
-  kEnumProfession_Mage ,
   kEnumProfession_Darkknight ,
-  kEnumProfession_Archer ,
+  kEnumProfession_Healer ,
   kEnumProfession_Guardian ,
   kEnumProfession_Hashashin ,
-  kEnumProfession_Healer ,
-  kEnumProfession_Hunter , 
-  kEnumProfession_Shepherd  ,
+  kEnumProfession_Mage ,
   kEnumProfession_Monster ,
-
 };
 
 class Character : public Entity{
@@ -96,7 +93,7 @@ class Character : public Entity{
   char name2_[32] = "";
   
   AttacksData char_attacks_[4]; ///@var the info of the character attacks. 0 means no attack
-  public:
+  uint8_t current_att_;
   
     ///@var base_ Base stats of the characters.
     Character_Stats base_;

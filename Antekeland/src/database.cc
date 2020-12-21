@@ -58,12 +58,16 @@ int callbackAttacks(void *attdata, int argc,
   att_info->range = (uint8_t)atoi(argv[3]);
   att_info->type = (uint8_t)atoi(argv[4]);
   att_info->name = argv[5];
-  
+
+  printf("name:%s\n", att_info->name);
   aux_vector->ops_->insertLast(aux_vector, 
   (void*)att_info, (uint16_t)sizeof(AttacksData));
 
   return 0;                       
 }
+
+
+
 
 int callbackGame(void *gamedata, int argc,
                  char **argv, char **azcolname){
@@ -135,7 +139,6 @@ int callbackCharacter(void *characterdata, int argc,
 
 DataBase::DataBase(){
   
-  profession_ = nullptr;
   games_ = nullptr;
   char_data_ = nullptr;
   att_data_ = nullptr;
@@ -151,12 +154,9 @@ DataBase::DataBase(){
 
 
 DataBase::~DataBase(){
-  if(nullptr != profession_){
-    free(profession_);
-  }
-  
+ 
   if(nullptr != games_){
-    free(profession_);
+    free(games_);
   }
   
   if(nullptr != db_){
@@ -200,7 +200,6 @@ void DataBase::init(){
   att_vector_ = (Vector*) VECTOR_create(kNumAttacks);
   board_vector_ = (Vector*) VECTOR_create(kNumTiles);
   
-  profession_ = (Character_Stats*) calloc(kNumProfession, sizeof(Character_Stats));
   games_ = (GameData*) calloc(kNumSavedGames, sizeof(GameData));
   char_data_ = (CharacterData*) calloc(kNumCharacter, sizeof(CharacterData));
   att_data_ = (AttacksData*) calloc(kNumAttacks, sizeof(AttacksData));
@@ -210,10 +209,7 @@ void DataBase::init(){
 }
 
 void DataBase::freeData(){
-  if(nullptr != profession_){
-    free(profession_);
-  }
-  
+
   if(nullptr != games_){
     free(games_);
   }
@@ -269,7 +265,7 @@ void DataBase::readProfessionData(){
     printf("hp:%d\n mana:%d\n", aux_ptr->hp, aux_ptr->mana);
     
   }*/
-  printProfession();
+  //printProfession();
 }
 
 
@@ -327,7 +323,7 @@ void DataBase::readAttacksData(){
   int rc = 0;
 
   char *sql1 = "SELECT * FROM attacks";
-  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)att_vector_, &err_msg);
+  rc = sqlite3_exec(db_,sql1, callbackAttacks, (void*)att_vector_, &err_msg);
 }
 
 void DataBase::readBoardData(){
@@ -358,9 +354,13 @@ void DataBase::readLastGame(){
 void DataBase::saveBoardData(){
   
   GameManager& gM = GameManager::Instantiate();
+ 
   char sql1[500];
   char *err_msg = 0;
   int rc = 0;
+  char *sql2 = "DELETE FROM board WHERE board.id_game ==0";
+  rc = sqlite3_exec(db_,sql2, NULL, 0, &err_msg);
+  
   for(int i=0; i<64; ++i){
     for(int j = 0; j<64; ++j){
       int n = sprintf (sql1, "INSERT INTO board"
@@ -378,7 +378,7 @@ void DataBase::saveBoardData(){
                   gM.layer2_.map_[i][j].type_,
                   0 );
       rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
-      printf("voy por la : %d", i*64+j);
+      //printf("voy por la : %d", i*64+j);
     }          
   }                
 
@@ -386,46 +386,51 @@ void DataBase::saveBoardData(){
   //rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
 }
 
-void DataBase::saveNewCharacter(){
+void DataBase::saveCharacter(){
   
   char sql1[500];
   int rc = 0;
   char *err_msg = 0;
-  int n = sprintf (sql1, "INSERT INTO character"/* Los campo que tenga nuestro character
+  char *sql2 = "DELETE FROM character";
+  rc = sqlite3_exec(db_,sql2, NULL, 0, &err_msg);/*
+  for(int i =0; i<4; ++i){
+    int n = sprintf (sql1, "INSERT INTO character" Los campo que tenga nuestro character
             "(id_charracter1,id_charracter2,"
             "id_charracter3,id_charracter4)"
-            "VALUES(%d,%d,%d,%d)",*/
-            /*introducir los id de los nuevos personajes*/); 
+            "VALUES(%d,%d,%d,%d)",
+            introducir los id de los nuevos personajes); 
            
    
-  rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
-}
+    rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
+    
+  }*/
 
+}
+/*
 void DataBase::saveGameData(){
   
   char sql1[500];
   int rc = 0;
-  char *err_msg = 0;/*
+  char *err_msg = 0;
   int n = sprintf (sql1, "INSERT INTO games"
             "(id_charracter1,id_charracter2,"
             "id_charracter3,id_charracter4)"
             "VALUES(%d,%d,%d,%d)",
-            introducir los id de los nuevos personajes); */
+            introducir los id de los nuevos personajes); 
            
    
   rc = sqlite3_exec(db_,sql1, NULL, 0, &err_msg);
  
-}
+}*/
 
 
 void DataBase::loadCharacter(){
   GameManager& gM = GameManager::Instantiate();
-  /*
-  gM.player_[0] = *(char_data_+0);
-  gM.player_[1] = *(char_data_+1);
-  gM.player_[2] = *(char_data_+2);
-  gM.player_[3] = *(char_data_+3);*/
-  
+  CharacterData* aux_char;
+  for(int i = 0; i< 4; ++i){
+    aux_char = (CharacterData*) char_vector_->ops_->extractFirst(char_vector_);
+    //gM.player_[i].
+  }
 }
 
 void DataBase::loadBoard(){
@@ -437,8 +442,8 @@ void DataBase::loadBoard(){
     for(int j = 0; j <c; ++j){
       
       aux_board = (SaveLoadBoard*) board_vector_->ops_->extractFirst(board_vector_);
-      printf("\ni: %d\n", i*64+j);
-     /* printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d\n",
+      //printf("\ni: %d\n", i*64+j);
+     /*printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d\n",
           aux_board->logic_enabled,aux_board->logic_enter,
           aux_board->units_enabled,
           aux_board->layer1_state,aux_board->layer1_type,
@@ -452,11 +457,11 @@ void DataBase::loadBoard(){
       gM.layer2_.map_[i][j].state_ = aux_board->layer2_state;
       gM.layer2_.map_[i][j].type_ = aux_board->layer2_type;
       
-      printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d",
+      /*printf("e:%d\nen:%d\ne2:%d\ns:%d\nt:%d\ns2:%d\nt2:%d",
       gM.board_[i][j].enabled_,gM.board_[i][j].enter_,
       gM.units_[i][j].enabled_,
       gM.layer1_.map_[i][j].state_,gM.layer1_.map_[i][j].type_,
-      gM.layer2_.map_[i][j].state_,gM.layer2_.map_[i][j].type_);
+      gM.layer2_.map_[i][j].state_,gM.layer2_.map_[i][j].type_);*/
       
       
 
@@ -485,13 +490,21 @@ void DataBase::loadData(){
     //(profession_+i) = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
     p_[i] = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
   }
-
+  AttacksData* aux_att;
   for(int i = 0; i<kNumAttacks; ++i){
     
     //(profession_+i) = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
-    attacks_[i] = (AttacksData*)att_vector_->ops_->extractFirst(att_vector_);
+    attacks_[i]  = (AttacksData*)att_vector_->ops_->extractFirst(att_vector_);
+   // printf("%s\n", aux_att->name);
+   //   = aux_att;
+   // printf("%s\n", attacks_[i]->name);
+    //strcpy(attacks_[i]->name, aux_att->name);
+    
+    //printf("%s\n", attacks_[i]->name);
+  ///printf("%s\n", (att_data_+0)->name);
+    printf("%d\n", attacks_[i]->dmg);
   }
-  printProfession();
+  //printProfession();
   //(...)
   
 }

@@ -167,13 +167,15 @@ void CombatScene::quit(){
 void CombatScene::input(SDL_Event* eve){
 
   GameManager& gM = GameManager::Instantiate();
+  char aux_text[50];
 
   SDL_Point mouse_position = {eve->button.x, eve->button.y};
   SDL_Rect button_dst = {760, 495, 150, 50};
   SDL_Color text_color_red = {255,0,0,255};
   SDL_Color text_color_grey = {255,255,255,60};
   SDL_Color button_color = {121, 121, 121, 60};
-
+  
+  
   // Attack Game
   if(!attacking_){
     if(SDL_PointInRect(&mouse_position, &button_dst)){
@@ -199,11 +201,23 @@ void CombatScene::input(SDL_Event* eve){
         SDL_Rect tmp_rect = {705, 500, 120, 40};
         actions_text_[0].changeColor(text_color_grey);
         
-        actions_text_[0].changeText("Default");
+        if(num_turns_<4){
+          sprintf (aux_text, "Attack %d", 
+          gM.player_[num_turns_].char_attacks_[0].id);   
+          actions_text_[0].changeText(aux_text);
+        }
         actions_text_[0].setPosition(&tmp_rect);
 
         tmp_rect = {705, 570, 120, 40};
-        actions_text_[1].changeText("Default");
+        
+        if(num_turns_<4){
+          sprintf (aux_text, "Attack %d", 
+          gM.player_[num_turns_].char_attacks_[1].id);   
+          actions_text_[1].changeText(aux_text);
+        }
+       
+          
+        
         actions_text_[1].setPosition(&tmp_rect);
 
         /*tmp_rect = {850, 500, 120, 40};
@@ -216,8 +230,16 @@ void CombatScene::input(SDL_Event* eve){
                               {860, 570, 100, 40});
         actions_text_[2].init(font_path, 15, text_color_grey, "Return",
                               {860, 570, 100, 40});*/
-        actions_text_[2].init(font_path, 25, text_color_grey, "Default",
+        if(num_turns_<4){  
+              
+          sprintf (aux_text, "Attack %d", 
+          gM.player_[num_turns_].char_attacks_[2].id);   
+          
+       
+          actions_text_[2].init(font_path, 25, text_color_grey, 
+                              aux_text,
                               {850, 500, 120, 40});
+        }                     
         actions_text_[3].init(font_path, 25, text_color_grey, "Return",
                               {860, 570, 100, 40});
 
@@ -367,6 +389,8 @@ void CombatScene::input(SDL_Event* eve){
     ++num_turns_;
     gM.combat_.initCombat(gM.player_[num_turns_]);
     gM.combat_.current_char_ = &gM.player_[num_turns_];
+    if(num_turns_>=4)
+    gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
   }
   if(eve->key.keysym.sym == SDLK_l){
     
@@ -416,10 +440,11 @@ void CombatScene::update(){
     gM.player_[3].reset();
     for(int i= 0; i< total_turns_-4; ++i) {
       gM.NPC_[i].reset();
-      printf("HOLAA\n")
+      printf("HOLAA\n");
     }      
-    
   }
+  
+  
   
 }
 

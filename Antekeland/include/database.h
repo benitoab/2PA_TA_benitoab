@@ -11,7 +11,7 @@ extern "C" {
 }
 
 const int32_t kNumSavedGames = 4;
-const int32_t kNumProfession = 10;
+const int32_t kNumProfession = 11;
 const int32_t kNumAttacks = 16;
 const int32_t kNumCharacter = 4;
 const int32_t kNumTiles = 64*64;
@@ -29,30 +29,32 @@ struct Character_Stats{
   int32_t mana_regen; 
   int32_t crit_chance; 
 };
-
+/** @struct Stores the stats of attacks */
 struct AttacksData{
 
-  int32_t id;
+  int32_t id;        ///@var att id
   int32_t dmg;       ///@var damage of the attack
   int32_t mana_cost; ///@var how many mana it costs
   uint8_t range;     ///@var the manhatan distance you need to be to use it.
-  uint8_t type;      ///@var the type of the damage magic(0) or physical(1)
+  uint8_t type;      ///@var the type of the damage magic(2) or physical(1)
   char* name;        ///@var the name of the attack
 
 };
 
+
+/** @struct Stores information of a board */
 struct SaveLoadBoard{
-  int32_t id_world;
-  int32_t logic_enabled;
-  int32_t logic_enter;
-  int32_t units_enabled;
-  int32_t layer1_state;
-  int32_t layer1_type;
-  int32_t layer2_state;
-  int32_t layer2_type;
+  int32_t id_world;       ///@var id of the game that it belongs
+  int32_t logic_enabled;  ///@var save the value of enabled in the logic board
+  int32_t logic_enter;    ///@var save the value of enter in the logic board
+  int32_t units_enabled;  ///@var save the value of enabled in the uits board
+  int32_t layer1_state;   ///@var save the value of state in the layer1
+  int32_t layer1_type;    ///@var save the value of type in the layer1
+  int32_t layer2_state;   ///@var save the value of state in the layer2
+  int32_t layer2_type;    ///@var save the value of type in the layer2
 };
 
-
+/** @struct Stores information of a game*/
 struct GameData{
   int32_t id_game;
   int32_t id_char_1;
@@ -104,8 +106,8 @@ class DataBase{
   void readLastGame();
   
   void saveBoardData();
-  void saveNewCharacter();
-  void saveGameData();
+  void saveCharacter();
+  /*void saveGameData();*/
   
   void loadData();
   
@@ -125,7 +127,6 @@ class DataBase{
   
 
   AttacksData* attacks_[kNumAttacks]; 
-  Character_Stats* profession_;
   Character_Stats* p_[kNumProfession];
   GameData* games_;
   CharacterData* char_data_;

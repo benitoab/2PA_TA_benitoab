@@ -18,7 +18,7 @@ Character::Character(){
   name2_[0]='\0';
   
   current_ = base_;
-  profession_ = kEnumProfession_Shepherd;
+  profession_ = kEnumProfession_Warrior;
   xp_ = 0;
   level_ = 1;
   char_id_ = 0;
@@ -100,6 +100,77 @@ void Character::init(int prof, unsigned char id){
   
   GameManager& gM = GameManager::Instantiate(); 
   profession_ = prof;
+  
+  
+  switch(profession_){
+    
+    case 0:
+      char_attacks_[0] = *gM.data_base_.attacks_[5];
+      char_attacks_[1] = *gM.data_base_.attacks_[0];
+      char_attacks_[2] = *gM.data_base_.attacks_[7];
+    break;
+    
+    case 1:
+      char_attacks_[0] = *gM.data_base_.attacks_[14];
+      char_attacks_[1] = *gM.data_base_.attacks_[0];
+      char_attacks_[2] = *gM.data_base_.attacks_[15];
+    break;
+    
+    case 2:
+      char_attacks_[0] = *gM.data_base_.attacks_[8];
+      char_attacks_[1] = *gM.data_base_.attacks_[3];
+      char_attacks_[2] = *gM.data_base_.attacks_[12];
+    break;
+    
+    case 3:
+      char_attacks_[0] = *gM.data_base_.attacks_[11];
+      char_attacks_[1] = *gM.data_base_.attacks_[4];
+      char_attacks_[2] = *gM.data_base_.attacks_[5];
+    break;
+    
+    case 4:
+      char_attacks_[0] = *gM.data_base_.attacks_[11];
+      char_attacks_[1] = *gM.data_base_.attacks_[13];
+      char_attacks_[2] = *gM.data_base_.attacks_[4];
+    break;
+    
+    case 5:
+      char_attacks_[0] = *gM.data_base_.attacks_[13];
+      char_attacks_[1] = *gM.data_base_.attacks_[11];
+      char_attacks_[2] = *gM.data_base_.attacks_[7];
+    break;
+    
+    case 6:
+      char_attacks_[0] = *gM.data_base_.attacks_[8];
+      char_attacks_[1] = *gM.data_base_.attacks_[9];
+      char_attacks_[2] = *gM.data_base_.attacks_[10];
+    break;
+    
+    case 7:
+      char_attacks_[0]= *gM.data_base_.attacks_[6];
+      char_attacks_[1]= *gM.data_base_.attacks_[0];
+      char_attacks_[2]= *gM.data_base_.attacks_[7];
+    break;
+    
+    case 8:
+      char_attacks_[0]= *gM.data_base_.attacks_[13];
+      char_attacks_[1]= *gM.data_base_.attacks_[1];
+      char_attacks_[2]= *gM.data_base_.attacks_[5];
+    break;
+    
+    case 9:
+      char_attacks_[0]= *gM.data_base_.attacks_[1];
+      char_attacks_[1]= *gM.data_base_.attacks_[2];
+      char_attacks_[2]= *gM.data_base_.attacks_[3];
+    break;
+    /*
+    case 10:
+      char_attacks_[0]= gM.data_base_.attacks_[1];
+      char_attacks_[1]= gM.data_base_.attacks_[4];
+      char_attacks_[2]= gM.data_base_.attacks_[11];
+    break;*/
+  
+  }
  
   base_ = *(gM.data_base_.p_[profession_]);
   current_ = base_;
@@ -114,7 +185,7 @@ void Character::init(int prof, unsigned char id){
     *(skin_ptr+i) = 0;
 
   }
-
+  
   skin_id_.gender = 1;
   skin_id_.skin = 1;
   skin_id_.hair_color = 1;
@@ -138,8 +209,8 @@ void Character::initEnemy(const int lvl, const int id){
   profession_ = kEnumProfession_Monster;
   level_ = lvl;
  
-  /*base_ = *(gM.data_base_.p_[profession_]);
-  current_ = base_ * level_;*/
+  base_ = *(gM.data_base_.p_[profession_]);
+ // current_ = base_ * level_;
 
   char_id_ = id;
 
@@ -184,6 +255,10 @@ void Character::initEnemy(const int lvl, const int id){
     }
 
   }
+  char_attacks_[0]= *gM.data_base_.attacks_[1];
+  char_attacks_[1]= *gM.data_base_.attacks_[4];
+  char_attacks_[2]= *gM.data_base_.attacks_[11];
+  
   end_tile_mov_.x = 0;
   end_tile_mov_.y = 0;
   cont_mov_ = 0;
@@ -244,7 +319,7 @@ void Character::endTile(){
  
   aux_rect = dst_rect_;
   printf("OP:(%d,%d)", aux_rect.x,aux_rect.y);
-  for(int r = 0; r<=5 && find == 0 ; ++r){
+  for(int r = 0; r<=base_.movement && find == 0 ; ++r){
     for(int i = 0; i<r && find == 0; ++i){
       int j = r-i;
       printf("\ni:%d,j:%d",i,j);
@@ -426,7 +501,6 @@ void Character::iaMov(){
   ++cont_mov_;
   
   if(end_tile_mov_.x == 0 && end_tile_mov_.y == 0){
-    printf("PASO DE TURNO\n");
     cont_mov_ = 0;
     end_tile_mov_.x = 0 ;
     end_tile_mov_.y = 0;
@@ -438,7 +512,6 @@ void Character::iaBehaviour(){
   if(generate_mov_ == 1){
     endTile();
     generate_mov_ = 0;
-    printf("HOLAAAAA\n");
   }
   else{
     iaMov();
@@ -528,15 +601,18 @@ void Character::takeDamage(Character c, const uint8_t range){
 
   // Melé
   if(current_.hp > 0){
-    if(range == 1){
+    if(c.char_attacks_[current_att_].type == 1){
 
       dmg_multiplier = 100/(100+base_.armor);
-      current_.hp -= dmg_multiplier * c.current_.physical_att;
+      current_.hp -= dmg_multiplier *(c.current_.physical_att + 
+                                      c.char_attacks_[current_att_].dmg);
+
 
     }else{  // Spell
 
       dmg_multiplier = 100/(100+base_.magic_resist);
-      current_.hp -= dmg_multiplier * c.current_.magic_att;
+      current_.hp -= dmg_multiplier * (c.current_.magic_att + 
+                                       c.char_attacks_[current_att_].dmg);
 
     }
   }

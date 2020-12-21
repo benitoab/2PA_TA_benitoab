@@ -107,9 +107,11 @@ void Combat::initCombat(Character& current_char){
   char_rect.w = 100;
   char_rect.h = aux_rect.h + 10;
 
+  n = sprintf (aux_text, "Character: %d", current_char.char_id_);
+
   stats_text_[8].init(font,
                      (uint16_t)(stats_scale_ *font_size),
-                      white,"Character:", char_rect);
+                      white, aux_text, char_rect);
                       
   aux_rect.y += (int)(stats_scale_ * spacing);
   stats_text_[0].init(font,
@@ -234,6 +236,7 @@ void Combat::updateStats(){
   //HP
   
   float bar_percentage = 1;
+  char aux_text[50];
   //SDL_Rect grey_rect, hp_rect;
  // GameManager& gM = GameManager::Instantiate();
   
@@ -323,6 +326,11 @@ void Combat::updateStats(){
   //SDL_SetRenderDrawColor(ren,209,151,219,200);
   //SDL_RenderFillRect(ren,&hp_rect);
 
+ //MOVS 
+ 
+ sprintf (aux_text, "Movements: %d", 
+          current_char_->current_.movement);   
+ stats_text_[6].changeText(aux_text);
  
 }
 
