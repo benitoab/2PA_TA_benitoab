@@ -184,7 +184,8 @@ void CombatScene::input(SDL_Event* eve){
       // SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Prueba", "Hola", NULL);
       
       if(eve->type == SDL_MOUSEBUTTONDOWN &&
-         eve->button.button == SDL_BUTTON_LEFT){
+         eve->button.button == SDL_BUTTON_LEFT &&
+         gM.player_[num_turns_].player_attacking_ == 0){
         
         char* font_path = "../data/fonts/BreathFire.ttf";
         attacking_ = 1;
@@ -215,8 +216,6 @@ void CombatScene::input(SDL_Event* eve){
           gM.player_[num_turns_].char_attacks_[1].id);   
           actions_text_[1].changeText(aux_text);
         }
-       
-          
         
         actions_text_[1].setPosition(&tmp_rect);
 
@@ -268,6 +267,13 @@ void CombatScene::input(SDL_Event* eve){
         gM.player_[num_turns_].turn_completed_ = 1;
         ++num_turns_;
 
+        gM.combat_.initCombat(gM.player_[num_turns_]);
+        gM.combat_.current_char_ = &gM.player_[num_turns_];
+        if(num_turns_>=4)
+        gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+
+        gM.player_[num_turns_].player_attacking_ = 0;
+
       }
         
     }else{
@@ -288,7 +294,7 @@ void CombatScene::input(SDL_Event* eve){
         actions_text_[i].changeColor(text_color_red);
         // SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Prueba", "Hola", NULL);
 
-        // Atack
+        // Attack
         if(eve->type == SDL_MOUSEBUTTONDOWN &&
            eve->button.button == SDL_BUTTON_LEFT &&
            gM.player_[num_turns_].current_.mana >= gM.player_[num_turns_].char_attacks_[i].mana_cost){
@@ -310,7 +316,11 @@ void CombatScene::input(SDL_Event* eve){
             tmp_dst = {785, 570, 100, 40};
             actions_text_[1].changeText("End Turn");
             actions_text_[1].setPosition(&tmp_dst);
+            
             attacking_ = 0;
+            gM.player_[num_turns_].player_attacking_ = 1;
+            gM.player_[num_turns_].attack_chosen_ = gM.player_[num_turns_].char_attacks_[i].id;
+            printf("Ataque: %d %d\n", gM.player_[num_turns_].attack_chosen_, gM.player_[num_turns_].char_attacks_[i].id);
         }
 
       }else{
@@ -401,6 +411,39 @@ void CombatScene::input(SDL_Event* eve){
   if(num_turns_<4){
     gM.player_[num_turns_].movCharacterCombat(eve);
   }
+
+  if(gM.player_[num_turns_].player_attacking_ == 1){
+
+    // printf("Estoy atacando, alla vooooooooooy\n");
+
+    if(eve->type == SDL_MOUSEBUTTONDOWN && eve->button.button == SDL_BUTTON_LEFT){
+
+      SDL_Rect aux_tile;
+      aux_tile.x = eve->button.x/40;
+      aux_tile.y = eve->button.y/40;
+
+      if(gM.units_board_[aux_tile.y][aux_tile.x].enabled_ != 255){
+        if(gM.units_board_[aux_tile.y][aux_tile.x].enabled_ > 3){
+          
+          if(gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].mhDistance(&gM.player_[num_turns_].dst_rect_)
+             <= gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].range){
+              // printf("Entro\n");
+              gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].takeDamage(gM.player_[num_turns_], gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].type);
+              
+          } 
+
+        }else{
+
+        }
+      }
+
+    }
+
+  }
+
+  for(int i = 0; i < total_turns_-4; ++i){
+    // printf("Vida NPC[%d]: %d\n", i, gM.NPC_[i].current_.hp);
+  }
   
 }
 
@@ -415,11 +458,12 @@ void CombatScene::update(){
   else{
     gM.NPC_[num_turns_-4].iaBehaviour();
     gM.NPC_[num_turns_-4].updateSpriteC();
+    if(gM.NPC_[num_turns_-4].turn_completed_){
+      ++num_turns_;
+    }
   }
- /*
-  if(gM.NPC_[num_turns_-4].turn_completed_){
-    ++num_turns_;
-  }*/
+ 
+  
   
   /*if(gM.player_[num_turn].turn_completed_){
     ++num_turns_;
@@ -440,11 +484,8 @@ void CombatScene::update(){
     gM.player_[3].reset();
     for(int i= 0; i< total_turns_-4; ++i) {
       gM.NPC_[i].reset();
-      printf("HOLAA\n");
     }      
   }
-  
-  
   
 }
 
@@ -461,5 +502,23 @@ void CombatScene::drawImgui(SDL_Renderer* ren){
 
   SDL_SetRenderDrawColor(ren, 255,255,0,255);
   SDL_RenderDrawRect(ren, &actions_frame);
+
+  GameManager& gM = GameManager::Instantiate();
+  SDL_Rect mark_rect;
+  
+  if(num_turns_ < 4){
+    mark_rect.x = gM.player_[num_turns_].dst_rect_.x * 40;
+    mark_rect.y = gM.player_[num_turns_].dst_rect_.y * 40;
+    mark_rect.w = 40;
+    mark_rect.h = 40;
+  }else{
+    mark_rect.x = gM.NPC_[num_turns_-4].dst_rect_.x * 40;
+    mark_rect.y = gM.NPC_[num_turns_-4].dst_rect_.y * 40;
+    mark_rect.w = 40;
+    mark_rect.h = 40;
+  }
+  
+  SDL_SetRenderDrawColor(ren, 0,255,0,255);
+  SDL_RenderDrawRect(ren, &mark_rect);
 
 }

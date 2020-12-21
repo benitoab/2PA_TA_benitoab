@@ -94,6 +94,9 @@ void Character::init(){
   
   end_tile_mov_.x = 0;
   end_tile_mov_.y = 0;
+
+  player_attacking_ = 0;
+  attack_chosen_ = 0;
 }
 
 void Character::init(int prof, unsigned char id){
@@ -199,6 +202,9 @@ void Character::init(int prof, unsigned char id){
   
   end_tile_mov_.x = 0;
   end_tile_mov_.y = 0;
+
+  player_attacking_ = 0;
+  attack_chosen_ = 0;
 }
 
 void Character::initEnemy(const int lvl, const int id){
@@ -264,6 +270,8 @@ void Character::initEnemy(const int lvl, const int id){
   cont_mov_ = 0;
   generate_mov_ = 1;
   current_.movement = 5;
+  player_attacking_ = 0;
+  attack_chosen_ = 0;
 }
 
 
@@ -504,6 +512,7 @@ void Character::iaMov(){
     cont_mov_ = 0;
     end_tile_mov_.x = 0 ;
     end_tile_mov_.y = 0;
+    turn_completed_ = 1;
   }
 }
 
@@ -601,20 +610,18 @@ void Character::takeDamage(Character c, const uint8_t range){
 
   // Melé
   if(current_.hp > 0){
-    if(c.char_attacks_[current_att_].type == 1){
-
-      dmg_multiplier = 100/(100+base_.armor);
-      current_.hp -= dmg_multiplier *(c.current_.physical_att + 
-                                      c.char_attacks_[current_att_].dmg);
-
+    if(c.char_attacks_[attack_chosen_].type == 1){
+      
+      current_.hp -= (c.current_.physical_att/2 + c.char_attacks_[attack_chosen_].dmg/2);
+      printf("%d\n", current_.hp);
 
     }else{  // Spell
 
-      dmg_multiplier = 100/(100+base_.magic_resist);
-      current_.hp -= dmg_multiplier * (c.current_.magic_att + 
-                                       c.char_attacks_[current_att_].dmg);
-
+      current_.hp -= (c.current_.physical_att/2 + c.char_attacks_[attack_chosen_].dmg/2);
+      printf("%d\n", current_.hp);
     }
+  }else{
+    dst_rect_.x = 100000;
   }
 
 }

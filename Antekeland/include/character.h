@@ -119,6 +119,8 @@ class Character : public Entity{
     Sprite outfit_[10];               /** @var Manages the outfit customization */
     unsigned char generate_mov_;       /** @var If the ia have to generate a mov o not*/
     unsigned char turn_completed_;    /** @var turn_completed_ Identifies whether the turn has been completed by the character. 0 = uncompleted, 1 = completed */
+    unsigned char player_attacking_;
+    unsigned char attack_chosen_;
 
 };
 
