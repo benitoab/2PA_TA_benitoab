@@ -12,7 +12,7 @@ extern "C" {
 
 const int32_t kNumSavedGames = 4;
 const int32_t kNumProfession = 10;
-const int32_t kNumAttacks = 4;
+const int32_t kNumAttacks = 16;
 const int32_t kNumCharacter = 4;
 const int32_t kNumTiles = 64*64;
 
@@ -123,6 +123,8 @@ class DataBase{
   Vector* att_vector_;
   Vector* board_vector_;
   
+
+  AttacksData* attacks_[kNumAttacks]; 
   Character_Stats* profession_;
   Character_Stats* p_[kNumProfession];
   GameData* games_;

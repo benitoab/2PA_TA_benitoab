@@ -197,7 +197,7 @@ void CombatScene::input(SDL_Event* eve){
         // Text
         SDL_Rect tmp_rect = {705, 500, 120, 40};
         actions_text_[0].changeColor(text_color_grey);
-
+        
         actions_text_[0].changeText("Default");
         actions_text_[0].setPosition(&tmp_rect);
 

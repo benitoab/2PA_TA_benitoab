@@ -116,6 +116,8 @@ int Game::init(){
   // gM.data_base_.readGame();
   //gM.data_base_.readBoardData();
  gM.data_base_.readProfessionData();
+ gM.data_base_.readAttacksData();
+ gM.data_base_.loadData();
   //gM.data_base_.loadBoard();
  
   gM.data_base_.closeDB();

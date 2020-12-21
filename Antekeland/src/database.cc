@@ -269,7 +269,6 @@ void DataBase::readProfessionData(){
     printf("hp:%d\n mana:%d\n", aux_ptr->hp, aux_ptr->mana);
     
   }*/
-  loadData();
   printProfession();
 }
 
@@ -328,7 +327,7 @@ void DataBase::readAttacksData(){
   int rc = 0;
 
   char *sql1 = "SELECT * FROM attacks";
-  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)att_data_, &err_msg);
+  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)att_vector_, &err_msg);
 }
 
 void DataBase::readBoardData(){
@@ -485,6 +484,12 @@ void DataBase::loadData(){
     
     //(profession_+i) = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
     p_[i] = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
+  }
+
+  for(int i = 0; i<kNumAttacks; ++i){
+    
+    //(profession_+i) = (Character_Stats*)prof_vector_->ops_->extractFirst(prof_vector_);
+    attacks_[i] = (AttacksData*)att_vector_->ops_->extractFirst(att_vector_);
   }
   printProfession();
   //(...)
