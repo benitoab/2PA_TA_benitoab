@@ -74,6 +74,10 @@ class Character : public Entity{
   void levelUp();
   void updateSpriteC(); 
   void endTile(); 
+  void iaMov();
+  void iaBehaviour();
+  void reset();
+  
   
   int32_t mhDistance(const SDL_Rect* tr_rect);
   bool CheckBeforeMove(const int next_pos_x, 
@@ -109,11 +113,14 @@ class Character : public Entity{
     int32_t previous_movs_[11];
     int32_t index_mov_;
     
+    SDL_Rect end_tile_mov_;
+    int32_t cont_mov_;
+    
     SkinsCustomization skin_id_;      /** @var Storages all the skins used for every character */
 
     Sprite skin_[7];                  /** @var Manages the skin customization */
     Sprite outfit_[10];               /** @var Manages the outfit customization */
-
+    unsigned char generate_mov_;       /** @var If the ia have to generate a mov o not*/
     unsigned char turn_completed_;    /** @var turn_completed_ Identifies whether the turn has been completed by the character. 0 = uncompleted, 1 = completed */
 
 };

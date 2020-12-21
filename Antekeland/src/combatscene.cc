@@ -68,6 +68,7 @@ void CombatScene::init(){
     gM.NPC_[i].dst_rect_.y = y;
     gM.NPC_[i].dst_rect_.w = 40;
     gM.NPC_[i].dst_rect_.h = 40;
+    gM.NPC_[i].generate_mov_ = 1;
     gM.units_board_[y][x].enabled_= i+4;
     
     ent_list.push_back(&gM.NPC_[i]);
@@ -363,9 +364,15 @@ void CombatScene::input(SDL_Event* eve){
    
   } 
   if(eve->key.keysym.sym == SDLK_p){
-    ++num_turns_%=total_turns_;
+    ++num_turns_;
     gM.combat_.initCombat(gM.player_[num_turns_]);
     gM.combat_.current_char_ = &gM.player_[num_turns_];
+  }
+  if(eve->key.keysym.sym == SDLK_l){
+    
+    gM.NPC_[0].endTile();
+    gM.NPC_[0].current_.movement = 5 ;
+    
   }
   if(num_turns_<4){
     gM.player_[num_turns_].movCharacterCombat(eve);
@@ -373,14 +380,46 @@ void CombatScene::input(SDL_Event* eve){
   
 }
 
+
 void CombatScene::update(){
   GameManager& gM = GameManager::Instantiate();
-  
-  gM.player_[num_turns_].updateSpriteC();
   gM.combat_.updateStats();
+  
+  if(num_turns_<4){ 
+    gM.player_[num_turns_].updateSpriteC();
+  }
+  else{
+    gM.NPC_[num_turns_-4].iaBehaviour();
+    gM.NPC_[num_turns_-4].updateSpriteC();
+  }
+ /*
+  if(gM.NPC_[num_turns_-4].turn_completed_){
+    ++num_turns_;
+  }*/
+  
+  /*if(gM.player_[num_turn].turn_completed_){
+    ++num_turns_;
+  }*/
   //int a = gM.player_[0].mhDistance(&gM.player_[1].dst_rect_);
   
   //printf("distance:%d\n",a);
+  /*
+  if(num_turns_>=4){
+    gM.NPC_[num_turns_].iaBehaviour();
+    //gM.NPC_[num_turns_].iaMov();
+  }*/
+  if(num_turns_ >= total_turns_){
+    num_turns_ = 0;
+    gM.player_[0].reset();
+    gM.player_[1].reset();
+    gM.player_[2].reset();
+    gM.player_[3].reset();
+    for(int i= 0; i< total_turns_-4; ++i) {
+      gM.NPC_[i].reset();
+      printf("HOLAA\n")
+    }      
+    
+  }
   
 }
 
