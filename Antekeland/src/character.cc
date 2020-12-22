@@ -601,12 +601,20 @@ void Character::iaMov(){
 
 void Character::iaBehaviour(){
   
-  if(generate_mov_ == 1){
-    endTile();
-    generate_mov_ = 0;
+  if(enabled_){
+    if(generate_mov_ == 1){
+      endTile();
+      generate_mov_ = 0;
+    }
+    else{
+      iaMov();
+    }
   }
   else{
-    iaMov();
+    cont_mov_ = 0;
+    end_tile_mov_.x = 0 ;
+    end_tile_mov_.y = 0;
+    turn_completed_ = 1;
   }
 }
 
@@ -624,6 +632,23 @@ void Character::reset(){
   index_mov_ = 0;
 }
 
+
+void Character::levelUp(){
+  
+  xp_ = 0;
+  ++level_;
+  
+  base_.hp +=10;
+  base_.mana +=10;
+  base_.physical_att +=5;
+  base_.magic_att +=5;
+  base_.armor +=4;
+  base_.magic_resist +=4;
+  base_.mana_regen +=5;
+  base_.crit_chance +=1;
+  
+  current_ = base_;
+}
 
 
 bool Character::CheckPreviousMovs(const int next_pos_x, 
@@ -713,7 +738,8 @@ void Character::takeDamage(Character* c, const uint8_t range){
   }
   
   if(current_.hp <= 0){
-    dst_rect_.x = 100000;
+    enabled_ = 0;
+    GameManager::Instantiate().units_board_[dst_rect_.y][dst_rect_.x].enabled_ = 255;
     // Liberar Unit Board
     c->xp_ += xp_;
     printf("XP: %d\n", c->xp_);
@@ -861,39 +887,41 @@ void Character::movCharacter(SDL_Event* e){
 void Character::draw(SDL_Renderer* ren){
   GameManager& gM = GameManager::Instantiate();
   //SDL_SetRenderDrawColor(ren,0,255,0,255);
-  
-  SDL_Rect aux_rect;
-  aux_rect = dst_rect_;
-  if(gM.over_world_scene_==1){
-  aux_rect.x = gM.layer1_.map_[0][0].dst_rect_.w *
-               gM.kViewSize/2;
-  aux_rect.y = gM.layer1_.map_[0][0].dst_rect_.h *
-               gM.kViewSize/2; 
-  }
-  else{
-    
-    aux_rect.x = aux_rect.w *dst_rect_.x;             
-    aux_rect.y = aux_rect.h *dst_rect_.y; 
-    
-    SDL_Rect aux_rect2;
-    SDL_SetRenderDrawColor(ren,255,0,0,1);
+  if(enabled_){
+    SDL_Rect aux_rect;
+    aux_rect = dst_rect_;
+    if(gM.over_world_scene_==1){
+    aux_rect.x = gM.layer1_.map_[0][0].dst_rect_.w *
+                 gM.kViewSize/2;
+    aux_rect.y = gM.layer1_.map_[0][0].dst_rect_.h *
+                 gM.kViewSize/2; 
+    }
+    else{
+      
+      aux_rect.x = aux_rect.w *dst_rect_.x;             
+      aux_rect.y = aux_rect.h *dst_rect_.y; 
+      
+      SDL_Rect aux_rect2;
+      SDL_SetRenderDrawColor(ren,255,0,0,1);
 
-    for(int i=0; i<= index_mov_; ++i){
-      aux_rect2.w = 40; 
-      aux_rect2.h = 40;
-      aux_rect2.x = 40 * (previous_movs_[i]%16);
-      aux_rect2.y = 40 * (previous_movs_[i]/16); 
-      SDL_RenderDrawRect(ren,&aux_rect2); 
-    }
-  }     
-  for (int i = 0; i<7; ++i){
-      skin_[i].dst_rect_ = aux_rect;
-      skin_[i].draw(ren);           
-    }
-  for (int i = 0; i<10; ++i){ 
-      outfit_[i].dst_rect_ = aux_rect;
-      outfit_[i].draw(ren);
-    }  
+      for(int i=0; i<= index_mov_; ++i){
+        aux_rect2.w = 40; 
+        aux_rect2.h = 40;
+        aux_rect2.x = 40 * (previous_movs_[i]%16);
+        aux_rect2.y = 40 * (previous_movs_[i]/16); 
+        SDL_RenderDrawRect(ren,&aux_rect2); 
+      }
+    }     
+    for (int i = 0; i<7; ++i){
+        skin_[i].dst_rect_ = aux_rect;
+        skin_[i].draw(ren);           
+      }
+    for (int i = 0; i<10; ++i){ 
+        outfit_[i].dst_rect_ = aux_rect;
+        outfit_[i].draw(ren);
+      }  
+      
+  }
   //SDL_SetRenderDrawColor(ren,0,255,0,255);
  // SDL_RenderDrawRect(ren,&aux_rect);
 }

@@ -106,8 +106,12 @@ void Combat::initCombat(Character& current_char){
   char_rect.y = aux_rect.y-10;
   char_rect.w = 100;
   char_rect.h = aux_rect.h + 10;
-
-  n = sprintf (aux_text, "Character: %d", current_char.char_id_);
+  if (current_char.char_id_<4){
+    n = sprintf (aux_text, "Character: %d", current_char.char_id_);
+  }
+  else{
+   n = sprintf (aux_text, "Enemy: %d", current_char.char_id_-4);
+  }
 
   stats_text_[8].init(font,
                      (uint16_t)(stats_scale_ *font_size),
@@ -317,7 +321,7 @@ void Combat::updateStats(){
   
   // bar_percentage = ((float)aux_char.current_.xp_ / 
                    // (float)aux_char.base_.xp_); 
-  bar_percentage = 30.0f/100.0f;
+  bar_percentage = ((float)current_char_->xp_ / 100.0f);
   //stats_text_[1].draw(ren);   
   //SDL_SetRenderDrawColor(ren, 170,170,170,170);
   //SDL_RenderFillRect(ren,&grey_rect);
@@ -328,9 +332,13 @@ void Combat::updateStats(){
 
  //MOVS 
  
- sprintf (aux_text, "Movements: %d", 
+ sprintf(aux_text, "Movements: %d", 
           current_char_->current_.movement);   
  stats_text_[6].changeText(aux_text);
+ 
+ sprintf(aux_text, "Lvl: %d, Exp: %d/%d", 
+          current_char_->level_,current_char_->xp_,100);  
+ stats_text_[7].changeText(aux_text);
  
 }
 
