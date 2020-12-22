@@ -9,11 +9,10 @@ Inheritance diagram for Character\+:\begin{figure}[H]
 \doxysubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{class_character_a41300fd0b1e40fc86eb7737f055d2afd}\label{class_character_a41300fd0b1e40fc86eb7737f055d2afd}} 
-void \mbox{\hyperlink{class_character_a41300fd0b1e40fc86eb7737f055d2afd}{init}} () override
-\begin{DoxyCompactList}\small\item\em init a cahaacter \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_character_a4db3681a3e3b995a5916830880aca290}{init}} (unsigned char id)
+\begin{DoxyCompactList}\small\item\em init a character \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_character_abaade8edbdd882b4a1d41bbf1d4be7a2}{init}} (int prof, unsigned char id)
-\begin{DoxyCompactList}\small\item\em init a cahacter with professiona and a id \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em init a character with professiona and a id \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_character_aed925827d3187a356fbf85468f30890f}{init\+Enemy}} (const int lvl, const int id)
 \begin{DoxyCompactList}\small\item\em init a enemy with professiona and a id \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_character_a28474345099170632b7aed48e3f0b065}{cpy\+Character}} (\mbox{\hyperlink{class_character}{Character}} \&c)
@@ -33,8 +32,13 @@ void \mbox{\hyperlink{class_character_ae1f3e41c10f7df9f8e192d565efbaa18}{ia\+Beh
 \mbox{\Hypertarget{class_character_a2070c6af7c32358fc90b618e8d37396d}\label{class_character_a2070c6af7c32358fc90b618e8d37396d}} 
 void \mbox{\hyperlink{class_character_a2070c6af7c32358fc90b618e8d37396d}{reset}} ()
 \begin{DoxyCompactList}\small\item\em reset the variables of the character once a round is comlpeted \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_character_aaaffb44b62eb70df0e545700c6011210}\label{class_character_aaaffb44b62eb70df0e545700c6011210}} 
+void {\bfseries level\+Up} ()
+\item 
 int32\+\_\+t \mbox{\hyperlink{class_character_a4b08591abef9edbdc2e813efe2078964}{mh\+Distance}} (const S\+D\+L\+\_\+\+Rect $\ast$tr\+\_\+rect)
 \begin{DoxyCompactList}\small\item\em Calculate the manhantan distance between you and a target. \end{DoxyCompactList}\item 
+int32\+\_\+t \mbox{\hyperlink{class_character_a1e715a6f2ceebfa3fbc01563920f81e6}{mh\+Distance\+V2}} (const S\+D\+L\+\_\+\+Rect $\ast$tr\+\_\+rect)
+\begin{DoxyCompactList}\small\item\em Calculate the radius distance between you and a target. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{class_character_a575ea24dd06caa7dac76b72db4e7aa2b}{Check\+Before\+Move}} (const int next\+\_\+pos\+\_\+x, const int next\+\_\+pos\+\_\+y)
 \begin{DoxyCompactList}\small\item\em Check if I can mov to this position. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{class_character_a51fea522fa662a49b454dd2f6b3d9997}{Check\+Previous\+Movs}} (const int next\+\_\+pos\+\_\+x, const int next\+\_\+pos\+\_\+y)
@@ -43,7 +47,7 @@ void \mbox{\hyperlink{class_character_aedc4319919ddbdc7e9d6ec3f1c07b7af}{mov\+Ch
 \begin{DoxyCompactList}\small\item\em Move the character. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_character_a1ce9beae7838db5027c11d66c7f53295}{mov\+Character\+Combat}} (S\+D\+L\+\_\+\+Event $\ast$e)
 \begin{DoxyCompactList}\small\item\em Move the character while you are in combat. \end{DoxyCompactList}\item 
-void \mbox{\hyperlink{class_character_afc4eac073ed5ee0ec6a228ed5a7ce203}{take\+Damage}} (\mbox{\hyperlink{class_character}{Character}} c, const uint8\+\_\+t range)
+void \mbox{\hyperlink{class_character_a48524a15681e571662ca03132975aa1f}{take\+Damage}} (\mbox{\hyperlink{class_character}{Character}} $\ast$c, const uint8\+\_\+t range)
 \begin{DoxyCompactList}\small\item\em Reciebe damage from other. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{class_character_a825973a271107995b920d466f3b3305a}{draw}} (S\+D\+L\+\_\+\+Renderer $\ast$ren) override
 \begin{DoxyCompactList}\small\item\em draw the character \end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -197,18 +201,33 @@ Implements \mbox{\hyperlink{class_entity_a8960e2678dfcdeb720f08103bff49e07}{Enti
 \mbox{\Hypertarget{class_character_abaade8edbdd882b4a1d41bbf1d4be7a2}\label{class_character_abaade8edbdd882b4a1d41bbf1d4be7a2}} 
 \index{Character@{Character}!init@{init}}
 \index{init@{init}!Character@{Character}}
-\doxysubsubsection{\texorpdfstring{init()}{init()}}
+\doxysubsubsection{\texorpdfstring{init()}{init()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily void Character\+::init (\begin{DoxyParamCaption}\item[{int}]{prof,  }\item[{unsigned char}]{id }\end{DoxyParamCaption})}
 
 
 
-init a cahacter with professiona and a id 
+init a character with professiona and a id 
 
 
 \begin{DoxyParams}{Parameters}
 {\em int} & prof, the id of the profession \\
 \hline
 {\em unsigned} & char id. the id of the character \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a4db3681a3e3b995a5916830880aca290}\label{class_character_a4db3681a3e3b995a5916830880aca290}} 
+\index{Character@{Character}!init@{init}}
+\index{init@{init}!Character@{Character}}
+\doxysubsubsection{\texorpdfstring{init()}{init()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Character\+::init (\begin{DoxyParamCaption}\item[{unsigned char}]{id }\end{DoxyParamCaption})}
+
+
+
+init a character 
+
+
+\begin{DoxyParams}{Parameters}
+{\em unsigned} & char id. id of the new character. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{class_character_aed925827d3187a356fbf85468f30890f}\label{class_character_aed925827d3187a356fbf85468f30890f}} 
@@ -237,6 +256,21 @@ init a enemy with professiona and a id
 
 
 Calculate the manhantan distance between you and a target. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em const} & S\+D\+L\+\_\+\+Rect$\ast$ tr\+\_\+rect the target. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_character_a1e715a6f2ceebfa3fbc01563920f81e6}\label{class_character_a1e715a6f2ceebfa3fbc01563920f81e6}} 
+\index{Character@{Character}!mhDistanceV2@{mhDistanceV2}}
+\index{mhDistanceV2@{mhDistanceV2}!Character@{Character}}
+\doxysubsubsection{\texorpdfstring{mhDistanceV2()}{mhDistanceV2()}}
+{\footnotesize\ttfamily int32\+\_\+t Character\+::mh\+Distance\+V2 (\begin{DoxyParamCaption}\item[{const S\+D\+L\+\_\+\+Rect $\ast$}]{tr\+\_\+rect }\end{DoxyParamCaption})}
+
+
+
+Calculate the radius distance between you and a target. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -273,11 +307,11 @@ Move the character while you are in combat.
 {\em S\+D\+L\+\_\+\+Event$\ast$} & e. S\+DL event to get the input. \\
 \hline
 \end{DoxyParams}
-\mbox{\Hypertarget{class_character_afc4eac073ed5ee0ec6a228ed5a7ce203}\label{class_character_afc4eac073ed5ee0ec6a228ed5a7ce203}} 
+\mbox{\Hypertarget{class_character_a48524a15681e571662ca03132975aa1f}\label{class_character_a48524a15681e571662ca03132975aa1f}} 
 \index{Character@{Character}!takeDamage@{takeDamage}}
 \index{takeDamage@{takeDamage}!Character@{Character}}
 \doxysubsubsection{\texorpdfstring{takeDamage()}{takeDamage()}}
-{\footnotesize\ttfamily void Character\+::take\+Damage (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_character}{Character}}}]{c,  }\item[{const uint8\+\_\+t}]{range }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void Character\+::take\+Damage (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_character}{Character}} $\ast$}]{c,  }\item[{const uint8\+\_\+t}]{range }\end{DoxyParamCaption})}
 
 
 
