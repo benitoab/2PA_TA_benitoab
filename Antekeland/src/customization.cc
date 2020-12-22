@@ -544,6 +544,19 @@ void CustomizeCharacter(Character *c){
     
     //printf("\n\n");
     
+    gM.player_[gM.current_edit_].skin_id_.gender = id_[0];
+    gM.player_[gM.current_edit_].skin_id_.skin = id_[1];
+    gM.player_[gM.current_edit_].skin_id_.hair = id_[2];
+    gM.player_[gM.current_edit_].skin_id_.hair_color = id_[3];
+    gM.player_[gM.current_edit_].skin_id_.eyes = id_[4];
+    gM.player_[gM.current_edit_].skin_id_.ears = id_[5];
+    gM.player_[gM.current_edit_].skin_id_.nose = id_[6];
+    gM.player_[gM.current_edit_].skin_id_.beard = id_[7];
+    gM.player_[gM.current_edit_].skin_id_.mustache = id_[8];
+    gM.player_[gM.current_edit_].skin_id_.mustache_color = id_[9];
+    gM.player_[gM.current_edit_].skin_id_.torso = id_[10];
+    gM.player_[gM.current_edit_].skin_id_.cape = id_[11];
+    gM.player_[gM.current_edit_].skin_id_.legs = id_[12];/*
     c->skin_id_.gender = id_[0];
     c->skin_id_.skin = id_[1];
     c->skin_id_.hair = id_[2];
@@ -556,7 +569,7 @@ void CustomizeCharacter(Character *c){
     c->skin_id_.mustache_color = id_[9];
     c->skin_id_.torso = id_[10];
     c->skin_id_.cape = id_[11];
-    c->skin_id_.legs = id_[12];
+    c->skin_id_.legs = id_[12];*/
     
     // Gender + Skin
     // c->skin_[0].initSprite(textures_[11 * c->char_id_ + 0], tmp_rect, tmp_rect);
@@ -613,6 +626,134 @@ void DrawCustomization(){
   //ImGui
   ImGui::Render();  
   ImGuiSDL::Render(ImGui::GetDrawData());
+
+}
+
+
+
+void LoadCharacter(SDL_Renderer* ren){
+  
+  GameManager& gM = GameManager::Instantiate();
+  SDL_Rect tmp_rect = {0, 0, 64, 64}; 
+  // Body Path
+
+  for(int i = 0; i<4; ++i){
+    std::string tmp_dir = "../data/skins/body/male/body$.png";
+    if(gM.player_[i].skin_id_.gender == 2){
+      tmp_dir.replace(tmp_dir.find("male"), 4, "female");
+    }
+    
+    // Set Body  
+    tmp_dir.replace(tmp_dir.find("$"), 1, std::to_string(gM.player_[i].skin_id_.skin)); 
+    char* skin_dir = (char*)malloc(tmp_dir.length());
+    strcpy(skin_dir, tmp_dir.c_str());  
+    printf("%s\n", skin_dir);
+    gM.textures_[11 * gM.player_[i].char_id_ + 0]->loadTexture(skin_dir,ren);
+    
+   
+    
+    std::string tmp_hair_color = "../data/skins/hair/hairs/hair ($)/color (%).png";
+
+    tmp_hair_color.replace(tmp_hair_color.find("$"), 1, std::to_string(gM.player_[i].skin_id_.hair));
+    tmp_hair_color.replace(tmp_hair_color.find("%"), 1, std::to_string(gM.player_[i].skin_id_.hair_color));
+    char* haircolor_dir = (char*)malloc(tmp_hair_color.length());
+    strcpy(haircolor_dir, tmp_hair_color.c_str());
+    gM.textures_[11 * gM.player_[i].char_id_ + 1]->loadTexture(haircolor_dir,ren);
+  
+    std::string tmp_eyes = "../data/skins/body/male/eyes/$.png";
+    
+    tmp_eyes.replace(tmp_eyes.find("$"), 1, std::to_string(gM.player_[i].skin_id_.eyes));
+    char* eyes_dir = (char*)malloc(tmp_eyes.length());
+    strcpy(eyes_dir, tmp_eyes.c_str());
+    gM.textures_[11 * gM.player_[i].char_id_ + 2]->loadTexture(eyes_dir,ren);
+    
+    std::string tmp_nose = "../data/skins/body/male/nose/$-%.png";
+    tmp_nose.replace(tmp_nose.find("$"), 1, std::to_string(gM.player_[i].skin_id_.skin));
+    tmp_nose.replace(tmp_nose.find("%"), 1, std::to_string(gM.player_[i].skin_id_.nose));
+    char* nose_dir = (char*)malloc(tmp_nose.length());
+    strcpy(nose_dir, tmp_nose.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 3]->loadTexture(nose_dir,ren);
+      
+    
+    std::string tmp_ears = "../data/skins/body/male/ears/$-%.png";
+    tmp_ears.replace(tmp_ears.find("$"), 1, std::to_string(gM.player_[i].skin_id_.skin));
+    tmp_ears.replace(tmp_ears.find("%"), 1, std::to_string(gM.player_[i].skin_id_.ears));
+    char* ears_dir = (char*)malloc(tmp_ears.length());
+    strcpy(ears_dir, tmp_ears.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 4]->loadTexture(ears_dir,ren);
+    
+    // Set Beard
+    std::string tmp_beard = "../data/skins/facial/beard/color ($).png";
+    tmp_beard.replace(tmp_beard.find("$"), 1, std::to_string(gM.player_[i].skin_id_.beard));
+    char* beard_dir = (char*)malloc(tmp_beard.length());
+    strcpy(beard_dir, tmp_beard.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 5]->loadTexture(beard_dir,ren);
+    
+    
+    // Set Mustache
+    std::string tmp_mustache = "../data/skins/facial/mustache ($).png";
+    tmp_mustache.replace(tmp_mustache.find("$"), 1, std::to_string(gM.player_[i].skin_id_.mustache));
+    char* mustache_dir = (char*)malloc(tmp_mustache.length());
+    strcpy(mustache_dir, tmp_mustache.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 6]->loadTexture(mustache_dir,ren);
+    
+    
+    
+    // Set Mustache Color
+    std::string tmp_mustachecolor = "../data/skins/facial/mustaches/mustache ($)/color (%).png";
+    tmp_mustachecolor.replace(tmp_mustachecolor.find("$"), 1, std::to_string(gM.player_[i].skin_id_.mustache));
+    tmp_mustachecolor.replace(tmp_mustachecolor.find("%"), 1, std::to_string(gM.player_[i].skin_id_.mustache_color));  
+    char* mcolor_dir = (char*)malloc(tmp_mustachecolor.length());
+    strcpy(mcolor_dir, tmp_mustachecolor.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 7]->loadTexture(mcolor_dir,ren);
+    
+    // Set Torso
+    std::string tmp_torso = "../data/skins/torso/clothes/piece ($).png";
+    tmp_torso.replace(tmp_torso.find("$"), 1, std::to_string(gM.player_[i].skin_id_.torso));
+    char* torso_dir = (char*)malloc(tmp_torso.length());
+    strcpy(torso_dir, tmp_torso.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 8]->loadTexture(torso_dir,ren);
+    
+    // Set Legs
+    std::string tmp_legs = "../data/skins/legs/clothes/piece ($).png";
+    tmp_legs.replace(tmp_legs.find("$"), 1, std::to_string(gM.player_[i].skin_id_.legs));
+    // std::cout << tmp_legs << "\n";
+    char* legs_dir = (char*)malloc(tmp_legs.length());
+    strcpy(legs_dir, tmp_legs.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 9]->loadTexture(legs_dir,ren);
+    
+    // Set Cape
+    std::string tmp_cape = "../data/skins/torso/back/capes/piece ($).png";
+    tmp_cape.replace(tmp_cape.find("$"), 1, std::to_string(gM.player_[i].skin_id_.cape));
+    char* cape_dir = (char*)malloc(tmp_cape.length());
+    strcpy(cape_dir, tmp_cape.c_str());
+    
+    gM.textures_[11 * gM.player_[i].char_id_ + 10]->loadTexture(cape_dir,ren);
+    
+
+    for(int i = 0; i < 6; ++i){
+       gM.player_[i].skin_[i].initSprite(*(gM.textures_[11 * gM.player_[i].char_id_ + i]), &tmp_rect, &tmp_rect);
+    }
+    
+    // Mustache + Color
+    gM.player_[i].skin_[6].initSprite(*gM.textures_[11 * gM.player_[i].char_id_ + 7], &tmp_rect, &tmp_rect);
+
+    // Torso
+    gM.player_[i].outfit_[0].initSprite(*gM.textures_[11 * gM.player_[i].char_id_ + 8], &tmp_rect, &tmp_rect);
+    // Legs
+    gM.player_[i].outfit_[1].initSprite(*gM.textures_[11 * gM.player_[i].char_id_ + 9], &tmp_rect, &tmp_rect);
+    // Cape
+    gM.player_[i].outfit_[2].initSprite(*gM.textures_[11 * gM.player_[i].char_id_ + 10], &tmp_rect, &tmp_rect);
+  
+    gM.player_[i].init(gM.player_[i].profession_,i);
+  }
 
 }
 

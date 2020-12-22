@@ -179,8 +179,24 @@ void CombatScene::input(SDL_Event* eve){
   // Attack Game
   if(!attacking_){
     if(SDL_PointInRect(&mouse_position, &button_dst)){
-
-      actions_text_[0].changeColor(text_color_red);
+      char* att_msg[16];
+      att_msg[0] = "Kick\0";
+      att_msg[1] = "Fuuton\0";
+      att_msg[2] = "Katon\0";
+      att_msg[3] = "Blizzard\0";
+      att_msg[4] = "High Kick\0";
+      att_msg[5] = "Close Combat\0";
+      att_msg[6] = "Punch\0";
+      att_msg[7] = "Mega Punch\0";
+      att_msg[8] = "Drain\0";
+      att_msg[9] = "Giga Drain\0";
+      att_msg[10] = "New Life\0";
+      att_msg[11] = "Ragnarok\0";
+      att_msg[12] = "Aery\0";
+      att_msg[13] = "Raikiri\0";
+      att_msg[14] = "Hawkshot\0";
+      att_msg[15] = "Crystal Arrow\0";
+     actions_text_[0].changeColor(text_color_red);
       // SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Prueba", "Hola", NULL);
       
       if(eve->type == SDL_MOUSEBUTTONDOWN &&
@@ -203,18 +219,18 @@ void CombatScene::input(SDL_Event* eve){
         actions_text_[0].changeColor(text_color_grey);
         
         if(num_turns_<4){
-          sprintf (aux_text, "Attack %d", 
-          gM.player_[num_turns_].char_attacks_[0].id);   
-          actions_text_[0].changeText(aux_text);
+          /*sprintf (aux_text, "Attack %d", 
+          gM.player_[num_turns_].char_attacks_[0].id);*/   
+          actions_text_[0].changeText(att_msg[gM.player_[num_turns_].char_attacks_[0].id]);
         }
         actions_text_[0].setPosition(&tmp_rect);
 
         tmp_rect = {705, 570, 120, 40};
         
         if(num_turns_<4){
-          sprintf (aux_text, "Attack %d", 
-          gM.player_[num_turns_].char_attacks_[1].id);   
-          actions_text_[1].changeText(aux_text);
+          /*sprintf (aux_text, "Attack %d", 
+          gM.player_[num_turns_].char_attacks_[1].id);   */
+          actions_text_[1].changeText(att_msg[gM.player_[num_turns_].char_attacks_[1].id]);
         }
         
         actions_text_[1].setPosition(&tmp_rect);
@@ -230,13 +246,13 @@ void CombatScene::input(SDL_Event* eve){
         actions_text_[2].init(font_path, 15, text_color_grey, "Return",
                               {860, 570, 100, 40});*/
         if(num_turns_<4){  
-              
+          /*    
           sprintf (aux_text, "Attack %d", 
-          gM.player_[num_turns_].char_attacks_[2].id);   
+          gM.player_[num_turns_].char_attacks_[2].id); */  
           
        
           actions_text_[2].init(font_path, 25, text_color_grey, 
-                              aux_text,
+                              att_msg[gM.player_[num_turns_].char_attacks_[2].id],
                               {850, 500, 120, 40});
         }                     
         actions_text_[3].init(font_path, 25, text_color_grey, "Return",

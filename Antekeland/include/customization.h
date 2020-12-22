@@ -60,6 +60,11 @@ void CustomizeCharacter(Character *c);
 */
 void DrawCustomization();
 /**
+ *@brief Load all the characters
+ *@param SDL_Renderer* ren. SDL renderer to load textures
+*/
+void LoadCharacter(SDL_Renderer* ren);
+/**
  *@brief Do all the thing that need to quit the customization
 */
 void QuitCustomization();

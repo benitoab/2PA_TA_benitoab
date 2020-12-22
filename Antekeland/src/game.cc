@@ -19,6 +19,7 @@
 #include "menuscene.h"
 #include "mainscene.h"
 #include "custoscene.h"
+#include "customization.h"
 #include "combatscene.h"
 
 #include "imgui.h"
@@ -130,12 +131,13 @@ int Game::init(){
   /*gM.player_[0].init(0,0);  
   gM.player_[1].init(0,1);  
   gM.player_[2].init(0,2);  
-  gM.player_[3].init(0,3); */  
+  gM.player_[3].init(0,3); */ 
   
-  gM.player_[0].init();  
-  gM.player_[1].init();  
-  gM.player_[2].init();  
-  gM.player_[3].init();  
+  gM.player_[0].init(0);  
+  gM.player_[1].init(1);  
+  gM.player_[2].init(2);  
+  gM.player_[3].init(3);  
+  gM.player_[4].init(0);  
 
    
 
@@ -234,6 +236,7 @@ void Game::input(){
   if(gM.new_game_ == 2){
     loadScene(1);
     gM.new_game_ = 0;
+    LoadCharacter(ren_);
     SDL_SetWindowSize(win_, 1024, 640);
   }
   

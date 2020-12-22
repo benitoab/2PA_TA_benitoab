@@ -65,11 +65,12 @@ class Character : public Entity{
   Character();
   ~Character();
   /**
-   * @brief init a cahaacter
+   * @brief init a character
+   * @param unsigned char id. id of the new character.
   */
-  void init() override;
+  void init(unsigned char id);
    /**
-   * @brief init a cahacter with professiona and a id
+   * @brief init a character with professiona and a id
    * @param int prof, the id of the profession
    * @param unsigned char id. the id of the character
   */

@@ -52,12 +52,12 @@ void MainScene::init(){
   
    
     
-    int x =0, y =0;
-    do{
-      x = rand()%Board::kBoardSize, y = rand()%Board::kBoardSize;
-    }while(gM.layer1_.map_[y][x].type_ !=0 
-        || gM.layer1_.map_[y][x].state_ !=0);
-    gM.first_time_overworld_ = 0;    
+ /* int x =0, y =0;
+  do{
+    x = rand()%Board::kBoardSize, y = rand()%Board::kBoardSize;
+  }while(gM.layer1_.map_[y][x].type_ !=0 
+      || gM.layer1_.map_[y][x].state_ !=0);
+  gM.first_time_overworld_ = 0;    */
  
 
   gM.player_[4].dst_rect_.x = gM.kViewSize/2;

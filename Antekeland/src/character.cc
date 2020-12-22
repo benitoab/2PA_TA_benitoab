@@ -53,8 +53,9 @@ void Character::cpyCharacter(Character& c){
   
 }
 
-void Character::init(){
-   GameManager& gM = GameManager::Instantiate(); 
+void Character::init(unsigned char id){
+  
+  GameManager& gM = GameManager::Instantiate(); 
   profession_ = 0;
   
   
@@ -134,7 +135,7 @@ void Character::init(){
   xp_ = 0;
   level_ = 1;
   
-  
+ 
   int32_t* skin_ptr = (int32_t*)&skin_id_;
   
   for(int i = 2; i < 23; ++i){
@@ -151,48 +152,14 @@ void Character::init(){
   }
   
   index_mov_=0;
-  char_id_ = 0;
+  char_id_ = id;
   turn_completed_ = 0;
   
   end_tile_mov_.x = 0;
   end_tile_mov_.y = 0;
 
   player_attacking_ = 0;
-  attack_chosen_ = 0;/*
-  GameManager& gM = GameManager::Instantiate(); 
-
-  profession_ = kEnumProfession_Warrior;
- 
-  base_ = *(gM.data_base_.p_[profession_]);
-  current_ = base_;
-
-  xp_ = 0;
-  level_ = 1;
-  char_id_ = 0;
-
-  int32_t* skin_ptr = (int32_t*)&skin_id_;
-
-  for(int i = 2; i < 23; ++i){
-
-    *(skin_ptr+i) = 0;
-
-  }
-
-  skin_id_.gender = 1;
-  skin_id_.skin = 1;
-  skin_id_.hair_color = 1;
-  for(int i=0; i<11; ++i){
-    previous_movs_[i]=-1;
-  }
-  
-  index_mov_=0;
-  char_id_ = 0;
-  
-  end_tile_mov_.x = 0;
-  end_tile_mov_.y = 0;
-
-  player_attacking_ = 0;
-  attack_chosen_ = 0;*/
+  attack_chosen_ = 0;
 }
 
 void Character::init(int prof, unsigned char id){

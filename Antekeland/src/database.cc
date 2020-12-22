@@ -161,7 +161,7 @@ int callbackCharacter(void *characterdata, int argc,
 DataBase::DataBase(){
   
   games_ = nullptr;
-  char_data_ = nullptr;
+ 
   db_ = nullptr;
   
   prof_vector_ = NULL;
@@ -181,12 +181,8 @@ DataBase::~DataBase(){
   if(nullptr != db_){
     sqlite3_close(db_);
   }
-  
-  if(nullptr != char_data_){
-    free(char_data_);
-  }
- 
-  
+
+
   prof_vector_->ops_->destroy(prof_vector_);
   
   games_vector_->ops_->destroy(games_vector_);
@@ -213,7 +209,7 @@ void DataBase::init(){
   board_vector_ = (Vector*) VECTOR_create(kNumTiles);
   
   games_ = (GameData*) calloc(kNumSavedGames, sizeof(GameData));
-  char_data_ = (CharacterData*) calloc(kNumCharacter, sizeof(CharacterData));
+  //char_data_ = (CharacterData*) calloc(kNumCharacter, sizeof(CharacterData));
  
   prof_vector_->ops_->print(prof_vector_);
 }
@@ -306,7 +302,7 @@ void DataBase::readCharacterData(){
   int rc = 0;
 
   char *sql1 = "SELECT * FROM character";
-  rc = sqlite3_exec(db_,sql1, callbackProfesion, (void*)char_vector_, &err_msg);
+  rc = sqlite3_exec(db_,sql1, callbackCharacter, (void*)char_vector_, &err_msg);
 }
 
 void DataBase::readAttacksData(){
@@ -475,36 +471,67 @@ void DataBase::saveGameData(){
 void DataBase::loadCharacter(){
   GameManager& gM = GameManager::Instantiate();
   CharacterData* aux_char;
-  for(int i = 0; i< 1; ++i){
+  for(int i = 0; i< 4; ++i){
     aux_char = (CharacterData*) char_vector_->ops_->extractFirst(char_vector_);
     if(nullptr != aux_char){
-      aux_char->id_character;
-      aux_char->xp ;
-      aux_char->lvl;
-      aux_char->profession;
-      aux_char->custo_data.gender;
-      aux_char->custo_data.skin;
-      aux_char->custo_data.hair; 
-      aux_char->custo_data.hair_color;
-      aux_char->custo_data.eyes;
-      aux_char->custo_data.ears;
-      aux_char->custo_data.nose;
-      aux_char->custo_data.beard ;
-      aux_char->custo_data.mustache ;
-      aux_char->custo_data.mustache_color ;
-      aux_char->custo_data.torso ;
-      aux_char->custo_data.cape ;
-      aux_char->custo_data.legs ;
-      aux_char->custo_data.head; 
-      aux_char->custo_data.neck ;
-      aux_char->custo_data.belt ;
-      aux_char->custo_data.armor ;
-      aux_char->custo_data.back ;
-      aux_char->custo_data.bracelets ;
-      aux_char->custo_data.bracers ;
-      aux_char->custo_data.gloves ;
-      aux_char->custo_data.pants ;
-      aux_char->custo_data.feet; 
+      
+      gM.player_[i].char_id_ = aux_char->id_character;
+      gM.player_[i].xp_ = aux_char->xp ;
+      gM.player_[i].level_ = aux_char->lvl;
+      gM.player_[i].profession_ = aux_char->profession;
+      gM.player_[i].skin_id_.gender = aux_char->custo_data.gender;
+      gM.player_[i].skin_id_.skin = aux_char->custo_data.skin;
+      gM.player_[i].skin_id_.hair  = aux_char->custo_data.hair; 
+      gM.player_[i].skin_id_.hair_color = aux_char->custo_data.hair_color;
+      gM.player_[i].skin_id_.eyes = aux_char->custo_data.eyes;
+      gM.player_[i].skin_id_.ears = aux_char->custo_data.ears;
+      gM.player_[i].skin_id_.nose = aux_char->custo_data.nose;
+      gM.player_[i].skin_id_.beard = aux_char->custo_data.beard ;
+      gM.player_[i].skin_id_.mustache = aux_char->custo_data.mustache ;
+      gM.player_[i].skin_id_.mustache_color = aux_char->custo_data.mustache_color ;
+      gM.player_[i].skin_id_.torso = aux_char->custo_data.torso ;
+      gM.player_[i].skin_id_.cape = aux_char->custo_data.cape ;
+      gM.player_[i].skin_id_.legs = aux_char->custo_data.legs ;
+      gM.player_[i].skin_id_.head  = aux_char->custo_data.head; 
+      gM.player_[i].skin_id_.neck = aux_char->custo_data.neck ;
+      gM.player_[i].skin_id_.belt = aux_char->custo_data.belt ;
+      gM.player_[i].skin_id_.armor = aux_char->custo_data.armor ;
+      gM.player_[i].skin_id_.back = aux_char->custo_data.back ;
+      gM.player_[i].skin_id_.bracelets = aux_char->custo_data.bracelets ;
+      gM.player_[i].skin_id_.bracers = aux_char->custo_data.bracers ;
+      gM.player_[i].skin_id_.gloves = aux_char->custo_data.gloves ;
+      gM.player_[i].skin_id_.pants = aux_char->custo_data.pants ;
+      gM.player_[i].skin_id_.feet = aux_char->custo_data.feet; 
+      
+      
+      printf("%d\n",gM.player_[i].char_id_);
+      printf("%d\n",gM.player_[i].xp_);
+      printf("%d\n",gM.player_[i].level_);
+      printf("%d\n\n",gM.player_[i].profession_);
+                  
+      printf("%d\n",gM.player_[i].skin_id_.gender);
+      printf("%d\n",gM.player_[i].skin_id_.skin);
+      printf("%d\n",gM.player_[i].skin_id_.hair);
+      printf("%d\n",gM.player_[i].skin_id_.hair_color);
+      printf("%d\n",gM.player_[i].skin_id_.eyes);
+      printf("%d\n",gM.player_[i].skin_id_.ears);
+      printf("%d\n",gM.player_[i].skin_id_.nose);
+      printf("%d\n",gM.player_[i].skin_id_.beard);
+      printf("%d\n",gM.player_[i].skin_id_.mustache);
+      printf("%d\n",gM.player_[i].skin_id_.mustache_color);
+      printf("%d\n",gM.player_[i].skin_id_.torso);
+      printf("%d\n",gM.player_[i].skin_id_.cape);
+      printf("%d\n",gM.player_[i].skin_id_.legs);
+      printf("%d\n",gM.player_[i].skin_id_.head);
+      printf("%d\n",gM.player_[i].skin_id_.neck);
+      printf("%d\n",gM.player_[i].skin_id_.belt);
+      printf("%d\n",gM.player_[i].skin_id_.armor);
+      printf("%d\n",gM.player_[i].skin_id_.back);
+      printf("%d\n",gM.player_[i].skin_id_.bracelets);
+      printf("%d\n",gM.player_[i].skin_id_.bracers);
+      printf("%d\n",gM.player_[i].skin_id_.gloves);
+      printf("%d\n",gM.player_[i].skin_id_.pants);
+      printf("%d\n",gM.player_[i].skin_id_.feet);
     }
   }
 }
@@ -593,7 +620,7 @@ void DataBase::loadData(){
     
     //printf("%s\n", attacks_[i]->name);
   ///printf("%s\n", (att_data_+0)->name);
-    printf("%d\n", attacks_[i]->dmg);
+    printf("%d\n", attacks_[i]->range);
   }
   //printProfession();
   //(...)

@@ -223,9 +223,9 @@ class DataBase{
   AttacksData* attacks_[kNumAttacks];    ///@var used to saved the att information 
   Character_Stats* p_[kNumProfession];   ///@var used to saved the profession information 
   GameData* games_;                      ///@var used to saved the game information 
-  CharacterData* char_data_;             ///@var used to saved the character information 
+  CharacterData char_data_[kNumCharacter]; ///@var used to saved the character information 
   
-  sqlite3* db_;   ///@var cotains the database
+  sqlite3* db_;   ///@var pointer to the database
   
   
 };
