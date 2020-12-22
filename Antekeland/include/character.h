@@ -16,33 +16,7 @@
 #include "sprite.h"
 #include "database.h"
 
-// struct SkinsCustomization{
 
-  // int32_t gender;         /** @var Defines whether it's male (1) or female (2) */
-  // int32_t skin;           /** @var ID of the skin */
-  // int32_t hair;           /** @var ID of the hair */
-  // int32_t hair_color;     /** @var ID of the hair color */
-  // int32_t eyes;           /** @var ID of the eyes */
-  // int32_t ears;           /** @var ID of the ears */
-  // int32_t nose;           /** @var ID of the nose */  
-  // int32_t beard;          /** @var ID of the beard */
-  // int32_t mustache;       /** @var ID of the mustache */
-  // int32_t mustache_color; /** @var ID of the mustache */
-  // int32_t torso;          /** @var ID of the torso */
-  // int32_t cape;           /** @var ID of the cape */
-  // int32_t legs;           /** @var ID of the legs */
-
-  // int32_t head;           /** @var ID of the helmet/hat */
-  // int32_t neck;           /** @var ID of the necklace */
-  // int32_t belt;           /** @var ID of the belt */
-  // int32_t armor;          /** @var ID of the armor/shirt/dress */
-  // int32_t back;           /** @var ID of the back */
-  // int32_t bracelets;      /** @var ID of the bracelets */
-  // int32_t bracers;        /** @var ID of the bracers */
-  // int32_t gloves;         /** @var ID of the gloves */
-  // int32_t pants;          /** @var ID of the pants */
-  // int32_t feet;           /** @var ID of the boots/shoes */
-// };
 
 enum kEnumProfession{
 
@@ -110,13 +84,18 @@ class Character : public Entity{
    */
   void reset();
   
+  void levelUp();
+  
   
   /**
   * @brief Calculate the manhantan distance between you and a target
   * @param const SDL_Rect* tr_rect the target.
   */
   int32_t mhDistance(const SDL_Rect* tr_rect);
-
+  /**
+  * @brief Calculate the radius distance between you and a target
+  * @param const SDL_Rect* tr_rect the target.
+  */
   int32_t mhDistanceV2(const SDL_Rect* tr_rect);
   
   /**

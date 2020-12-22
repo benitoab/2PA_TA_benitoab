@@ -355,11 +355,14 @@ void CombatScene::input(SDL_Event* eve){
 
         gM.player_[num_turns_].turn_completed_ = 1;
         ++num_turns_;
-
-        gM.combat_.initCombat(gM.player_[num_turns_]);
-        gM.combat_.current_char_ = &gM.player_[num_turns_];
-        if(num_turns_>=4)
-        gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+        if(num_turns_<4){
+          gM.combat_.initCombat(gM.player_[num_turns_]);
+          gM.combat_.current_char_ = &gM.player_[num_turns_];
+        }
+        else{
+           gM.combat_.initCombat(gM.NPC_[num_turns_-4]);
+          gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+        }
 
         gM.player_[num_turns_].player_attacking_ = 0;
         attack_range_ = 0;
@@ -530,8 +533,9 @@ void CombatScene::input(SDL_Event* eve){
     ++num_turns_;
     gM.combat_.initCombat(gM.player_[num_turns_]);
     gM.combat_.current_char_ = &gM.player_[num_turns_];
-    if(num_turns_>=4)
-    gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+    if(num_turns_>=4){
+      gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+    }
   }
   if(eve->key.keysym.sym == SDLK_l){
     

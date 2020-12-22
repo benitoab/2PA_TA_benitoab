@@ -52,7 +52,7 @@ void MainScene::init(){
   
    
   if(gM.first_time_overworld_ == 1){ 
-    printf("HOALSDLASD\n") ; 
+ 
     int x = 0, y =0;
     do{
       x = rand()%Board::kBoardSize, y = rand()%Board::kBoardSize;

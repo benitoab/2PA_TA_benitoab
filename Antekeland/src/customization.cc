@@ -752,6 +752,10 @@ void LoadCharacter(SDL_Renderer* ren){
     gM.player_[i].outfit_[2].initSprite(*gM.textures_[11 * gM.player_[i].char_id_ + 10], &tmp_rect, &tmp_rect);
   
     gM.player_[i].init(gM.player_[i].profession_,i);
+    
+    for(int l = 1; l<gM.player_[i].level_ ; ++l){
+      gM.player_[i].levelUp();
+    }
   }
 
 }
