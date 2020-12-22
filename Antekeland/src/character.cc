@@ -282,7 +282,7 @@ void Character::initEnemy(const int lvl, const int id){
   base_ = *(gM.data_base_.p_[profession_]);
  // current_ = base_ * level_;
 
-  char_id_ = id;
+  char_id_ = (unsigned char)id;
 
   index_mov_ = 0;
 
@@ -393,6 +393,9 @@ int32_t Character::mhDistanceV2(const SDL_Rect* tr_rect){
   }
   return y;
 }
+
+
+
 
 
 
@@ -655,6 +658,7 @@ bool Character::CheckBeforeMove(const int next_pos_x,
   
   GameManager& gM = GameManager::Instantiate();
   int m_cost = 1;
+  
   if(end_tile_mov_.y>0){ --end_tile_mov_.y;}
   if(end_tile_mov_.y<0){ ++end_tile_mov_.y;}
   if(end_tile_mov_.x>0){ --end_tile_mov_.x;}
@@ -727,7 +731,7 @@ void Character::movCharacterCombat(SDL_Event* e){
   
   if(e->type == SDL_KEYDOWN){
    
-   
+
     // printf("pulso: %d,%d\n",dst_rect_.x, dst_rect_.y);
     // printf("pulso: %d,%d,%d,%d\n\n",next_up,next_down,next_right,next_right);
     if(e->key.keysym.sym == SDLK_UP &&
@@ -789,7 +793,6 @@ void Character::movCharacter(SDL_Event* e){
   
   
   if(e->type == SDL_KEYDOWN){
- 
     if(e->key.keysym.sym == SDLK_UP &&
     gM.board_[RBM::GetMatrixPosition(dst_rect_.y,-1)][dst_rect_.x].enabled_ == 1){
       vertical_mov = 1;

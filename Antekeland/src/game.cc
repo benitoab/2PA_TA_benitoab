@@ -139,13 +139,6 @@ int Game::init(){
   gM.player_[3].init(3);  
   gM.player_[4].init(0);  
 
-   
-
- 
-
-  
-
-
   //current_scene_[0] = new Customization();
   current_scene_[3] = new MenuScene();
   current_scene_[3]->init();
@@ -154,10 +147,10 @@ int Game::init(){
   //current_scene_[2]->init();
 
   current_scene_[1] = new MainScene();
- // current_scene_[1]->init();
+  //current_scene_[1]->init();
 
   current_scene_[0] = new CustoScene();
-  current_scene_[0]->init();
+  //current_scene_[0]->init();
 
   
   current_id_scene_ = 3;
@@ -237,6 +230,7 @@ void Game::input(){
     loadScene(1);
     gM.new_game_ = 0;
     LoadCharacter(ren_);
+    gM.player_[4].cpyCharacter(gM.player_[0]);
     SDL_SetWindowSize(win_, 1024, 640);
   }
   
