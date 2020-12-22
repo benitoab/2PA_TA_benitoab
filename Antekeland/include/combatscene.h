@@ -58,7 +58,10 @@ class CombatScene : public Scene{
     int16_t num_turns_;         ///@var [0, 3] = Characters, >3 = IA
     unsigned char current_character_; ///@var is the id of the character that is moving
     unsigned char total_turns_;     ///@var how many turn has on round number of character + number of enemies
-    
+    unsigned char attack_range_;    ///@var identifies the range of the attack that the mouse hovers
+    uint8_t alpha_;                 ///@var tue value of the alpha channel for a specific texture
+    uint8_t inc_alpha_;             ///@var the increment/decrement of the alpha variable
+    uint8_t num_range_rect_;        ///@var number of rectangles to show an attack's range
   
 };
 

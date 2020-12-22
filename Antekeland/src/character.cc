@@ -671,10 +671,15 @@ bool Character::CheckBeforeMove(const int next_pos_x,
 void Character::takeDamage(Character c, const uint8_t range){
 
   float dmg_multiplier = 0;
+  float tmp_armor = current_.armor;
+  float tmp_mr = current_.magic_resist;
 
   // Melé
   if(current_.hp > 0){
     if(c.char_attacks_[attack_chosen_].type == 1){
+
+      dmg_multiplier = 100.0f/(100.0f+tmp_armor);
+      printf("Mult: %d\n", tmp_armor);
       
       current_.hp -= (c.current_.physical_att/2 + c.char_attacks_[attack_chosen_].dmg/2);
       printf("%d\n", current_.hp);
