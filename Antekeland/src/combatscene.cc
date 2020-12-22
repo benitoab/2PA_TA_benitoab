@@ -558,59 +558,35 @@ void CombatScene::update(){
   
   if(num_turns_<4){ 
     gM.player_[num_turns_].updateSpriteC();
+    if(gM.player_[num_turns_].current_.hp <= 0){ ++num_turns_; }
   }
   else{
-    gM.NPC_[num_turns_-4].iaBehaviour();
-    gM.NPC_[num_turns_-4].updateSpriteC();
-    if(gM.NPC_[num_turns_-4].turn_completed_){
+    int tmp_attack = 0;
+    if(gM.NPC_[num_turns_-4].current_.hp > 0){
+      gM.NPC_[num_turns_-4].iaBehaviour();
+      gM.NPC_[num_turns_-4].updateSpriteC();
+
+      do{
+       tmp_attack = rand()%3;
+      }while(gM.NPC_[num_turns_-4].char_attacks_[tmp_attack].mana_cost > gM.NPC_[num_turns_-4].current_.mana);
+      
+      for(int i = 0; i < num_turns_; ++i){
+        if(gM.NPC_[num_turns_-4].mhDistanceV2(&gM.player_[i].dst_rect_) <= gM.NPC_[num_turns_-4].char_attacks_[tmp_attack].range){
+          
+          gM.player_[i].takeDamage(&gM.NPC_[num_turns_-4], gM.NPC_[num_turns_-4].char_attacks_[tmp_attack].type);
+          printf("%d %d\n", gM.player_[i].char_id_, gM.player_[i].current_.hp);
+          gM.NPC_[num_turns_-4].turn_completed_ = 1;
+        }
+      }
+
+      if(gM.NPC_[num_turns_-4].turn_completed_){
+        ++num_turns_;
+      }
+    }else{
       ++num_turns_;
     }
   }
 
-  // printf("%d\n", attack_range_);
-  /*if(preselected_attack_ == 1){
-
-    for(int j = 0; j < total_turns_-4; ++j){
-      for(int k = 0; k < 5; ++k){
-        if(nullptr != gM.NPC_[j].skin_[k].texture_){
-          SDL_SetTextureAlphaMod(gM.NPC_[j].skin_[k].texture_->texture_, alpha_);
-        }
-      }
-    }
-
-    if(alpha_ <= 5){
-      inc_alpha_ = 1;
-    }
-    if(alpha_ >= 255){
-      inc_alpha_ = 0;
-    }
-    if(inc_alpha_ == 1){
-      alpha_ = alpha_ + 5;
-    }else{
-      alpha_ = alpha_ - 5;
-    }
-
-  }else{
-    for(int j = 0; j < total_turns_-4; ++j){
-      for(int k = 0; k < 5; ++k){
-        if(nullptr != gM.NPC_[j].skin_[k].texture_){
-          SDL_SetTextureAlphaMod(gM.NPC_[j].skin_[k].texture_->texture_, 255);
-        }
-      }
-    }
-  }*/
-  
-  /*if(gM.player_[num_turn].turn_completed_){
-    ++num_turns_;
-  }*/
-  //int a = gM.player_[0].mhDistance(&gM.player_[1].dst_rect_);
-  
-  //printf("distance:%d\n",a);
-  /*
-  if(num_turns_>=4){
-    gM.NPC_[num_turns_].iaBehaviour();
-    //gM.NPC_[num_turns_].iaMov();
-  }*/
   if(num_turns_ >= total_turns_){
     num_turns_ = 0;
     gM.player_[0].reset();
