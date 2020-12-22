@@ -647,7 +647,6 @@ void LoadCharacter(SDL_Renderer* ren){
     tmp_dir.replace(tmp_dir.find("$"), 1, std::to_string(gM.player_[i].skin_id_.skin)); 
     char* skin_dir = (char*)malloc(tmp_dir.length());
     strcpy(skin_dir, tmp_dir.c_str());  
-    printf("%s\n", skin_dir);
     gM.textures_[11 * gM.player_[i].char_id_ + 0]->loadTexture(skin_dir,ren);
     
    
@@ -738,8 +737,8 @@ void LoadCharacter(SDL_Renderer* ren){
     gM.textures_[11 * gM.player_[i].char_id_ + 10]->loadTexture(cape_dir,ren);
     
 
-    for(int i = 0; i < 6; ++i){
-       gM.player_[i].skin_[i].initSprite(*(gM.textures_[11 * gM.player_[i].char_id_ + i]), &tmp_rect, &tmp_rect);
+    for(int j = 0; j < 6; ++j){
+      gM.player_[i].skin_[j].initSprite(*(gM.textures_[11 * gM.player_[i].char_id_ + j]), &tmp_rect, &tmp_rect);
     }
     
     // Mustache + Color
