@@ -116,6 +116,8 @@ class Character : public Entity{
   * @param const SDL_Rect* tr_rect the target.
   */
   int32_t mhDistance(const SDL_Rect* tr_rect);
+
+  int32_t mhDistanceV2(const SDL_Rect* tr_rect);
   
   /**
   * @brief Check if I can mov to this position
@@ -148,7 +150,7 @@ class Character : public Entity{
   * @param Character c. The one that deal you dmg.
   * @param const uint8_t range. the range of it attack
   */  
-  void takeDamage(Character c, const uint8_t range);
+  void takeDamage(Character* c, const uint8_t range);
   
   /**
   * @brief draw the character

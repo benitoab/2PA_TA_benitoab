@@ -174,6 +174,7 @@ void CombatScene::input(SDL_Event* eve){
   SDL_Point mouse_position = {eve->button.x, eve->button.y};
   SDL_Rect button_dst = {760, 495, 150, 50};
   SDL_Color text_color_red = {255,0,0,255};
+  SDL_Color text_color_blue = {0,0,255,255};
   SDL_Color text_color_grey = {255,255,255,60};
   SDL_Color button_color = {121, 121, 121, 60};
   
@@ -189,14 +190,51 @@ void CombatScene::input(SDL_Event* eve){
       if(gM.units_board_[aux_tile.y][aux_tile.x].enabled_ != 255){
         if(gM.units_board_[aux_tile.y][aux_tile.x].enabled_ > 3){
           
-          if(gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].mhDistance(&gM.player_[num_turns_].dst_rect_)
+          if(gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].mhDistanceV2(&gM.player_[num_turns_].dst_rect_)
              <= attack_range_){
+               
+              if(gM.player_[num_turns_].current_.mana >= gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].mana_cost){
               
-              gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].takeDamage(gM.player_[num_turns_], gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].type);
+                gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].takeDamage(&gM.player_[num_turns_], gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].type);
+                
+                gM.player_[num_turns_].turn_completed_ = 1;
+                ++num_turns_;
+
+                gM.combat_.initCombat(gM.player_[num_turns_]);
+                gM.combat_.current_char_ = &gM.player_[num_turns_];
+                if(num_turns_>=4)
+                gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+
+                combat_button_[0].dst_rect_ = {760, 495, 150, 50};
+                combat_button_[1].dst_rect_ = {760, 565, 150, 50};
+
+                combat_button_[2].dst_rect_ = {7600, 495, 150, 50};
+                combat_button_[3].dst_rect_ = {7600, 565, 150, 50};
+
+                SDL_Rect tmp_dst = {10000, 10000, 0,0};
+                actions_text_[2].setPosition(&tmp_dst);
+                actions_text_[3].setPosition(&tmp_dst);
+
+                tmp_dst = {785, 500, 100, 40};
+                actions_text_[0].changeText("Attack");
+                actions_text_[0].setPosition(&tmp_dst);
+
+                tmp_dst = {785, 570, 100, 40};
+                actions_text_[1].changeText("End Turn");
+                actions_text_[1].setPosition(&tmp_dst);
+                gM.player_[num_turns_].player_attacking_ = 0;
+
+                attack_range_ = 0;
+
+              }else{
+
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Attack Missed", "Not enough mana", NULL);
+
+              }
               
           }else{
             
-            printf("Enemy: %d %d %d %d %d\n", aux_tile.x, aux_tile.y, gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].mhDistance(&gM.player_[num_turns_].dst_rect_), gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].range, gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].type);
+            // printf("Enemy: %d %d %d %d %d\n", aux_tile.x, aux_tile.y, gM.NPC_[gM.units_board_[aux_tile.y][aux_tile.x].enabled_-4].mhDistance(&gM.player_[num_turns_].dst_rect_), gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].range, gM.player_[num_turns_].char_attacks_[gM.player_[num_turns_].attack_chosen_].type);
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Attack Missed", "Enemy out of range", NULL);
 
           } 
@@ -342,8 +380,12 @@ void CombatScene::input(SDL_Event* eve){
  
     for(int i = 0; i < 3; ++i){
       if(SDL_PointInRect(&mouse_position, &tmp_button[i])){
-
-        actions_text_[i].changeColor(text_color_red);
+        
+        if(gM.player_[num_turns_].char_attacks_[i].type == 1){
+          actions_text_[i].changeColor(text_color_red);
+        }else{
+          actions_text_[i].changeColor(text_color_blue);
+        }
 
         // Attack
         if(eve->type == SDL_MOUSEBUTTONDOWN &&
@@ -373,7 +415,8 @@ void CombatScene::input(SDL_Event* eve){
                         
             // gM.player_[num_turns_].player_attacking_ = 1;
             gM.player_[num_turns_].attack_chosen_ = gM.player_[num_turns_].char_attacks_[i].id;
-            printf("Ataque: %d %d\n", gM.player_[num_turns_].attack_chosen_, gM.player_[num_turns_].char_attacks_[i].id);
+            printf("Attack: %d\n", gM.player_[num_turns_].attack_chosen_);
+            // printf("Ataque: %d %d\n", gM.player_[num_turns_].attack_chosen_, gM.player_[num_turns_].char_attacks_[i].id);
 
             actions_text_[i].changeColor(text_color_grey);
         }
@@ -524,7 +567,7 @@ void CombatScene::update(){
     }
   }
 
-  printf("%d\n", attack_range_);
+  // printf("%d\n", attack_range_);
   /*if(preselected_attack_ == 1){
 
     for(int j = 0; j < total_turns_-4; ++j){

@@ -336,6 +336,8 @@ void Character::initEnemy(const int lvl, const int id){
   current_.movement = 5;
   player_attacking_ = 0;
   attack_chosen_ = 0;
+
+  xp_ = level_ * 1+rand()%20;
 }
 
 
@@ -376,6 +378,20 @@ int32_t Character::mhDistance(const SDL_Rect* tr_rect){
   
   return x+y;
   
+}
+
+int32_t Character::mhDistanceV2(const SDL_Rect* tr_rect){
+  
+  int x = dst_rect_.x - tr_rect->x;
+  int y = dst_rect_.y - tr_rect->y;
+  
+  if(x<0){ x *=-1;}
+  if(y<0){ y *=-1;}
+  
+  if(x>=y){
+    return x;
+  }
+  return y;
 }
 
 
@@ -668,29 +684,35 @@ bool Character::CheckBeforeMove(const int next_pos_x,
 
 }
 
-void Character::takeDamage(Character c, const uint8_t range){
+void Character::takeDamage(Character* c, const uint8_t range){
 
   float dmg_multiplier = 0;
-  float tmp_armor = current_.armor;
-  float tmp_mr = current_.magic_resist;
 
   // Melé
   if(current_.hp > 0){
-    if(c.char_attacks_[attack_chosen_].type == 1){
-
-      dmg_multiplier = 100.0f/(100.0f+tmp_armor);
-      printf("Mult: %d\n", tmp_armor);
+    if(c->char_attacks_[attack_chosen_].type == 1){
       
-      current_.hp -= (c.current_.physical_att/2 + c.char_attacks_[attack_chosen_].dmg/2);
-      printf("%d\n", current_.hp);
+      current_.hp -= (c->current_.physical_att/2 + c->char_attacks_[attack_chosen_].dmg/2);
+      printf("Mele: %d\n", current_.hp);
+      printf("Mana: %d\n", c->current_.mana);
+      c->current_.mana -= c->char_attacks_[attack_chosen_].mana_cost;
+      printf("Mana: %d\n", c->current_.mana);
 
     }else{  // Spell
 
-      current_.hp -= (c.current_.physical_att/2 + c.char_attacks_[attack_chosen_].dmg/2);
-      printf("%d\n", current_.hp);
+      current_.hp -= (c->current_.physical_att/2 + c->char_attacks_[attack_chosen_].dmg/2);
+      printf("Spell: %d\n", current_.hp);
+      printf("Mana: %d\n", c->current_.mana);
+      c->current_.mana -= c->char_attacks_[attack_chosen_].mana_cost;
+      printf("Mana: %d\n", c->current_.mana);
     }
-  }else{
+  }
+  
+  if(current_.hp <= 0){
     dst_rect_.x = 100000;
+    // Liberar Unit Board
+    c->xp_ += xp_;
+    printf("XP: %d\n", c->xp_);
   }
 
 }
