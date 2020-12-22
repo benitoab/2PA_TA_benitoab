@@ -51,19 +51,27 @@ void MainScene::init(){
   
   
    
-    
- /* int x =0, y =0;
-  do{
-    x = rand()%Board::kBoardSize, y = rand()%Board::kBoardSize;
-  }while(gM.layer1_.map_[y][x].type_ !=0 
+  if(gM.first_time_overworld_ == 1){ 
+    printf("HOALSDLASD\n") ; 
+    int x = 0, y =0;
+    do{
+      x = rand()%Board::kBoardSize, y = rand()%Board::kBoardSize;
+    }while(gM.layer1_.map_[y][x].type_ !=0 
       || gM.layer1_.map_[y][x].state_ !=0);
-  gM.first_time_overworld_ = 0;    */
- 
-
-  gM.player_[4].dst_rect_.x = gM.kViewSize/2;
-  gM.player_[4].dst_rect_.y = gM.kViewSize/2;
-  gM.player_[4].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
-  gM.player_[4].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
+    gM.first_time_overworld_ = 0; 
+    gM.player_[4].dst_rect_.x = x;
+    gM.player_[4].dst_rect_.y = y;
+    // gM.player_[4].dst_rect_.x = gM.kViewSize/2;
+    // gM.player_[4].dst_rect_.y = gM.kViewSize/2;
+    gM.player_[4].dst_rect_.w = gM.layer1_.map_[0][0].dst_rect_.w ;
+    gM.player_[4].dst_rect_.h = gM.layer1_.map_[0][0].dst_rect_.h ;
+    // Board::x_origin_ = gM.player_[4].dst_rect_.w * (x-(gM.kViewSize/2));
+    // Board::y_origin_ = gM.player_[4].dst_rect_.h * (y-(gM.kViewSize/2));
+    Board::x_origin_ = gM.player_[4].dst_rect_.w * ((gM.kViewSize/2)-x);
+    Board::y_origin_ = gM.player_[4].dst_rect_.h * ((gM.kViewSize/2)-y);
+  }
+  
+  
   ent_list.push_back(&gM.player_[4]);
   
   
@@ -117,7 +125,7 @@ void MainScene::init(){
   ent_list.push_back(&mainscene_text_[0]);  
   ent_list.push_back(&mainscene_text_[1]);  
   ent_list.push_back(&mainscene_text_[2]);
- 
+
 }
 
 void MainScene::quit(){
