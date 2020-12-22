@@ -362,6 +362,7 @@ void CombatScene::input(SDL_Event* eve){
         else{
            gM.combat_.initCombat(gM.NPC_[num_turns_-4]);
           gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
+          printf("Current NPC: %d\n", gM.combat_.current_char_.id);
         }
 
         gM.player_[num_turns_].player_attacking_ = 0;
