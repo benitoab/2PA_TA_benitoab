@@ -84,6 +84,9 @@ class Character : public Entity{
    */
   void reset();
   
+  /**
+   * @brief Upgrade the stats of a character
+   */
   void levelUp();
   
   

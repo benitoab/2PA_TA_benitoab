@@ -362,7 +362,7 @@ void CombatScene::input(SDL_Event* eve){
         else{
            gM.combat_.initCombat(gM.NPC_[num_turns_-4]);
           gM.combat_.current_char_ = &gM.NPC_[num_turns_-4];
-          printf("Current NPC: %d\n", gM.combat_.current_char_.id);
+          printf("Current NPC: %d\n", gM.combat_.current_char_->char_id_);
         }
 
         gM.player_[num_turns_].player_attacking_ = 0;
@@ -590,6 +590,10 @@ void CombatScene::update(){
     }else{
       ++num_turns_;
     }
+  }
+  
+  if(num_turns_<4 && gM.player_[num_turns_].xp_>100){
+    gM.player_[num_turns_].levelUp();
   }
 
   if(num_turns_ >= total_turns_){

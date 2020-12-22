@@ -529,10 +529,10 @@ void Character::endTile(){
 
 void Character::iaMov(){
   
-  int next_up = RBM::GetMatrixPosition(dst_rect_.y,-1);
-  int next_down = RBM::GetMatrixPosition(dst_rect_.y,1);
-  int next_right = RBM::GetMatrixPosition(dst_rect_.x,1);
-  int next_left = RBM::GetMatrixPosition(dst_rect_.x,-1);
+  unsigned char next_up = RBM::GetMatrixPosition((unsigned char)dst_rect_.y,-1);
+  unsigned char next_down = RBM::GetMatrixPosition((unsigned char)dst_rect_.y,1);
+  unsigned char next_right = RBM::GetMatrixPosition((unsigned char)dst_rect_.x,1);
+  unsigned char next_left = RBM::GetMatrixPosition((unsigned char)dst_rect_.x,-1);
   GameManager& gM = GameManager::Instantiate();
   uint8_t mov = 0;
   
@@ -635,7 +635,7 @@ void Character::reset(){
 
 void Character::levelUp(){
   
-  xp_ = 0;
+  xp_ %=100;
   ++level_;
   
   base_.hp +=10;
